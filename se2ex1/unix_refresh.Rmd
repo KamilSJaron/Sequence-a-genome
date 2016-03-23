@@ -1,0 +1,160 @@
+---
+output: html_document
+---
+
+plan for 12.04 : 
+
+* UNIX (2h)
+* install all needed programs (1h)
+* What do you expect from my genes expression? For my conditions, hypothesis (???)
+* Make groups (bioinformatics + biologist; 10 min).
+
+#Unix refreshement
+
+Analysis we will perform in this course require a basic skill of terminal. If you feel, that you are familiar with it, you can try to do exercises in the section Challenges. If you find them easy, feel free not to the previous exercises. However, please read following section about syntax which will be common in all sessions we will have this semester.
+
+Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82), [R](http://edu.isb-sib.ch/course/view.php?id=52) and [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
+
+## Syntax of this exersize
+
+* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after `#` symbol.
+
+```bash
+ls -h / # list files and directories in -human readable format located at root directory
+```
+
+* Anything in `< >` you have to replace by meaningful paths, file names or parameters.
+
+```bash
+ssh <username>@prd.vital-it.ch #this will be written in this document
+ssh kjaron@prd.vital-it.ch #this is example, how it can be used
+```
+
+* Detail explanations will be written in blocks as follows
+
+<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, be read this blocks and if it does not help, ask one of the assistants.</sub>
+
+---
+### OS X, Linux users
+
+**connection**
+
+Open terminal and connect to Vital-it
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+**file transfer**
+
+To copy file to cluster, you have to be in the terminal of your computer, then
+```bash
+scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename>
+```
+
+to copy file from the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
+```bash
+scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
+```
+
+
+### Windows users
+
+**connection**
+
+1. Install [WinSCP](http://winscp.net/eng/download.php) and [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+2. First start WinSCP by:
+    -	hostname: prd.vital-it.ch
+    -	username: 
+    -	password:
+3. Then start your Putty entering hostname prd.vital-it.ch
+
+**file transfer**
+
+Transfer the file to your computer by drag and drop from the server side. Every time in the exercise you see `scp` command, it is only for Mac/Linux users, you use WinSCP. In the WinSCP navigate your paths and check your folders. 
+
+***
+
+## Warm-up
+
+0. connect to Vital-it
+1. go to your home directory `/home/<user_name>` and check the content (`ls`).
+2. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>`. Check the content. What do you expect?
+
+```bash
+mkdir /scratch/cluster/monthly/mls_2015/<username> #if it doesnt exist
+cd /scratch/cluster/monthly/mls_2015/<username>
+ls -l
+```
+
+it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data form the last semester).
+
+3. make a directory
+4. Use `pwd` to check your location. Go up one directory `cd ..` and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
+5. Try command `man <command>` to show manual page of some commands. What means the `-l` in the `ls` command few line above?
+
+<sub>The command `cd` and correct handling of paths is essential for everything done is Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = directory one lever above current directory, `/` = root directory, `~` = your home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
+
+***
+
+## Copy, move, rename and remove
+
+1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
+2. copy directory `/scratch/cluster/monthly/kjaron/unix_ex` to your working directory
+
+```bash
+cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
+# if you dont provide a new name, the old one will be kept
+cp -r /scratch/cluster/monthly/kjaron/unix_ex . #directories need to be copied using -r
+```
+
+3. Go inside and check the content (you should know how, if you don't, scroll up).
+4. Copy file `text_file.txt` in directory `dir_1`. Do you need parameter `-r`? If you not sure, check manual page.
+5. Go to `dir_1`, rename `text_file.txt` to `<your_new_name>.txt` and move it back to `unix_exec`.
+
+```bash
+cd ./dir_1
+mv text_file.txt <your_new_name>.txt
+mv <your_new_name>.txt ..
+cd ..
+```
+
+6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `dir_1`? 
+
+<sub>Command `mv` moves file to the given path and rename it to the given name. So, if the `<path_to_input>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>` is the same as `<path_to_output>`, the file will be only renamed. If the path will be different, but `<new_file_name>` wont be provided, the file will be just moved (not renamed).</sub>
+
+7. Remove the copied file.
+
+```bash
+rm <your_new_name>
+```
+
+8. Remove directory `dir_2`. Problem? Check manual or Google.
+9. **bonus** copy again file `text_file.txt` in directory `dir_1`. Can you move the copy to your directory and rename it using one command only?
+
+***
+
+## Text processing
+
+There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder.
+
+1. Use commands `head -<num_of_printed_lines> <text_file>`, `tail -<num_of_printed_lines> <text_file>` and `cat <text_file>` to see the start, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
+2. Use `less <text_file>` to check `hox`.
+
+***
+
+## Challenges
+
+***
+
+## Tips and tricks
+
+- Command `cd` without any argument changes the working directory to your home. Symbol `~` works the same, it is symbol of home.
+- Press tabulator to call whisperer every time you are writing a path. It is good way how to prevent typos.
+- Arrows up and down allow to browse your command history saved at `~/.bash_history`
+- Press `Ctrl+R` for a full text search in the command history
+- Bash script `~/.bashrc` is executed every time you open new terminal. It is place, you can make your aliases or define environmental variables
+- Press `Ctrl+C` to stop the running process, useful
+
+
+___
+Credits: based on Nadja's material, made by Andrea and Kamil
