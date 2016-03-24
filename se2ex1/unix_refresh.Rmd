@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 #Unix refreshement
 
 During this semester, we will perform analyses requiring a basic knowledge of Unix terminal. If you feel, that you are familiar with it, you can try to do exercises in the section Challenges. If you find them easy, feel free not to the previous exercises. However, please read following section about syntax which will be common in all sessions we will have this semester.
@@ -129,7 +132,7 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
 2. Use `less <text_file>` to check `hox_bflo.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
 3. To get an idea, about the file, you can use command `wc`, which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
-4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc....). Using symbol `|` you can "pipe" the standard output as input of another command. We are interested in number of nucleotides in Amphioxus HOX cluster, which is equal to number of all no newline characters in the `hox_bflo.fa` file without the first line (header).
+4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can "pipe" the standard output as input of another command. We are interested in number of nucleotides in Amphioxus HOX cluster, which is equal to number of all no newline characters in the `hox_bflo.fa` file without the first line (header).
 
 ```bash
 head -n 1 hox_bflo.fa | wc -c
@@ -150,12 +153,44 @@ tail -n +2 hox_bflo.fa | tr -d '\n' | wc -c
 
 7. Editing files can be done using editors `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to ender to editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
 
-<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line, or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, vi will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the edior (you do not want to know how "frindly" was the original `vi`).
+<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line, or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, vi will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).
 </sub>
 
 ***
 
+## Vital-it
+
+1. You will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have following syntax 
+
+```bash
+bsub <bsub_parameters> <command> <command_parameters>
+```
+
+2. Programs available on the Vital-it you can loaded using 
+
+```bash
+module add <field>/<category>/<program>/<version>
+```
+
+3. The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/software/tools.php). Find there a command for program fastqc and run it.
+4. `fastqc` computes a quality control and outputs it to output folder defined by parameter `-o`. 
+
+```bash
+fastqc <sequencing_reads> –o <fastqc_results>
+```
+
+5. Now you should be able to submit a job computing a quality control of reads in `NEED TO BE ADDED` file.
+6. Check the status of the submitted job
+7. Once it finishes, verify existence of files. Copy those files to your computer (explained at beginning) and check the html file.
+
+***
+
 ## Challenges
+
+1. Extract all header lines of `NEED TO BE ADDED` file to separated file. If you do the same on `hox_bflo.fa`, how many headers you extract?
+2. Find a way, how to compute total number of nucleotides in `NEED TO BE ADDED`.
+3. ????
+4. ????
 
 ***
 
@@ -169,5 +204,6 @@ tail -n +2 hox_bflo.fa | tr -d '\n' | wc -c
 - Press `Ctrl+C` to stop the running process, useful `cat` something, what you should not...
 
 
-___
+***
+
 Credits: based on Nadja's material, made by Andrea and Kamil
