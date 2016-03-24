@@ -151,6 +151,10 @@ tail -n +2 hox_bflo.fa | wc -cl
 tail -n +2 hox_bflo.fa | tr -d '\n' | wc -c
 ```
 
+<sub>
+There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
+</sub>
+
 7. Editing files can be done using editors `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to ender to editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
 
 <sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line, or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, vi will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).

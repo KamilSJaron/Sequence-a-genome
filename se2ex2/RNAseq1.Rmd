@@ -12,7 +12,7 @@ Today, we will check the quality of the sequencing reads. If it is fine, we will
 - basic commands `pwd`, `ls`, `cd`, `cp`, `mv`, `mkdir` and finally `man` if you forgot anything
 - text processing tools `cat`, `head`, `tail`, `less` and `vi`
 - operations on cluster `module add`, `bsub` and `bjobs`
-- fastqc, kallisto and R prepared to use (on vital-it or your computer)
+- `fastqc`, `kallisto` and `R` prepared to use (on vital-it or your computer)
 
 ***
 
@@ -30,7 +30,7 @@ Useful commands and options:
 ## Quality control
 
 0. Log to Vital-it
-1. Go to your wokring folder and create output directory `fastqc_results`
+1. Go to your working folder and create output directory `fastqc_results`
 2. Run fastqc. You can put several fastq files with empty space between them.
 
 ```
