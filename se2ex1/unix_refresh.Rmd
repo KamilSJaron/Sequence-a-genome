@@ -177,13 +177,13 @@ module add <field>/<category>/<program>/<version>
 ```
 
 3. The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/software/tools.php). Find there a command for program fastqc and run it.
-4. `fastqc` computes a quality control and outputs it to output folder defined by parameter `-o`. 
+4. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
 ```bash
 fastqc <sequencing_reads> –o <fastqc_results>
 ```
 
-5. Now you should be able to submit a job computing a quality control of reads in `NEED TO BE ADDED` file.
+5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `NEED TO BE ADDED`.
 6. Check the status of the submitted job
 7. Once it finishes, verify existence of files. Copy those files to your computer (explained at beginning) and check the html file.
 
