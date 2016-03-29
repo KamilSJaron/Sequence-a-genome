@@ -157,8 +157,7 @@ There are many ways how to read or edit plain text files using command line tool
 
 7. Editing files can be done using editors `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to ender to editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
 
-<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line, or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, vi will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).
-</sub>
+<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
 
 ***
 
@@ -193,8 +192,7 @@ fastqc <sequencing_reads> –o <fastqc_results>
 
 1. Extract all header lines of `NEED TO BE ADDED` file to separated file. If you do the same on `hox_bflo.fa`, how many headers you extract?
 2. Find a way, how to compute total number of nucleotides in `NEED TO BE ADDED`.
-3. ????
-4. ????
+3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against rules of Vital-it.
 
 ***
 
@@ -207,11 +205,13 @@ You will need `R` on your computer and following programs on your computer (OS X
 
 ### OS X
 
-`Kallisto` - A different ways how to get it can be found on (their webpage)[https://pachterlab.github.io/kallisto/starting.html]. We will install Kallisto using homebrew - package manager for OS X. Homebrew you can install using following command
+`Kallisto` - A different ways how to get it can be found on [their webpage](https://pachterlab.github.io/kallisto/starting.html). We will install Kallisto using homebrew - package manager for OS X. Homebrew you can install using following command
 
 ```bash
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
+
+<sub> command `curl` downloads an installation script from the url and ruby is a scripting language which will execute downloaded script. (Ruby is some ways similar with Pearl or Python). Analogical command to `curl` on Linux is `wget`.</sub>
 
 than switch to scientific collection and install kallisto
 
@@ -228,20 +228,40 @@ brew install fastqc
 
 ### Linux
 
+`Kallisto` for Linux have to be build from source files, no worries, it sounds harder that it is. Use [building manual](https://pachterlab.github.io/kallisto/source.html) and if you get stack or if you have any question, do not hesitate, ask.
+`fastqc` is written in Java, check if you have installed Java v1.6 or higher. 
+```bash
+java -version
+```
+if is it fine, download fastqc from [Babraham bioinformatics webpage](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/). Unzip the file. Go to the folder, change permissions to make `fastqc` executable and link it to your `/usr/bin`.
+```bash
+chmod u+x fastqc
+sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
+```
+
+<sub>as you might know, if you are using Linux, `sudo` will execute command with administrator rights, therefore the command will ask you for a password to your account. Also, if your account has no administrator rights you wont be able to link the executable to your `/usr/bin`. In this case you can add path to `fastqc` to your PATH variable as it is described in vital-it section or you can just run it using full path to executive.</sub>
+
 ### Vital-it
 
-Log to vital-it. Open file `~/.bashrc` in `vi` or `nano`. Add there lines:
+Log to vital-it. Open file `/home/<your_user_name>/.bashrc` in `vi` or `nano`. Add there lines:
+
 ```bash
 module add UHTS/Analysis/kallisto/0.42.4;
 module add UHTS/Quality_control/fastqc/0.11.2;
 ```
 
-<sub> script `.bashrc` located at your home directory (`~`) is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `bash_history` bash history, `.ssh` setting of ssh, etc.).
-</sub>
+<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
 
 ***
 
 ## Install needed R packages
+
+### any OS
+
+Start a R on your computer (NOT on vital-it) and install following packages from bioconductor:
+
+* `edgeR` on [webpage](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
+* `tximport` 
 
 ***
 
@@ -251,7 +271,7 @@ module add UHTS/Quality_control/fastqc/0.11.2;
 - Press tabulator to call whisperer every time you are writing a path. It is good way how to prevent typos.
 - Arrows up and down allow to browse your command history saved at `~/.bash_history`
 - Press `Ctrl+R` for a full text search in the command history
-- Bash script `~/.bashrc` is executed every time you open new terminal. It is place, you can make your aliases or define environmental variables
+- Bash script `~/.bashrc` is executed every time you open new terminal.
 - Press `Ctrl+C` to stop the running process, useful `cat` something, what you should not...
 
 
