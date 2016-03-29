@@ -198,6 +198,53 @@ fastqc <sequencing_reads> –o <fastqc_results>
 
 ***
 
+# Install needed software
+
+You will need `R` on your computer and following programs on your computer (OS X, Linux) or prepared to use on vital-it. Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
+
+`fastqc` - is computing statistics of ngs reads for quality control
+`Kallisto` - is quantifying abundances of transcripts from RNA-seq data.
+
+### OS X
+
+`Kallisto` - A different ways how to get it can be found on (their webpage)[https://pachterlab.github.io/kallisto/starting.html]. We will install Kallisto using homebrew - package manager for OS X. Homebrew you can install using following command
+
+```bash
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+than switch to scientific collection and install kallisto
+
+```bash
+brew tap homebrew/science
+brew install kallisto 
+```
+
+`fastqc` is also included in scientific repository of homebrew
+
+```bash
+brew install fastqc
+```
+
+### Linux
+
+### Vital-it
+
+Log to vital-it. Open file `~/.bashrc` in `vi` or `nano`. Add there lines:
+```bash
+module add UHTS/Analysis/kallisto/0.42.4;
+module add UHTS/Quality_control/fastqc/0.11.2;
+```
+
+<sub> script `.bashrc` located at your home directory (`~`) is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `bash_history` bash history, `.ssh` setting of ssh, etc.).
+</sub>
+
+***
+
+## Install needed R packages
+
+***
+
 ## Tips and tricks
 
 - Command `cd` without any argument changes the working directory to your home. Symbol `~` works the same, it is symbol of home.
