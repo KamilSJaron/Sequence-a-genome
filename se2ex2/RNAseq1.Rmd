@@ -1,9 +1,5 @@
 #RNA seq
 
-<sub>
-Motivation RNA sequencing (RNA-seq) technologies have recently come to prominence as technique for characterizing RNA transcripts and comparative analyses of their abundances. It is used in many areas of biology including functional genomics, developmental biology and cancer biology. In RNA-seq, mapped reads are typically aggregated to counts at some level of interest, such as transcripts, exons, or genes. The count for a given gene or region quantifies the expression of that gene or region. We are very often interested in which genes or regions have different levels of expression under different experimental conditions – this is known as differential expression. The nature of the count data produced in RNA-seq experiments introduces challenges for the analysis of differential expression. The computational and statistical methods for analyzing RNA-seq data are recent, and successful methods for the analysis of microarray data are not directly applicable to RNA-seq data. It seems that dedicated tools, designed especially for count data, will be required to extract the best possible information from RNA-seq data. Several emerging tools within Bioconductor (a repository for open-source software for bioinformatics) have been developed for the differential analysis of count data, including DESeq, DESeq2, edgeR, baySeq, limma (voom function), …but best practices are not yet clearly established.
-</sub>
-
 Today, we will check the quality of the sequencing reads. If it is fine, we will build a reference and finally we will map all reads to the reference to get expression levels.
 
 ## Last time, in Sequence a genome...
@@ -34,7 +30,7 @@ Useful commands and options:
 2. Run fastqc. You can put several fastq files with empty space between them.
 
 ```
-bsub –R “rusage[mem=6000] span[ptile=2]” –n 2 –J <job_name> fastqc –t 2 <fastq_file> -o
+bsub –R “rusage[mem=6000] span[ptile=2]” –n 2 –J <job_name> fastqc –t 2 <fastq_file> -o <output_folder>
 ```
 
 3. Copy fastqc results to your computer

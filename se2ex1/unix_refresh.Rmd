@@ -233,13 +233,13 @@ brew install fastqc
 ```bash
 java -version
 ```
-if is it fine, download fastqc from [Babraham bioinformatics webpage](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/). Unzip the file. Go to the folder, change permissions to make `fastqc` executable and link it to your `/usr/bin`.
+if is it fine, download fastqc from [Babraham bioinformatics webpage](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/). Unzip the file. Go to the folder, change permissions to make `fastqc` executable and link it to `/usr/bin/`.
 ```bash
 chmod u+x fastqc
 sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
 ```
 
-<sub>as you might know, if you are using Linux, `sudo` will execute command with administrator rights, therefore the command will ask you for a password to your account. Also, if your account has no administrator rights you wont be able to link the executable to your `/usr/bin`. In this case you can add path to `fastqc` to your PATH variable as it is described in vital-it section or you can just run it using full path to executive.</sub>
+<sub>as you might know, if you are using Linux, `sudo` will execute command with administrator rights, therefore the command will ask you for a password to your account. Also, if your account has no administrator rights you wont be able to link the executable to your `/usr/bin/`. In this case you can add path to `fastqc` to your PATH variable as it is described in vital-it section or you can just run it using full path to executive.</sub>
 
 ### Vital-it
 
