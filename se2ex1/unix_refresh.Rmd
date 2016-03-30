@@ -271,9 +271,13 @@ Start a R on your computer (NOT on vital-it) and install following packages from
 - Press tabulator to call whisperer every time you are writing a path. It is good way how to prevent typos.
 - Arrows up and down allow to browse your command history saved at `~/.bash_history`
 - Press `Ctrl+R` for a full text search in the command history
-- Bash script `~/.bashrc` is executed every time you open new terminal.
 - Press `Ctrl+C` to stop the running process, useful `cat` something, what you should not...
+- Bash script `~/.bashrc` is executed every time you open new window terminal.
+- You can make your command prompt nicer by adding following line to `~/.bashrc`
 
+```bash
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+```
 
 ***
 
