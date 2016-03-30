@@ -1,0 +1,78 @@
+---
+output:
+  html_document:
+    fig_width: 7
+    fig_height: 6
+    fig_caption: true
+---
+
+# INTRODUCTION
+
+Motivation RNA sequencing (RNA-seq) technologies have recently come to prominence as technique for characterizing RNA transcripts and comparative analyses of their abundances. It is used in many areas of biology including functional genomics, developmental biology and cancer biology. In RNA-seq, mapped reads are typically aggregated to counts at some level of interest, such as transcripts, exons, or genes. The count for a given gene or region quantifies the expression of that gene or region. We are very often interested in which genes or regions have different levels of expression under different experimental conditions – this is known as differential expression. The nature of the count data produced in RNA-seq experiments introduces challenges for the analysis of differential expression. The computational and statistical methods for analyzing RNA-seq data are recent, and successful methods for the analysis of microarray data are not directly applicable to RNA-seq data. It seems that dedicated tools, designed especially for count data, will be required to extract the best possible information from RNA-seq data. Several emerging tools within Bioconductor (a repository for open-source software for bioinformatics) have been developed for the differential analysis of count data, including DESeq, DESeq2, edgeR, baySeq, limma (voom function), …but best practices are not yet clearly established.
+
+## Scope of the tutorial
+This tutorial introduces use of R and Bioconductor tools for analysis of RNA-seq count data. The goals are to: (1) develop familiarity with R / Bioconductor software for statistical analysis; (2) expose key statistical issues in the analysis of sequence data; and (3) provide inspiration and a framework for your projects.
+
+Our tutorial will consist of a hands-on demonstration, walking through an end-to-end analysis of a typical RNA-seq data, going from uploading raw count data to exploring significant variation in transcriptional levels between different groups of samples. The tutorial focuses on using the edgeR package. It gives an overview of the theory behind the tool featured in the packages and illustrates their features through examples using public and simulated datasets. 
+We will go through the following steps: 
+
+1. design and quality assessment of RNA-seq experiments 
+2. count data normalization 
+3. statistical models for count data 
+4. hypothesis and multiple testing 
+5. statistical analysis of differences 
+6. independent filtering 
+7. downstream interpretive analyses 
+
+This tutorial is accompanied with a group of practical exercises, with a series of short remarks, exploring the diversity of tasks for which R / Bioconductor are appropriate for the statistical analysis of RNA-seq data.
+
+## EXPERIMENTAL DESIGN
+
+Proper experimental design is the key to any gene expression study. This is needed to ensure that questions of interest can be answered and that this can be done accurately, given experimental constraints, such as cost of reagents and availability of mRNA. In the simplest case, the aim is to compare expression levels between two conditions, e.g., controlled versus treated or wild-type versus mutant.
+
+```{r fig.width=2, fig.height=3,echo=FALSE, fig.cap="Figure 1: Simple experimental design, comparison between two conditions (Group 1 and Group 2). [source](http://www.ccmb.med.umich.edu/node/1202)"}
+library(png)
+library(grid)
+img <- readPNG("./RNA-seq.png")
+ grid.raster(img)
+```
+
+
+More complicated experimental designs can include additional experimental factors, potentially with multiple levels (e.g., multiple mutants, doses of a drug or time points) or may need to account for additional covariates (e.g. experimental batch or sex) or the pairing of samples (e.g., paired tumour and normal tissues from individuals).
+
+Figure of complex experimental design example
+
+```{r fig.width=7, fig.height=5,echo=FALSE, fig.cap="Figure 2: Complex design can consist of comparison between several conditions (different tissues, developmental stages...) or their combinations. [source](http://www.nature.com/nprot/journal/v8/n8/full/nprot.2013.084.html)"}
+library(png)
+library(grid)
+img <- readPNG("./RNA-seq_complex.png")
+ grid.raster(img)
+```
+
+What is the difference between bad experimental design and good experimental design?
+
+```{r fig.width=7, fig.height=5,echo=FALSE, fig.cap="Figure 3: Non balanced design on the left does not allow to estimate technical and biological variation separately. [source](http://www.genetics.org/content/185/2/405.abstract)"}
+library(png)
+library(grid)
+img <- readPNG("./balanced_non_balanced_expermental_design.png")
+ grid.raster(img)
+```
+
+### Sources of RNA variation in RNA-seq experiment
+
+In a RNA-seq experiment, there are two sources of variability that may affect the results: 
+  
+- **Biological variation** – is intrinsic to all organisms; it may be influenced by genetic or environmental factors, as well as by whether the samples are pooled or individual. 
+
+- **Technical variation** – is the variability in the measurements from a sample subject that persists even under identical experimental conditions. That is, the uncertainty with which the abundance of each gene in each sample is estimated by the sequencing technology.
+
+
+Figure of biological and technical variation
+
+
+### Biological and technical replicates
+To mitigate the effect of biological and technical variability, it is generally accepted that at least three biological and two technical replicates per biological replicate be performed for each experiment. 
+
+Biological replicates – consist of different biological samples that are processed through the sequencing process separately, for example, two cultures of S. cerevisiae are grown separately and sequenced separately. The biological replicates allow for the estimation of within-treatment group (biological) variability, provide information that is necessary for making inferences between treatment groups, and give rise to conclusions that can be generalized. 
+
+Technical replicates – in RNA-Seq, technical replicates are replicates where the biological material is the same in each replicate but the technical steps used to measure gene expression are performed separately. For example, a single culture of S. cerevisiae is grown and two samples are drawn from it and sequenced separately. In true technical replicates, all steps are replicated, including library preparation.
