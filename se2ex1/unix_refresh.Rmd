@@ -112,7 +112,7 @@ cd ..
 
 6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `dir_1`? 
 
-<sub>Command `mv` moves file to the given path and rename it to the given name. So, if the `<path_to_input>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>` is the same as `<path_to_output>`, the file will be only renamed. If the path will be different, but `<new_file_name>` wont be provided, the file will be just moved (not renamed).</sub>
+<sub>Command `mv` moves file to the given path and rename it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path will be different, but `<new_file_name>` wont be provided, the file will be just moved (not renamed).</sub>
 
 7. Remove the copied file.
 
@@ -170,7 +170,7 @@ bsub <bsub_parameters> <command> <command_parameters>
 ```
 
 <sub>
-Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks accross computing grid. This computer is called front-end. Everytime, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
+Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across computing grid. This computer is called front-end. Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
 </sub>
 
 2. Programs available on the Vital-it you can loaded using 
@@ -186,7 +186,7 @@ module add <field>/<category>/<program>/<version>
 fastqc <sequencing_reads> –o <fastqc_results>
 ```
 
-5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `NEED TO BE ADDED`.
+5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `LM2_L1_R1.fastq`.
 6. Check the status of the submitted job
 7. Once it finishes, verify existence of files. Copy those files to your computer (explained at beginning) and check the html file.
 
@@ -194,18 +194,21 @@ fastqc <sequencing_reads> –o <fastqc_results>
 
 ## Challenges
 
-1. Extract all header lines of `NEED TO BE ADDED` file to separated file. If you do the same on `hox_bflo.fa`, how many headers you extract?
-2. Find a way, how to compute total number of nucleotides in `NEED TO BE ADDED`.
+1. Extract all header lines of `LM2_L1_R1.fastq` file to separated file. If you do the same on `hox_bflo.fa`, how many headers you extract?
+2. Find a way, how to compute total number of nucleotides in `LM2_L1_R1.fastq`.
 3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against rules of Vital-it.
 
 ***
 
 # Install needed software
 
-You will need `R` on your computer and following programs on your computer (OS X, Linux) or prepared to use on vital-it. Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
+You will need `R` and `IGV` on your computer and programs `fastqc` and `Kallisto` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
 
-`fastqc` - is computing statistics of ngs reads for quality control
-`Kallisto` - is quantifying abundances of transcripts from RNA-seq data.
+- `R` - is expected to be already installed on your computer.
+- `IGV` - is literally Integrative Genomics Viewer. Follow instructions on the [webpage](https://www.broadinstitute.org/software/igv/download#binary) to install `IGV`.
+- `fastqc` - is computing statistics of ngs reads for quality control, specifics bellow.
+- `Kallisto` - is quantifying abundances of transcripts from RNA-seq data, specifics bellow.
+
 
 ### OS X
 
@@ -215,7 +218,7 @@ You will need `R` on your computer and following programs on your computer (OS X
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-<sub> command `curl` downloads an installation script from the url and ruby is a scripting language which will execute downloaded script. (Ruby is some ways similar with Pearl or Python). Analogical command to `curl` on Linux is `wget`.</sub>
+<sub> command `curl` downloads an installation script from the URL and ruby is a scripting language which will execute downloaded script. (Ruby is some ways similar with Pearl or Python). Analogical command to `curl` on Linux is `wget`.</sub>
 
 than switch to scientific collection and install kallisto
 
