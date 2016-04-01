@@ -23,15 +23,35 @@ Useful commands and options:
 - bjobs: see your running jobs
 - bkill: kill the job
 
+***
+
+## Organistation of files
+
+All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>/<file_name>.fastq.gz`. The file names are in following format `<condition><biological_replicate>_L<lane>_R1_<technical_replicate>_<unique_key>.fastq.gz`. The `<unique_key>` and `<lane>` are not very importnat for us now. How many conditions we ve got? How many biological replicates per condition we have got? You should be able to log to vital-it, go the folder and find out.
+
+***
+
 ## Quality control
 
+You have working groups, right? 
+
+```{r set-options, echo=FALSE, cache=FALSE}
+
+out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
+out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_replicate, sep = ''), sep = '/')
+suppressWarnings(library(knitr))
+kable(out)
+```
+
 0. Log to Vital-it
-1. Go to your working folder and create output directory `fastqc_results`
+1. Go to your working folder and create output directory for results of quality control (something meaningful like `<condition><bio_rep>_qc` could be a good idea)
 2. Run fastqc. You can put several fastq files with empty space between them.
 
+```bash
+bsub –n 2 –J <job_name> fastqc –t 2 -o <output_folder> <fastq_files>
 ```
-bsub –R “rusage[mem=6000] span[ptile=2]” –n 2 –J <job_name> fastqc –t 2 <fastq_file> -o <output_folder>
-```
+
+<sub> Wring into command more than one full path would be a pain. This is a perfect place to use wild characters (unix_refresh, tips and tricks). Instead of writing every single fastq file `<fastq_files>`, you can write `<path_to_reads>/*.fastq.gz` </sub>
 
 3. Copy fastqc results to your computer
 4. Open the `fastqc_report.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality?
@@ -39,6 +59,8 @@ bsub –R “rusage[mem=6000] span[ptile=2]” –n 2 –J <job_name> fastqc –
 ***
 
 ## Bulding a reference
+
+
 
 ***
 

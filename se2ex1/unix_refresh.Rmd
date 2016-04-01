@@ -96,7 +96,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
 # if you dont provide a new name, the old one will be kept
-cp -r /scratch/cluster/monthly/kjaron/unix_ex . #directories need to be copied using -r
+cp -r /scratch/cluster/monthly/kjaron/sag/unix_ex . #directories need to be copied using -r
 ```
 
 3. Go inside and check the content (you should know how, if you don't, scroll up).
@@ -168,6 +168,10 @@ There are many ways how to read or edit plain text files using command line tool
 ```bash
 bsub <bsub_parameters> <command> <command_parameters>
 ```
+
+<sub>
+Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks accross computing grid. This computer is called front-end. Everytime, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
+</sub>
 
 2. Programs available on the Vital-it you can loaded using 
 
@@ -272,8 +276,16 @@ Start a R on your computer (NOT on vital-it) and install following packages from
 - Arrows up and down allow to browse your command history saved at `~/.bash_history`
 - Press `Ctrl+R` for a full text search in the command history
 - Press `Ctrl+C` to stop the running process, useful `cat` something, what you should not...
+- You can use wild characters `?`, `[]` and `*`, to specify a group of files. `?` stands for any single character, `[XYZ]` one of the specifies characters (XYZ in this case, you can also use numbers), `*` any number of any characters. See examples
+
+```bash
+cat *.txt # prints all text files
+ls ?? # lists all files or directories with exactly two letter names
+cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from given <path>
+```
+
 - Bash script `~/.bashrc` is executed every time you open new window terminal.
-- You can make your command prompt nicer by adding following line to `~/.bashrc`
+- You can make your command prompt colourful by adding following line to `~/.bashrc`
 
 ```bash
 PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
