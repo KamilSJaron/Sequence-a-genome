@@ -15,6 +15,7 @@ Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82
 ls -h / # list files and directories in -human readable format located at root directory
 ```
 
+* The comment symbol of Bash is `#`, everything after this symbol is ignored 
 * Anything in `< >` you have to replace by meaningful paths, file names or parameters.
 
 ```bash
@@ -22,6 +23,7 @@ ssh <username>@prd.vital-it.ch #this will be written in this document
 ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 ```
 
+* Bash commands are meaningful acronyms, the explanation is written after every first occurrence in brackets.
 * Detail explanations will be written in blocks as follows
 
 <sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, be read this blocks and if it does not help, ask one of the assistants.</sub>
@@ -31,19 +33,19 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 
 **connection**
 
-Open terminal and connect to Vital-it
+Open terminal and connect to Vital-it using `ssh` (secure shell)
 ```bash
 ssh <username>@prd.vital-it.ch
 ```
 
 **file transfer**
 
-To copy file to cluster, you have to be in the terminal of your computer, then
+To copy file **to** cluster you have to be in the terminal of your computer, then
 ```bash
-scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename>
+scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename> # (scp stands for secure copy)
 ```
 
-to copy file from the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
+to copy file **from** the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
 ```bash
 scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
 ```
@@ -69,8 +71,8 @@ Transfer the file to your computer by drag and drop from the server side. Every 
 ## Warm-up
 
 0. connect to Vital-it
-1. go to your home directory `/home/<user_name>` and check the content (`ls`).
-2. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>`. Check the content. What do you expect?
+1. go to your home directory `/home/<user_name>` and check the content using `ls` (list segments).
+2. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>` (make directory). Check the content. What do you expect?
 
 ```bash
 mkdir /scratch/cluster/monthly/mls_2015/<username> #if it doesnt exist
@@ -81,8 +83,8 @@ ls -l
 it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data form the last semester).
 
 3. make a directory
-4. Use `pwd` to check your location. Go up one directory `cd ..` and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
-5. Try command `man <command>` to show manual page of some commands. What means the `-l` in the `ls` command few line above?
+4. Use `pwd` (print working directory) to check your location. Go up one directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
+5. Try command `man <command>` (manual) to show manual page of some commands. What means the `-l` in the `ls` command few line above?
 
 <sub>The command `cd` and correct handling of paths is essential for everything done is Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = directory one lever above current directory, `/` = root directory, `~` = your home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
 
@@ -91,7 +93,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ## Copy, move, rename and remove
 
 1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
-2. copy directory `/scratch/cluster/monthly/kjaron/unix_ex` to your working directory
+2. copy directory `/scratch/cluster/monthly/kjaron/unix_ex` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
@@ -112,7 +114,7 @@ cd ..
 
 6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `dir_1`? 
 
-<sub>Command `mv` moves file to the given path and rename it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path will be different, but `<new_file_name>` wont be provided, the file will be just moved (not renamed).</sub>
+<sub>Command `mv` (move) moves file to the given path and rename it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path will be different, but `<new_file_name>` wont be provided, the file will be just moved (not renamed).</sub>
 
 7. Remove the copied file.
 
@@ -129,33 +131,39 @@ rm <your_new_name>
 
 There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder.
 
-1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
-2. Use `less <text_file>` to check `hox_bflo.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
-3. To get an idea, about the file, you can use command `wc`, which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
-4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can "pipe" the standard output as input of another command. We are interested in number of nucleotides in Amphioxus HOX cluster, which is equal to number of all no newline characters in the `hox_bflo.fa` file without the first line (header).
+1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
+2. Use `less <text_file>` to check `Pseud_protegens_S5_final.fasta`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
+3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
+4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so number of nucleotides is equal to number of all no newline characters in the file without the first line (header).
 
 ```bash
-head -n 1 hox_bflo.fa | wc -c
-cat hox_bflo.fa | wc -cl
+head -n 1 Pseud_protegens_S5_final.fasta | wc -c # returns the number of characters in the first line
+wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline character and the number of all characters in the file
 ```
 
-5. You can simplify your problem using command `tail` which can also print all but a given number of lines from begging. Following command prints number of characters (including newline characters) and number of newlines. What is the size of Amphioxus' HOX cluster? 
+So, how big the genome is? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
+
+<sub>
+The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In our case there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Also, if our assembly would have several contigs, there should be more header lines in the files. Do not get confused, that amost all softwares are automatically wrapping too long line to make a document more readible. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usuall `.fasta` even we already know, that is not the case.
+</sub>
+
+5. You can simplify your problem using command `tail` which can also print all but a given number of lines from begging. Following command prints number of characters. Is it same as before? 
 
 ```bash
-tail -n +2 hox_bflo.fa | wc -cl
+tail -n +2 Pseud_protegens_S5_final.fasta | wc -c
 ```
 
-6. **bonus** if you would like to simplify your life even more, you can use `tr` command to delete all newline characters before you count them using `wc`. Note, that commands can be nested, so you can use as many pipes, as you need.
+6. **bonus** if you would have an usual `.fasta` you can use `tr` (transform) command to delete all newline characters before you count them using `wc`. Bun in our case it should return very same result. Note, how the commands are nested. You can use as many pipes, as you need.
 
 ```bash
-tail -n +2 hox_bflo.fa | tr -d '\n' | wc -c
+tail -n +2 Pseud_protegens_S5_final.fasta | tr -d '\n' | wc -c
 ```
 
 <sub>
 There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
 </sub>
 
-7. Editing files can be done using editors `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to ender to editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
+7. Editing files can be done using editors `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to enter the editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
 
 <sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
 
@@ -183,7 +191,7 @@ module add <field>/<category>/<program>/<version>
 4. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
 ```bash
-fastqc <sequencing_reads> –o <fastqc_results>
+fastqc –o <fastqc_results> <sequencing_reads>
 ```
 
 5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `LM2_L1_R1.fastq`.
@@ -194,7 +202,7 @@ fastqc <sequencing_reads> –o <fastqc_results>
 
 ## Challenges
 
-1. Extract all header lines of `LM2_L1_R1.fastq` file to separated file. If you do the same on `hox_bflo.fa`, how many headers you extract?
+1. Extract all header lines of `LM2_L1_R1.fastq` file to separated file. If you do the same on `Pseud_protegens_S5_final.fasta`, how many headers you extract?
 2. Find a way, how to compute total number of nucleotides in `LM2_L1_R1.fastq`.
 3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against rules of Vital-it.
 
@@ -288,7 +296,7 @@ cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from gi
 ```
 
 - Bash script `~/.bashrc` is executed every time you open new window terminal.
-- You can make your command prompt colourful by adding following line to `~/.bashrc`
+- (Linux only) You can make your command prompt colourful by adding following line to `~/.bashrc`
 
 ```bash
 PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '

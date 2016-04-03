@@ -27,7 +27,12 @@ Useful commands and options:
 
 ## Organistation of files
 
-All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>/<file_name>.fastq.gz`. The file names are in following format `<condition><biological_replicate>_L<lane>_R1_<technical_replicate>_<unique_key>.fastq.gz`. The `<unique_key>` and `<lane>` are not very importnat for us now. How many conditions we ve got? How many biological replicates per condition we have got? You should be able to log to vital-it, go the folder and find out.
+All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>/<file_name>.fastq.gz`. The file names are in following format `<condition><biological_replicate>_L<lane>_R1_<technical_replicate>_<unique_key>.fastq.gz`, but the rest of the variables should be clear to you. The `<unique_key>` and `<lane>` are not very important for us now. 
+
+1. How many conditions we have got?
+2. How many biological replicates per condition we have got? 
+
+Log to vital-it, go the folder and find out.
 
 ***
 
@@ -44,27 +49,58 @@ kable(out)
 ```
 
 0. Log to Vital-it
-1. Go to your working folder and create output directory for results of quality control (something meaningful like `<condition><bio_rep>_qc` could be a good idea)
+1. Go to your working folder (`/scrarch/cluster/monthly/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
 2. Run fastqc. You can put several fastq files with empty space between them.
 
 ```bash
 bsub –n 2 –J <job_name> fastqc –t 2 -o <output_folder> <fastq_files>
 ```
 
-<sub> Wring into command more than one full path would be a pain. This is a perfect place to use wild characters (unix_refresh, tips and tricks). Instead of writing every single fastq file `<fastq_files>`, you can write `<path_to_reads>/*.fastq.gz` </sub>
+<sub> Wring into command more than one full path would be a pain. This is a perfect place to use wild characters (unix_refresh, tips and tricks). Instead of writing every single fastq file `<fastq_files>`, you can write `<path_to_reads>/*.fastq.gz`. Fastqc is also able to parse compressed files, so you do not have to be worried about `.gz`. </sub>
 
-3. Copy fastqc results to your computer
-4. Open the `fastqc_report.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality?
+<sub> For those, who have following error `-bash: fastqc: command not found`. You probably messed up something last time, when we were preparing `~/.bashrc`. Right now, just execute command `module add UHTS/Quality_control/fastqc/0.11.2`, rerun the `fastqc` job and then ask somebody to fix the problem with the setting of `~/.bashrc`. </sub>
+
+3. Copy all fastqc results to your computer
+4. Open the files `<fastqc_report>.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality?
 
 ***
 
 ## Bulding a reference
 
+(for all groups same)
 
+1. Make a folder (`mkdir`) for Kallisto analysis and go there
+2. `kallisto` expect a `.fasta` file with the reference on the input. Extract it from the GenBank file we have generated last semester `/scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gbk` using following script.
+
+```bash
+python ./Andrea's_magical_script /scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gbk > <extracted_transcriptome.fa>
+```
+
+<sub>
+The symbol `>` serves for redirection of both output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>`.
+</sub>
+
+3. The file `<extracted_transcriptome.fa>` also needs to be indexed (prepared for fast access). `kallisto` has a mode for an indexing of the input file called `index`. Parameter `-i` specifies an output name for the indexed file.
+
+```bash
+gsub kallisto index -i <indexed_transcriptome.idx> ./<extracted_transcriptome.fa>
+```
+
+<sub>
+some explanation of indexing??
+</sub>
 
 ***
 
 ## Starting a mapping
+
+(find what biological sample you have got)
+
+```bash
+gsub kallisto quant -i <indexed_transcriptome.idx> -o <output_folder> -b 100 <input_files>
+```
+
+All reads are still saved at `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biorep>/`. You can again use wild character `*` to select all gzipped fasta file in the folder `*.fasta.gz`.
 
 ***
 
