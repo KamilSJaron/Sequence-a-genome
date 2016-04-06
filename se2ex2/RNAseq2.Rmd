@@ -12,19 +12,6 @@ Today, we will check the quality of the sequencing reads. If it is fine, we will
 
 ***
 
-## Vital-it
-
-Useful commands and options:
-
-- bsub: submit a job on Vital-IT
-    *   -J: job name
-    *   -n: number of cores to use for the program
-    *   -R: amount of space and number of cores to reserve for your job
-- bjobs: see your running jobs
-- bkill: kill the job
-
-***
-
 ## Organistation of files
 
 All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>/<file_name>.fastq.gz`. The file names are in following format `<condition><biological_replicate>_L<lane>_R1_<technical_replicate>_<unique_key>.fastq.gz`, but the rest of the variables should be clear to you. The `<unique_key>` and `<lane>` are not very important for us now. 
@@ -73,17 +60,17 @@ bsub –n 2 –J <job_name> fastqc –t 2 -o <output_folder> <fastq_files>
 2. `kallisto` expect a `.fasta` file with the reference on the input. Extract it from the GenBank file we have generated last semester `/scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gbk` using following script.
 
 ```bash
-python ./Andrea's_magical_script /scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gbk > <extracted_transcriptome.fa>
+python ./Andrea's_magical_script /scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gtf > <extracted_transcriptome.fa>
 ```
 
 <sub>
 The symbol `>` serves for redirection of both output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>`.
 </sub>
 
-3. The file `<extracted_transcriptome.fa>` also needs to be indexed (prepared for fast access). `kallisto` has a mode for an indexing of the input file called `index`. Parameter `-i` specifies an output name for the indexed file.
+3. The file `<cds.fa>` also needs to be indexed (prepared for fast access). `kallisto` has a mode for an indexing of the input file called `index`. Parameter `-i` specifies an output name for the indexed file.
 
 ```bash
-gsub kallisto index -i <indexed_transcriptome.idx> ./<extracted_transcriptome.fa>
+gsub kallisto index -i <indexed_cds.idx> ./<cds.fa>
 ```
 
 <sub>
@@ -96,12 +83,18 @@ some explanation of indexing??
 
 (find what biological sample you have got)
 
+How was the library prep going? What was the average size of fragments? Its standard deviation? These informations are used by kallisto...
+
 ```bash
-gsub kallisto quant -i <indexed_transcriptome.idx> -o <output_folder> -b 100 <input_files>
+gsub kallisto quant -i  <indexed_cds.idx> -o <output_folder> -b 100 --single -l <mean> -s <sd> --pseudobam <input_files> | samtools view -Sb - > output.bam
 ```
 
 All reads are still saved at `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biorep>/`. You can again use wild character `*` to select all gzipped fasta file in the folder `*.fasta.gz`.
 
 ***
+
+```bash
+samtools index output.bam
+```
 
 made by Andrea and Kamil

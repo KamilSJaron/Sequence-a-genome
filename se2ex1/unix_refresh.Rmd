@@ -3,8 +3,6 @@ output: html_document
 ---
 #Unix refreshement
 
-During this semester, we will perform analyses requiring a basic knowledge of Unix terminal. If you feel, that you are familiar with it, you can try to do exercises in the section Challenges. If you find them easy, feel free not to the previous exercises. However, please read following section about syntax which will be common in all sessions we will have this semester.
-
 Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82), [R](http://edu.isb-sib.ch/course/view.php?id=52) and [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
 
 ## Syntax of this exersize
@@ -93,7 +91,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ## Copy, move, rename and remove
 
 1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
-2. copy directory `/scratch/cluster/monthly/kjaron/unix_ex` to your working directory using command `cp` (copy)
+2. copy directory `/scratch/cluster/monthly/kjaron/genome` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
@@ -132,31 +130,31 @@ rm <your_new_name>
 There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder.
 
 1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
-2. Use `less <text_file>` to check `Pseud_protegens_S5_final.fasta`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
+2. Use `less <text_file>` to check `hox_bflo.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
 3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
-4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so number of nucleotides is equal to number of all no newline characters in the file without the first line (header).
+4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* have sequenced last semester. File `hox_bflo.fa` is a simple fasta file, so number of nucleotides is equal to number of all no newline characters in the file without the first line (header).
 
 ```bash
-head -n 1 Pseud_protegens_S5_final.fasta | wc -c # returns the number of characters in the first line
-wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline character and the number of all characters in the file
+head -n 1 hox_bflo.fa | wc -c # returns the number of characters in the first line
+wc hox_bflo.fa -lc # returns the number of newline character and the number of all characters in the file
 ```
 
 So, how big the genome is? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
 
 <sub>
-The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In our case there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Also, if our assembly would have several contigs, there should be more header lines in the files. Do not get confused, that amost all softwares are automatically wrapping too long line to make a document more readible. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usuall `.fasta` even we already know, that is not the case.
+The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Do not get confused, that amost all softwares are automatically wrapping too long line to make a document more readible. Using `less hox_bflo.fa` gives you a feeling of a usuall `.fasta` even we already know, that is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files. 
 </sub>
 
-5. You can simplify your problem using command `tail` which can also print all but a given number of lines from begging. Following command prints number of characters. Is it same as before? 
+5. You can simplify your problem using command `tail` which can also print all but a given number of skipped lines from begging `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters. Is it same as before? 
 
 ```bash
-tail -n +2 Pseud_protegens_S5_final.fasta | wc -c
+tail -n +2 hox_bflo.fa | wc -c
 ```
 
 6. **bonus** if you would have an usual `.fasta` you can use `tr` (transform) command to delete all newline characters before you count them using `wc`. Bun in our case it should return very same result. Note, how the commands are nested. You can use as many pipes, as you need.
 
 ```bash
-tail -n +2 Pseud_protegens_S5_final.fasta | tr -d '\n' | wc -c
+tail -n +2 hox_bflo.fa | tr -d '\n' | wc -c
 ```
 
 <sub>
@@ -202,81 +200,17 @@ fastqc –o <fastqc_results> <sequencing_reads>
 
 ## Challenges
 
-1. Extract all header lines of `LM2_L1_R1.fastq` file to separated file. If you do the same on `Pseud_protegens_S5_final.fasta`, how many headers you extract?
+1. Extract all header lines of `LM2_L1_R1.fastq` file to separated file. If you do the same on `hox_bflo.fa`, how many headers you extract?
+
+```{bash echo=FALSE, eval=FALSE}
+awk '/>/{ print }' LM2_L1_R1.fastq > LM2_L1_R1_headers.txt
+wc -l LM2_L1_R1_headers.txt
+```
+
 2. Find a way, how to compute total number of nucleotides in `LM2_L1_R1.fastq`.
 3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against rules of Vital-it.
 
-***
-
-# Install needed software
-
-You will need `R` and `IGV` on your computer and programs `fastqc` and `Kallisto` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
-
-- `R` - is expected to be already installed on your computer.
-- `IGV` - is literally Integrative Genomics Viewer. Follow instructions on the [webpage](https://www.broadinstitute.org/software/igv/download#binary) to install `IGV`.
-- `fastqc` - is computing statistics of ngs reads for quality control, specifics bellow.
-- `Kallisto` - is quantifying abundances of transcripts from RNA-seq data, specifics bellow.
-
-
-### OS X
-
-`Kallisto` - A different ways how to get it can be found on [their webpage](https://pachterlab.github.io/kallisto/starting.html). We will install Kallisto using homebrew - package manager for OS X. Homebrew you can install using following command
-
-```bash
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-
-<sub> command `curl` downloads an installation script from the URL and ruby is a scripting language which will execute downloaded script. (Ruby is some ways similar with Pearl or Python). Analogical command to `curl` on Linux is `wget`.</sub>
-
-than switch to scientific collection and install kallisto
-
-```bash
-brew tap homebrew/science
-brew install kallisto 
-```
-
-`fastqc` is also included in scientific repository of homebrew
-
-```bash
-brew install fastqc
-```
-
-### Linux
-
-`Kallisto` for Linux have to be build from source files, no worries, it sounds harder that it is. Use [building manual](https://pachterlab.github.io/kallisto/source.html) and if you get stack or if you have any question, do not hesitate, ask.
-`fastqc` is written in Java, check if you have installed Java v1.6 or higher. 
-```bash
-java -version
-```
-if is it fine, download fastqc from [Babraham bioinformatics webpage](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/). Unzip the file. Go to the folder, change permissions to make `fastqc` executable and link it to `/usr/bin/`.
-```bash
-chmod u+x fastqc
-sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
-```
-
-<sub>as you might know, if you are using Linux, `sudo` will execute command with administrator rights, therefore the command will ask you for a password to your account. Also, if your account has no administrator rights you wont be able to link the executable to your `/usr/bin/`. In this case you can add path to `fastqc` to your PATH variable as it is described in vital-it section or you can just run it using full path to executive.</sub>
-
-### Vital-it
-
-Log to vital-it. Open file `/home/<your_user_name>/.bashrc` in `vi` or `nano`. Add there lines:
-
-```bash
-module add UHTS/Analysis/kallisto/0.42.4;
-module add UHTS/Quality_control/fastqc/0.11.2;
-```
-
-<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
-
-***
-
-## Install needed R packages
-
-### any OS
-
-Start a R on your computer (NOT on vital-it) and install following packages from bioconductor:
-
-* `edgeR` on [webpage](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
-* `tximport` 
+<sub>There are loads of different solutions, some possibilities are written in the source file (`unix_refresh.Rmd`) of this `.html` document. <sub\>
 
 ***
 

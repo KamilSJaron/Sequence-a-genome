@@ -30,10 +30,10 @@ This tutorial is accompanied with a group of practical exercises, with a series 
 
 Proper experimental design is the key to any gene expression study. This is needed to ensure that questions of interest can be answered and that this can be done accurately, given experimental constraints, such as cost of reagents and availability of mRNA. In the simplest case, the aim is to compare expression levels between two conditions, e.g., controlled versus treated or wild-type versus mutant.
 
-```{r fig.width=2, fig.height=3,echo=FALSE, fig.cap="Figure 1: Simple experimental design, comparison between two conditions (Group 1 and Group 2). [source](http://www.ccmb.med.umich.edu/node/1202)"}
+```{r fig.width=10, fig.height=3.8,echo=FALSE, fig.cap="Figure 1: Simple experimental design, comparison between two conditions (Group 1 and Group 2)."}
 library(png)
 library(grid)
-img <- readPNG("./RNA-seq.png")
+img <- readPNG("./FIGURE1.png")
  grid.raster(img)
 ```
 
@@ -42,16 +42,16 @@ More complicated experimental designs can include additional experimental factor
 
 Figure of complex experimental design example
 
-```{r fig.width=7, fig.height=5,echo=FALSE, fig.cap="Figure 2: Complex design can consist of comparison between several conditions (different tissues, developmental stages...) or their combinations. [source](http://www.nature.com/nprot/journal/v8/n8/full/nprot.2013.084.html)"}
+```{r fig.width=10, fig.height=5,echo=FALSE, fig.cap="Figure 2: Complex design can consist of comparison between several conditions (different tissues, developmental stages...) or their combinations."}
 library(png)
 library(grid)
-img <- readPNG("./RNA-seq_complex.png")
- grid.raster(img)
+img <- readPNG("./complex_experimental_design.png")
+ grid.raster(img, )
 ```
 
 What is the difference between bad experimental design and good experimental design?
 
-```{r fig.width=7, fig.height=5,echo=FALSE, fig.cap="Figure 3: Non balanced design on the left does not allow to estimate technical and biological variation separately. [source](http://www.genetics.org/content/185/2/405.abstract)"}
+```{r fig.width=10, fig.height=5,echo=FALSE, fig.cap="Figure 3: Non balanced design on the left does not allow to estimate technical and biological variation separately. [source](http://www.genetics.org/content/185/2/405.abstract)"}
 library(png)
 library(grid)
 img <- readPNG("./balanced_non_balanced_expermental_design.png")
