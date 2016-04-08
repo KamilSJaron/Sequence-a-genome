@@ -84,7 +84,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 4. Use `pwd` (print working directory) to check your location. Go up one directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
 5. Try command `man <command>` (manual) to show manual page of some commands. What means the `-l` in the `ls` command few line above?
 
-<sub>The command `cd` and correct handling of paths is essential for everything done is Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = directory one lever above current directory, `/` = root directory, `~` = your home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
+<sub>The command `cd` and correct handling of paths is essential for everything done is Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = parent directory, `/` = root directory, `~` = home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
 
 ***
 
@@ -133,6 +133,10 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 2. Use `less <text_file>` to check `hox_bflo.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
 3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
 4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* have sequenced last semester. File `hox_bflo.fa` is a simple fasta file, so number of nucleotides is equal to number of all no newline characters in the file without the first line (header).
+
+<sub>
+An alternative to pipe is the symbol `>`, which serves for redirection of standard output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>`.
+</sub>
 
 ```bash
 head -n 1 hox_bflo.fa | wc -c # returns the number of characters in the first line

@@ -234,7 +234,7 @@ You have working groups, right?
 ```{r set-options, echo=FALSE, cache=FALSE}
 
 out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
-out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_replicate, sep = ''), sep = '/')
+out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'/', sep = ''), sep = '/')
 suppressWarnings(library(knitr))
 kable(out)
 ```
