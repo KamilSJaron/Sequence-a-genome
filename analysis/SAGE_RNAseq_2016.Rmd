@@ -1,0 +1,248 @@
+---
+title: "SAGE_RNAseq_analysis2016"
+author: "Andrea Komljenović"
+date: "April 7, 2016"
+output: html_document
+---
+
+#### 1. DEFINING TRANSCRIPTStoGENES and GENE lengths.
+
+```{r, message=FALSE, warning=FALSE}
+require(rtracklayer)
+require(GenomicRanges)
+require(GenomicFeatures)
+
+gtf <- import.gff("/Users/akomljen/Documents/Lausanne/Sequence a genome/Pseudomonas_protegens/fasta/Pseudomonas_protegens_S5_genome.gtf")
+gtf
+```
+
+```{r}
+### transcripts per gene id
+gene.txs <- tapply(values(gtf)$transcript_id, values(gtf)$gene_id, unique)
+table(sapply(gene.txs, length))
+```
+
+```{r}
+genes <- data.frame(
+        tx_name = unlist(gene.txs),
+        gene_id = rep(names(gene.txs), sapply(gene.txs, length)),
+        stringsAsFactors = FALSE)
+head(genes)
+```
+
+```{r}
+gtf.df <- as.data.frame(gtf)
+gtf.df <- gtf.df[match(genes$tx_name, values(gtf)$transcript_id),]
+#### gene.length for RPKMs
+geneLength <- aggregate(gtf.df$width, list(gtf.df$gene_id), max)
+```
+
+#### 2. SUMMARIZINIG ON GENE-LEVEL and CHECK BETWEEN COUNTS AND LOG2(COUNTS) 
+
+```{r, message=FALSE, warning=FALSE}
+## Load the packages
+# source("http://bioconductor.org/biocLite.R")
+# biocLite("edgeR")
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("tximport")
+
+library(edgeR)
+library(tximport)
+library(readr)
+library(ggplot2)
+library(pheatmap)
+library(reshape2)
+
+setwd("/Users/akomljen/Documents/Lausanne/Sequence a genome/Pseudomonas_protegens/analysis/")
+# gather your count files - ?dir - check what does the function does. files <- dir(pattern=".count$")
+files <- dir(pattern=".tsv$")
+head(files)
+
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+## tximport part
+txi <- tximport(files, type = "kallisto", tx2gene = genes, reader = read_tsv)
+names(txi)
+
+colnames(txi$counts) <- c(paste0("LM",1:4), paste0("SA",1:4), paste0("WL", 1:4), paste0("WR", 1:4))
+rawcounts <- as.data.frame(txi$counts[,grep("^LM|WL", colnames(txi$counts))])
+head(rawcounts)
+```
+
+Histogram on LM1 sample from raw counts data:
+
+```{r, echo = FALSE}
+ggplot(rawcounts, aes(x = LM1)) + geom_histogram(fill = "#525252", binwidth = 2000) + ggtitle("Histogram on Raw Counts for LM 1 sample")
+```
+
+```{r}
+# for students  
+# hist(rawcounts$LM1, breaks = 100)
+```
+
+```{r}
+pseudoCount <- log2(rawcounts + 1)
+```
+
+```{r, echo = FALSE}
+ggplot(pseudoCount, aes(x = LM1)) + ylab(expression(log[2](count + 1))) +
+  geom_histogram(colour = "white", fill = "#525252", binwidth = 0.6) + ggtitle("Histogram on PseudoCounts for LM 1 sample")
+```
+
+```{r}
+### for students
+# hist(pseudoCount$LM1, breaks = 100)
+```
+
+#### 3. RAW DATA FILTERING
+
+```{r}
+# calculate counts per milion
+cpms <- cpm(rawcounts)
+
+### check this still
+# throw weakly expressed ones - keep the features above the 1 count per milion, 
+# have to be expressed in at least one groups 
+keep <- rowSums(cpms > 1) >= 4
+countsFilter <- rawcounts[keep,]
+
+dim(rawcounts)
+dim(countsFilter)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+pseudocountsFilter <- log2(countsFilter+1)
+```
+
+```{r, echo = FALSE}
+dfFilter <- melt(pseudocountsFilter)
+dfFilter <- data.frame(dfFilter, Condition = substr(dfFilter$variable, 1, 2))
+ggplot(dfFilter, aes(x = value, colour = variable, fill = variable)) +
+  geom_histogram(binwidth = 0.6) + facet_wrap(~ Condition) +
+  theme(legend.position = "top") + xlab("pseudocounts") + ggtitle("Filtered Pseudocounts distribution")
+```
+
+```{r}
+### for students
+# hist(pseudocountsFilter$LM1, breaks = 100)
+```
+
+#### 4. DATA QUALITY ON SAMPLES
+
+```{r, echo=FALSE}
+## boxplots per samples
+df.samples <- melt(countsFilter)
+df.samples  <- data.frame(df.samples, Condition = substr(df.samples$variable, 1, 2))
+
+ggplot(df.samples, aes(x = variable, y = value, fill = Condition)) + geom_boxplot(outlier.shape = NA) + xlab("") +
+  ylab(expression(log[2](count + 1))) + scale_fill_manual(values = c("#619CFF", "#F564E3")) +
+  ylim(0,400) + ggtitle("Samples boxplot")
+```
+
+```{r}
+### for students
+# boxplot() and legend()
+```
+
+
+Heatmap of samples:
+
+```{r}
+## heatmap of Spearman correlation
+heatmap.plotting.replicates <- function(x, name){
+  require(reshape2)
+	require(ggplot2)
+	spearman.tissue <- melt(cor(x, method = "spearman"))
+	colnames(spearman.tissue)[3] <- "spear.corr"
+
+	qp <- qplot(x=Var1, y=Var2, data=spearman.tissue, fill=spear.corr, geom="tile", xlab = "", ylab = "") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+    panel.background = element_blank(), axis.text.x = element_text(angle = 45, hjust = 1))+ labs(title = name)
+
+    return(qp)
+}
+
+heatmap.plotting.replicates(pseudocountsFilter, "Heatmap LM-WL samples")
+
+```
+
+
+```{r}
+###### MDS plot of samples
+
+conditions <- c(rep("LM",4), rep("WL",4))
+d <- DGEList(counts = countsFilter, group = conditions)
+d <- calcNormFactors(d) # TMM is default - Estimate normalization factors
+# inspect the relationships between your samples by mds plot
+plotMDS(d, labels = colnames(cpms), col = c("darkgreen","blue")[factor(conditions)], main = "MDS plot on samples")
+```
+
+
+#### 5. DIFFERENTIAL EXPRESSION ANALYSIS
+
+```{r}
+## normalization TMM
+d <- estimateCommonDisp(d) 
+d <- estimateTagwiseDisp(d)
+# test for differential expression
+de <- exactTest(d, pair = c("LM","WL"))
+# gathering differential expressed genes
+tT <- topTags(de, n = nrow(d))
+# tabular form of differentially expressed genes 
+deg.list <- tT$table
+head(deg.list)
+```
+
+```{r}
+## take the row names of the differentially expressed genes that have locus ID
+locus.ids <- rownames(deg.list)
+# select genes that have 1% false discovery rate
+top.deg <- locus.ids[deg.list$FDR < .01]
+### MA plot
+# this produces the MA plot (M - log-fold change, A - log-average expression) with genes that are significantly differentially expressed according to the FDR cutoff (please not that at this point there is NO fold-change cutoff)
+# on the plot, signif. diff. expressed genes are colored red 
+plotSmear(d, de.tags = top.deg, main = "MA plot on differentiall exprs genes")
+```
+
+```{r}
+## For students - VOLCANO PLOT
+plot(deg.list$logFC, -log10(deg.list$PValue), pch=20, main="WL vs LM comparison",xlab = "Log2 Fold Change", xlim=c(-4,4), ylab = "-log10(pvalue)")
+with(subset(deg.list, FDR<.01 & abs(logFC)>2), points(logFC, -log10(PValue), pch=20, col="lightblue"))
+```
+
+
+
+RPKM calculations for gene comparisons:
+
+```{r}
+## rpkm calculations
+rpkm <- function(counts, lengths) {
+  rate <- counts / lengths 
+  return(rate / sum(counts) * 1e9)
+}
+
+## merging the rownames so we have ordered things
+geneLengths.merged <- merge(rawcounts, geneLength, by.x = 1, by.y = 0)
+
+## calculation of RPKMs
+RPKM <- rpkm(rawcounts, geneLengths.merged$x)
+```
+
+
+```{r}
+# taking top 100 deg to do the heatmap
+rpkm.topgenes <- as.matrix(log2(RPKM[row.names(deg.list[1:100,]),]+1))
+```
+
+Heatmap of 100 genes:
+```{r}
+pheatmap(rpkm.topgenes)
+```
+
+
+
+
+
+
