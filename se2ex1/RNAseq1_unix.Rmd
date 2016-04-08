@@ -57,13 +57,13 @@ cp -r /scratch/cluster/monthly/kjaron/sag/genome .
 
 3. Go inside and check the content (`ls`). You should see genome in `.fasta` format, genome annotation in `.gdb` and `.gtf` formats.
 
-All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>/<file_name>.fastq.gz`. The file names are in following format `<condition><biological_replicate>_L<lane>_R1_<technical_replicate>_<unique_key>.fastq.gz`. The `<unique_key>` and `<lane>` are not very important for us now, but the rest of the variables should be clear to you.. 
+All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>.fastq.gz`. 
 
-4. Go to the folder, check the content. How many conditions we have got?
+4. Go to the folder, check the content. How many conditions we have got? To have overview of sizes of all folders and the sum of sizes of their content, you can use `du -h`.
 5. Exploring further, how many biological replicates per condition we have got? 
 
 <sub>
-Genome files are relatively small, therefore it is fine, if every one of you will have a copy of the file. However, the raw fastq reads have 34GB, so do not copy them to your folder, rather use full path `/scratch/cluster/monthly/kjaron/sag/RNAseq/...` to the files, we will share.
+Genome files are relatively small, therefore it is fine, if every one of you will have a copy of the files. However, the raw fastq reads have 34GB, so do not copy them to your folder, rather use full path `/scratch/cluster/monthly/kjaron/sag/RNAseq/...` to the files, we will share.
 </sub>
 
 ***
@@ -250,13 +250,11 @@ fastqc –o <fastqc_results> <sequencing_reads>
 
 You can put several fastq files with empty space between them. Run fastqc on your files.
 
-2. Submit a job, computing a quality control of all technical replicates of the biological replicate of yours.
+2. Submit a job, computing a quality control of the biological replicate of yours.
 
 ```bash
 bsub –n 2 –J <job_name> fastqc –t 2 -o <output_folder> <fastq_files>
 ```
-
-<sub> Wring into command more than one full path would be a pain. This is a perfect place to use wild characters (unix_refresh, tips and tricks). Instead of writing every single fastq file `<fastq_files>`, you can write `<path_to_reads>/*.fastq.gz`. Fastqc is also able to parse compressed files, so you do not have to be worried about `.gz`. </sub>
 
 3. Check `bjobs` to see status of your job and email if you had a problem.
 
