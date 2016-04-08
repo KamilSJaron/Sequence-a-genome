@@ -4,97 +4,85 @@ Today, we will check the quality of the sequencing reads. If it is fine, we will
 
 ## Last time, in Sequence a genome...
 
+### unix reminder
+
 - remote connection and file transfer `ssh`, `scp` to server `<username>@prd.vital-it.ch`
 - basic commands `pwd`, `ls`, `cd`, `cp`, `mv`, `mkdir` and finally `man` if you forgot anything
 - text processing tools `cat`, `head`, `tail`, `less` and `vi`
 - operations on cluster `module add`, `bsub` and `bjobs`
+
+### data exploration
+
+- genome, annotation and extraction of coding regions
 - `fastqc`, `kallisto` and `R` prepared to use (on vital-it or your computer)
+- quality control of reads using `fastqc`
 
 ***
 
-## Organistation of files
+## Indexing the reference
 
-All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>/<file_name>.fastq.gz`. The file names are in following format `<condition><biological_replicate>_L<lane>_R1_<technical_replicate>_<unique_key>.fastq.gz`, but the rest of the variables should be clear to you. The `<unique_key>` and `<lane>` are not very important for us now. 
+(for all groups same)
 
-1. How many conditions we have got?
-2. How many biological replicates per condition we have got? 
+1. Go to your working directory (`/scratch/montly/...`). Make a folder (`mkdir`) for `kallisto` and go there (`cd`)
+2. `kallisto` has a mode for an indexing called `index`. Parameter `-i` specifies an output name for the indexed file. Use `kallisto` to index the file with coding regions.
 
-Log to vital-it, go the folder and find out.
+```bash
+gsub kallisto index -i <indexed_cds.idx> ./<S5_cds.fasta>
+```
+
+<sub>
+<span style="color:red">some explanation of indexing??</span>
+</sub>
 
 ***
+3. check if you have a `.idx` file present in directory.
 
-## Quality control
+## Starting a mapping
 
-You have working groups, right? 
+How was the library prep going? What was the average size of fragments in libraries? Its standard deviation? These informations are used by kallisto...
 
 ```{r set-options, echo=FALSE, cache=FALSE}
 
 out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
-out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_replicate, sep = ''), sep = '/')
+out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'/', sep = ''), sep = '/')
+out$mean <- 350
+out$sd <- 60
 suppressWarnings(library(knitr))
 kable(out)
 ```
 
-0. Log to Vital-it
-1. Go to your working folder (`/scrarch/cluster/monthly/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
-2. Run fastqc. You can put several fastq files with empty space between them.
+Now, we want to map the RNAseq reads of each biological replicate to indexed coding regions, we also want to save pseudoalignment in the `.bam` format for visualisation (IGV). You have to specify: `<mode>` to be `quant`, `-i` indexed file with coding regions, `-o` output folder (will be created if does not exist), `-b` number of bootstraps, the type of reads `--single` ( = single end reads), `-l` mean fragment size in library, `-s` standard deviation of fragment sizes in library, `--pseudobam` is parameter specifiing that a pseudoaligment should be created and printed on standard output and finally all input files. 
 
 ```bash
-bsub –n 2 –J <job_name> fastqc –t 2 -o <output_folder> <fastq_files>
+kallisto <mode> -i  <indexed_cds.idx> -o <output_folder> -b <number_of_bootstraps> --single -l <mean> -s <sd> --pseudobam <input_files>
 ```
 
-<sub> Wring into command more than one full path would be a pain. This is a perfect place to use wild characters (unix_refresh, tips and tricks). Instead of writing every single fastq file `<fastq_files>`, you can write `<path_to_reads>/*.fastq.gz`. Fastqc is also able to parse compressed files, so you do not have to be worried about `.gz`. </sub>
+Since we want to capture a `.bam` file and we want it ordered, we pipe it to `samtools`.
 
-<sub> For those, who have following error `-bash: fastqc: command not found`. You probably messed up something last time, when we were preparing `~/.bashrc`. Right now, just execute command `module add UHTS/Quality_control/fastqc/0.11.2`, rerun the `fastqc` job and then ask somebody to fix the problem with the setting of `~/.bashrc`. </sub>
+```bash
+kallisto ... | samtools view -bS - | samtools sort - -o <output.bam>
+```
 
-3. Copy all fastqc results to your computer
-4. Open the files `<fastqc_report>.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality?
+All reads are still saved at `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biorep>/`. You can again use wild character `*` to select all gzipped fasta file in the folder `*.fasta.gz`. So, putting all together gives us
+
+```bash
+gsub kallisto quant -i  <indexed_cds.idx> -o <output_folder> -b 100 --single -l <mean> -s <sd> --pseudobam <input_files> | samtools view -bS - | samtools sort - -o <output.bam>
+```
+
+This will take several minutes.
 
 ***
 
-## Bulding a reference
-
-(for all groups same)
-
-1. Make a folder (`mkdir`) for Kallisto analysis and go there
-2. `kallisto` expect a `.fasta` file with the reference on the input. Extract it from the GenBank file we have generated last semester `/scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gbk` using following script.
+<span style="color:red">Formating bam file for IGV. </span>
 
 ```bash
-python ./Andrea's_magical_script /scratch/cluster/monthly/kjaron/sag/genome/GenDB_Pseudomonas_protegens_S5.gtf > <extracted_transcriptome.fa>
+samtools index <output.bam>
 ```
-
-<sub>
-The symbol `>` serves for redirection of both output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>`.
-</sub>
-
-3. The file `<cds.fa>` also needs to be indexed (prepared for fast access). `kallisto` has a mode for an indexing of the input file called `index`. Parameter `-i` specifies an output name for the indexed file.
-
-```bash
-gsub kallisto index -i <indexed_cds.idx> ./<cds.fa>
-```
-
-<sub>
-some explanation of indexing??
-</sub>
 
 ***
 
-## Starting a mapping
+IGV time - copy a pseudoalignment file (`.bam`), the genome (`.fasta`) and the annotation (`.XXX`) to your computer. Start IGV.
 
-(find what biological sample you have got)
-
-How was the library prep going? What was the average size of fragments? Its standard deviation? These informations are used by kallisto...
-
-```bash
-gsub kallisto quant -i  <indexed_cds.idx> -o <output_folder> -b 100 --single -l <mean> -s <sd> --pseudobam <input_files> | samtools view -Sb - > output.bam
-```
-
-All reads are still saved at `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biorep>/`. You can again use wild character `*` to select all gzipped fasta file in the folder `*.fasta.gz`.
-
-***
-
-```bash
-samtools index output.bam
-```
+<span style="color:red">IGV instructions (Andrea's pictures)</span>
 
 made by Andrea and Kamil
