@@ -1,13 +1,13 @@
 ---
 output: html_document
 ---
-#Unix refreshement
+#Unix refreshment
 
 Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82), [R](http://edu.isb-sib.ch/course/view.php?id=52) and [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
 
-## Syntax of this exersize
+## Syntax of this exercise
 
-* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after `#` symbol.
+* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after the `#` symbol.
 
 ```bash
 ls -h / # list files and directories in -human readable format located at root directory
@@ -78,13 +78,13 @@ cd /scratch/cluster/monthly/mls_2015/<username>
 ls -l
 ```
 
-it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data form the last semester).
+it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester).
 
 3. make a directory
 4. Use `pwd` (print working directory) to check your location. Go up one directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
-5. Try command `man <command>` (manual) to show manual page of some commands. What means the `-l` in the `ls` command few line above?
+5. Try command `man <command>` (manual) to show manual page of some commands. What does the `-l` mean in the `ls` command few lines above?
 
-<sub>The command `cd` and correct handling of paths is essential for everything done is Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = parent directory, `/` = root directory, `~` = home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
+<sub>The command `cd` (change directory) and correct handling of paths is essential for everything done in Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = parent directory, `/` = root directory, `~` = home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
 
 ***
 
@@ -96,11 +96,11 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
 # if you dont provide a new name, the old one will be kept
-cp -r /scratch/cluster/monthly/kjaron/sag/unix_ex . #directories need to be copied using -r
+cp -r /scratch/cluster/monthly/kjaron/sag/unix_ex . #directories need to be copied using -r (stands for recursive)
 ```
 
 3. Go inside and check the content (you should know how, if you don't, scroll up).
-4. Copy file `text_file.txt` in directory `dir_1`. Do you need parameter `-r`? If you not sure, check manual page.
+4. Copy file `text_file.txt` in the directory `dir_1`. Do you need the parameter `-r`? If you are not sure, check manual page.
 5. Go to `dir_1`, rename `text_file.txt` to `<your_new_name>.txt` and move it back to `unix_exec`.
 
 ```bash
@@ -112,7 +112,7 @@ cd ..
 
 6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `dir_1`? 
 
-<sub>Command `mv` (move) moves file to the given path and rename it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path will be different, but `<new_file_name>` wont be provided, the file will be just moved (not renamed).</sub>
+<sub>Command `mv` (move) moves file to the given path and renames it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
 
 7. Remove the copied file.
 
@@ -132,40 +132,40 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
 2. Use `less <text_file>` to check `Pseud_protegens_S5_final.fasta`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
 3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
-4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so number of nucleotides is equal to number of all no newline characters in the file without the first line (header).
+4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* we have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so the number of nucleotides is equal to the number of all characters other than newline in the file without the first line (header).
 
 <sub>
-An alternative to pipe is the symbol `>`, which serves for redirection of standard output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>`.
+An alternative to pipe is the symbol `>`, which serves for redirection of standard output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>` (= concatenate).
 </sub>
 
 ```bash
 head -n 1 Pseud_protegens_S5_final.fasta | wc -c # returns the number of characters in the first line
-wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline character and the number of all characters in the file
+wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline characters and the number of all characters in the file
 ```
 
-So, how big the genome is? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
+So, how big is the genome? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
 
 <sub>
-The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Do not get confused, that amost all softwares are automatically wrapping too long line to make a document more readible. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usuall `.fasta` even we already know, that is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files. 
+The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Do not get confused, amost all softwares are automatically wrapping lines which are too long to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usual `.fasta` even if we already know that is not the case with ours. Also, if our assembly would have several contigs, there should be more header lines in the files. 
 </sub>
 
-5. You can simplify your problem using command `tail` which can also print all but a given number of skipped lines from begging `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters. Is it same as before? 
+5. You can simplify your problem using command `tail` which can also print all but a given number of skipped lines from the beginning `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters. Is it same as before? 
 
 ```bash
 tail -n +2 Pseud_protegens_S5_final.fasta | wc -c
 ```
 
-6. **bonus** if you would have an usual `.fasta` you can use `tr` (transform) command to delete all newline characters before you count them using `wc`. Bun in our case it should return very same result. Note, how the commands are nested. You can use as many pipes, as you need.
+6. **bonus** if you would have an usual `.fasta` you can use `tr` (translate characters) command to delete all newline characters before you count them using `wc`. But in our case it should return the very same result. Note how the commands are nested. You can use as many pipes as you need.
 
 ```bash
 tail -n +2 Pseud_protegens_S5_final.fasta | tr -d '\n' | wc -c
 ```
 
 <sub>
-There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
+There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed` or `grep`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
 </sub>
 
-7. Editing files can be done using editors `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to enter the editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
+7. Editing files can be done using editors like `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to enter the editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
 
 <sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
 
@@ -173,14 +173,14 @@ There are many ways how to read or edit plain text files using command line tool
 
 ## Vital-it
 
-1. You will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have following syntax 
+1. You will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
 
 ```bash
 bsub <bsub_parameters> <command> <command_parameters>
 ```
 
 <sub>
-Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across computing grid. This computer is called front-end. Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
+Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end. Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
 </sub>
 
 2. Programs available on the Vital-it you can loaded using 
@@ -198,7 +198,7 @@ fastqc –o <fastqc_results> <sequencing_reads>
 
 5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `LM2_subset.fastq`.
 6. Check the status of the submitted job
-7. Once it finishes, verify existence of files. Copy those files to your computer (explained at beginning) and check the html file.
+7. Once it finishes, verify the existence of files. Copy those files to your computer (explained at beginning) and check the html file.
 
 ***
 
@@ -212,7 +212,7 @@ wc -l LM2_L1_R1_headers.txt
 ```
 
 2. Find a way, how to compute total number of nucleotides in `LM2_subset.fastq`.
-3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against rules of Vital-it.
+3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against the rules of Vital-it.
 
 <sub>There are loads of different solutions, some possibilities are written in the source file (`unix_refresh.Rmd`) of this `.html` document. <sub\>
 
@@ -221,10 +221,10 @@ wc -l LM2_L1_R1_headers.txt
 ## Tips and tricks
 
 - Command `cd` without any argument changes the working directory to your home. Symbol `~` works the same, it is symbol of home.
-- Press tabulator to call whisperer every time you are writing a path. It is good way how to prevent typos.
-- Arrows up and down allow to browse your command history saved at `~/.bash_history`
+- Press tabulator to call whisperer (autocompletion) every time you are writing a path. It is also handy with long filenames as we can find in genomics (Note that you will have to type all the first letters of the file which are in common with other filenames of same the directory before autocompletion can be achieved by pressing tabulator). It is a good way how to prevent typos.
+- Arrows up and down allows to browse your command history saved at `~/.bash_history`
 - Press `Ctrl+R` for a full text search in the command history
-- Press `Ctrl+C` to stop the running process, useful `cat` something, what you should not...
+- Press `Ctrl+C` to stop the running process, useful if you use `cat` on a huge file to stop seeing text flowing endlessly... Beware to remove result/temporary files created by the program if you use `Ctrl+C` to stop a running program, otherwise there may be conflicts the next time you run the same program. 
 - You can use wild characters `?`, `[]` and `*`, to specify a group of files. `?` stands for any single character, `[XYZ]` one of the specifies characters (XYZ in this case, you can also use numbers), `*` any number of any characters. See examples
 
 ```bash

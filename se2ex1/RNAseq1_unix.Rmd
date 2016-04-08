@@ -6,7 +6,7 @@ output: html_document
 During this semester, we will perform analyses requiring a basic knowledge of bash terminal. If you do not feel, that you are familiar with it, you probably want to check `unix_refresh.html`. Still here? Good, read please following section about syntax which will be common in all sessions we will have this semester.
 
 
-## Syntax of this exersize
+## Syntax of this exercise
 
 * blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after `#` symbol.
 
@@ -25,11 +25,11 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 * Bash commands are meaningful acronyms, the explanation is written after every first occurrence in brackets.
 * Detail explanations will be written in blocks as follows
 
-<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, be read this blocks and if it does not help, ask one of the assistants.</sub>
+<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, please read this blocks and if it does not help, ask one of the assistants.</sub>
 
 ***
 
-## Check your wokring folder
+## Check your working folder
 
 1. connect to Vital-it
 2. go to your home directory `/home/<user_name>` and check the content using `ls` (list segments).
@@ -41,7 +41,7 @@ cd /scratch/cluster/monthly/mls_2015/<username>
 ls -l
 ```
 
-it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data form the last semester).
+it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester).
 
 
 ***
@@ -55,7 +55,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 cp -r /scratch/cluster/monthly/kjaron/sag/genome .
 ```
 
-3. Go inside and check the content (`ls`). You should see genome in `.fasta` format, genome annotation in `.gdb` and `.gtf` formats.
+3. Go inside and check the content (`ls`). You should see genome in `.fasta` format, genome annotation in `.gbk` and `.gtf` formats.
 
 All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>.fastq.gz`. 
 
@@ -63,7 +63,7 @@ All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<con
 5. Exploring further, how many biological replicates per condition we have got? 
 
 <sub>
-Genome files are relatively small, therefore it is fine, if every one of you will have a copy of the files. However, the raw fastq reads have 34GB, so do not copy them to your folder, rather use full path `/scratch/cluster/monthly/kjaron/sag/RNAseq/...` to the files, we will share.
+Genome files are relatively small, therefore it is fine, if every one of you will have a copy of the file in your folder. However, the raw fastq reads are 34GB, so do not copy them to your folder, rather use the full path `/scratch/cluster/monthly/kjaron/sag/RNAseq/...` to the files, we will share.
 </sub>
 
 ***
@@ -72,35 +72,35 @@ Genome files are relatively small, therefore it is fine, if every one of you wil
 
 Some command line tools for text processing:
 
-- Commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and print the beginning, the end of input files, respectively.
-- Program `less <text_file>` will allow to browse text file (of any size). You can use scroll or arrows to browse the file. If you press `q`, you will escape back to terminal. If you want to explore, `less` is very good tool.
-- Command `wc -cwl` (word count) is counting number of characters, words and lines in the input file. You can specify output by parameters.
-- Command `tr` (translate characters) can (not only) delete all occurrences of string.
+- Commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and print the beginning (first n lines), the end of input files (last n lines), respectively.
+- Program `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is very good tool.
+- Command `wc -lwc <text_file>` (word count) is counting number of lines, words and characters in the input file. You can specify output by parameters .
+- Command `tr -d '<string_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given string (Notes: a character is also a string, tr can be used with other parameters for multiple uses).
 
-1. Formats `.fasta` and `.gds` are just formatted plain text formats, so you could use all mentioned command line tools for parsing text. Try it, what is inside of the `.gds`? 
+1. Formats `.fasta` and `.gbk` are just formatted plain text formats, so you could use all mentioned command line tools for parsing text. Try it, what is inside of the `.gbk`? 
 
-2. How many nucleotides are approximately in the genome? File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so number of nucleotides is equal to number of all no newline characters in the file without the first line (header). So, if we ignore the header of the fasta you can just use `wc -c <file>`.
-3. Since, the most of bash command line tools are very simple, you can easily combine them. The output of commands is usually printed to terminal (list of files in case of `ls`, head of a file in case of `head`, etc.). Using symbol `|` you can redirect ("pipe") an output as the input to an another command. We can use a few commands to find out how many nucleotides are precisely in the genome of *Pseudomonas protegens* have sequenced last semester.
+2. How many nucleotides are approximately in the genome? File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so the number of nucleotides is equal to the number of all characters other than newline in the file without the first line (header). So, if we ignore the header of the fasta you can just use `wc -c <file>`.
+3. Since most of bash command line tools are very simple, you can easily combine them. The output of commands is usually printed to terminal (list of files in case of `ls`, head of a file in case of `head`, etc.). Using the symbol `|` you can redirect ("pipe") an output as the input to an another command. We can use a few commands to find out how many nucleotides are precisely in the genome of *Pseudomonas protegens* we have sequenced last semester.
 
-If the argument `-n` of command `tail` is in format `+<first_line_to_print>`, it prints all lines starting by the `<first_line_to_print>`th one, to the end of file. To ensure, that in the file are no newline characters `\n`, we can use `tr -d <file>`, in the end we will use the came command for computing the number of characters.
+If the argument `-n` of command `tail` is in format `+<first_line_to_print>`, it prints all lines starting by the `<first_line_to_print>`th one, to the end of file. To ensure that in the file are no newline characters `\n`, we can use `tr -d <file> '\n'`, in the end we will use the same command for computing the number of characters.
 
 ```bash
 tail -n +2 <file> | tr -d '\n' | wc -c
 ```
 
-So, how big the genome is? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
+So, how big is the genome? Do you remember approximatively the size of the *P. protegens* genome from last semester? Is it consistent with your knowledge?
 
 <sub>
-The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformaticians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole genome is in the second line of the `.fasta` file), you can check this by deleting `| tr -d '\n'` from the command. Note, that almost all software are automatically wrapping too long line to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` can give you a feeling of a usual `.fasta` even we already know, that is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files, so you would have to use different trick to filter nucleotide sequences only..
+The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformaticians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole genome is in the second line of the `.fasta` file), you can check this by deleting `| tr -d '\n'` from the command. Note that almost all software are automatically wrapping too long lines to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` can give you a feeling of a usual `.fasta` even if we already know that is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files, so you would have to use different trick to filter nucleotide sequences only..
 </sub>
 
 <sub>
-There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with `.fasta` and `.fastq` files.
+There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed` or `grep`. In bioinformatics it is also common to use `biopython` or `BioPerl` to work with `.fasta` and `.fastq` files.
 </sub>
 
 ***
 
-Now we know what we have got, so it is a good time to stop typing commands and to start to ask... What are we doing? What do we want to do? What is the meaning of life?
+Now we know what we have, so it is a good time to stop typing commands and to start to ask... What are we doing? What do we want to do? What is the meaning of life?
 
 <span style="color:red">(if there are no formed groups already, form groups)</span>
 
@@ -118,21 +118,21 @@ module add UHTS/Assembler/cufflinks/2.2.1;
 3. use `gffread` from cufflinks to extract coding regions from `.fasta` and `.gtf` files
 
 ```bash
-gffread  -g <S5_genome.fasta> -x <S5_cds.fasta> <S5_annotation.gtf>
+gffread  -g <S5_genome.fasta> -x <S5_cds_output.fasta> <S5_annotation.gtf>
 ```
 
-4. Check the file `<S5_cds.fasta>` using `less` or `head`. Does it look like extracted coding regions? 
-5. How many transcripts we have?
+4. Check the file `<S5_cds_output.fasta>` using `less` or `head`. Does it look like extracted coding regions? 
+5. How many transcripts do we have?
 
 ```bash
-awk '/>/{ print }' <S5_cds.fasta> | wc -l
+awk '/>/{ print }' <S5_cds_output.fasta> | wc -l
 ```
 
 <sub>
-`awk` is scripting language for parsing text files. What is in curly brackets `'{ command }'` is executed on every line. If there is a pattern written in slashes before, the command will be executed only on lines with this pattern. In our case, the command print whole line (`print`) is executed on all lines containing symbol `>`, which represent lines with headers. Counting number of headers will give us a number of cds we extracted.
+`awk` is a scripting language for parsing text files. What is in curly brackets `'{ command }'` is executed on every line. If there is a pattern written in slashes before, the command will be executed only on lines with this pattern. In our case, the command print whole line (`print`) is executed on all lines containing symbol `>`, which represent lines with headers. Counting number of headers will give us a number of cds we extracted.
 </sub>
 
-**bonus** could you extract lengths of all reads? Hint: biopython provides a very simple solution.
+**bonus** could you extract lengths of all reads? Hint: biopython provides a very simple solution (for this first run Python by typing "python" in terminal and enter the commands or, alternatively create a script `script_name.py` containing the appropriate header - usually `#!/usr/bin/env python` - as first line of the script and the commands below. The python script can be launched from the terminal with `python script_name.py`)
 ```{python echo=FALSE, eval=FALSE}
 from Bio import SeqIO 
 
@@ -147,7 +147,7 @@ for seq_record in SeqIO.parse(<cds.fasta>, "fasta"):
 You will need `R` and `IGV` on your computer and programs `fastqc` and `Kallisto` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
 
 - `R` - is expected to be already installed on your computer.
-- `IGV` - is literally Integrative Genomics Viewer. Follow instructions on the [webpage](https://www.broadinstitute.org/software/igv/download#binary) to install `IGV`.
+- `IGV` - stands for Integrative Genomics Viewer. Follow instructions on the [webpage](https://www.broadinstitute.org/software/igv/download#binary) to install `IGV`.
 - `fastqc` - is computing statistics of ngs reads for quality control, specifics bellow.
 - `Kallisto` - is quantifying abundances of transcripts from RNA-seq data, specifics bellow.
 - `samtools`
@@ -178,7 +178,7 @@ brew install fastqc
 
 ### Linux
 
-`Kallisto` for Linux have to be build from source files, no worries, it sounds harder that it is. Use [building manual](https://pachterlab.github.io/kallisto/source.html) and if you get stack or if you have any question, do not hesitate, ask.
+`Kallisto` for Linux have to be build from source files, no worries, it sounds harder than it is. Use [building manual](https://pachterlab.github.io/kallisto/source.html) and if you get stuck or if you have any question, do not hesitate to ask.
 `fastqc` is written in Java, check if you have installed Java v1.6 or higher. 
 ```bash
 java -version
@@ -220,7 +220,7 @@ source /home/<your_user_name>/.bashrc
 
 ### any OS
 
-Start a R on your computer (NOT on vital-it) and install following packages from bioconductor:
+Start a R session on your computer (NOT on vital-it) and install the following packages from bioconductor:
 
 * `edgeR` on [webpage](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
 * `tximport` 
