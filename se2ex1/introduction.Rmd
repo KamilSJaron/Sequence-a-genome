@@ -1,0 +1,141 @@
+---
+title: "Sequence a genome"
+author: "Kamil S Jaroň"
+date: "Spring 2016"
+output: ioslides_presentation
+---
+
+## What have we done last semester?
+
+  - isolated 2 strains of Pseudomonas
+  - sequenced both genomes
+  - anotated genes of interest
+
+## What have we done last semester?
+
+  - isolated 2 strains of Pseudomonas
+  - sequenced both genomes - almost identical genomes
+  - anotated genes of interest - genebank file
+
+## What have we done last semester?
+
+  - isolated 2 strains of Pseudomonas
+  - sequenced both genomes - `.fasta` file
+  - anotated genes of interest - `.gbk` file
+
+## This semester
+
+>- 24 . - 26.02.  : RNA sequencing (done)
+>- 12.04. : **Data exploration**
+>- 19.04. : Mapping reads and quatifying
+>- 21.04. : Downstream analyses
+>- 26.04. : Downstream analyses
+>- 03.05. : Analysis of annotated genes
+>- 10.05. : Analysis of annotated genes
+>- 17.05. : Presentations
+
+## Today
+
+- 12.04. : Data exploration
+
+    >- exploration of the data
+    >- overview of experiment
+    >- installation of all needed programs
+    >- forming groups
+    >- quality control of reads
+
+## Unix
+
+is not your enemy!
+
+Just follow the manual and everything is going to be alright.
+
+## Vital-it
+
+A cluster for scientific computing shared between four universities.
+
+![](cluster_cp.png)
+
+## Vital-it
+
+A cluster for scientific computing shared between four universities.
+
+![](cluster_storage.png)
+
+## Syntax of this exercise
+
+* The comment symbol of Bash is `#`, everything after this symbol is ignored
+* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`.
+
+```bash
+ls -h / # list files and directories 
+# in -human readable format 
+# located at root directory
+```
+
+## Syntax of this exercise
+
+* Anything in `< >` you have to replace by meaningful paths, file names or parameters.
+
+```bash
+ssh <username>@prd.vital-it.ch #this will be written in this document
+ssh kjaron@prd.vital-it.ch #this is example, how it can be used
+```
+
+## Syntax of this exercise
+
+* Bash commands are meaningful acronyms, the explanation is written after every first occurrence in brackets.
+* Detail explanations will be written in blocks as follows
+
+<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, please read this blocks and if it does not help, ask one of the assistants.</sub>
+
+## Your turn...
+
+ command         meaning          command    meaning
+---------    ----------------    ---------  ---------
+`ls`            list files         `cp`       copy
+`pwd`        print working path    `mv`       move
+`cd`         change directory      `rm`      remove
+
+## What is done already this semester?
+
+You have...
+
+- isolated RNA under different conditions
+- created libraries, sequenced those libraries
+
+>- How many conditions?
+>- How many biological replicates?
+
+##{}
+
+```{r set-options, echo=FALSE, cache=FALSE}
+
+out <- data.frame(group = paste('#',1:8, sep = ''), 
+                  condition = rep(c('LM','SA'), each = 4), 
+                  bio_repl = rep(c(1:4),2), 
+                  group_ = paste('#',9:16, sep = ''), 
+                  condition_ = rep(c('WL','WR'), each = 4),
+                  bio_repl_ = rep(c(1:4),2))
+suppressWarnings(library(knitr))
+kable(out)
+```
+
+## Experimental design
+
+![](FIGURE1.png)
+
+## Experimental design
+
+![](complex_experimental_design.png)
+
+## Slide with Plot
+
+```{r}
+summary(cars)
+```
+
+```{r, echo=FALSE}
+plot(cars)
+```
+

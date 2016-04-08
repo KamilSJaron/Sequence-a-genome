@@ -101,6 +101,9 @@ The plotMDS is a simple helper function from edgeR that performs the MDS and mak
 
 `## CODE of plotMDS on our samples`
 
+### My genes
+
+list of genes I ve anotated -> list of expressions of those genes.
 
 ***
 

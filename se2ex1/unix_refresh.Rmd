@@ -7,13 +7,13 @@ Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82
 
 ## Syntax of this exercise
 
-* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after the `#` symbol.
+* The comment symbol of Bash is `#`, everything after this symbol is ignored.
+* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`.
 
 ```bash
 ls -h / # list files and directories in -human readable format located at root directory
 ```
 
-* The comment symbol of Bash is `#`, everything after this symbol is ignored 
 * Anything in `< >` you have to replace by meaningful paths, file names or parameters.
 
 ```bash
