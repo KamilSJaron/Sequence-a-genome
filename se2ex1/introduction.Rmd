@@ -9,25 +9,25 @@ output: ioslides_presentation
 
   - isolated 2 strains of Pseudomonas
   - sequenced both genomes
-  - anotated genes of interest
+  - annotated genes of interest
 
 ## What have we done last semester?
 
   - isolated 2 strains of Pseudomonas
   - sequenced both genomes - almost identical genomes
-  - anotated genes of interest - genebank file
+  - annotated genes of interest - genebank file
 
 ## What have we done last semester?
 
   - isolated 2 strains of Pseudomonas
   - sequenced both genomes - `.fasta` file
-  - anotated genes of interest - `.gbk` file
+  - annotated genes of interest - `.gbk` file
 
 ## This semester
 
 >- 24 . - 26.02.  : RNA sequencing (done)
 >- 12.04. : **Data exploration**
->- 19.04. : Mapping reads and quatifying
+>- 19.04. : Mapping reads and quantifying
 >- 21.04. : Downstream analyses
 >- 26.04. : Downstream analyses
 >- 03.05. : Analysis of annotated genes
@@ -41,26 +41,20 @@ output: ioslides_presentation
     >- exploration of the data
     >- overview of experiment
     >- installation of all needed programs
-    >- forming groups
-    >- quality control of reads
+    >- formation of working groups
+    >- quality control
 
 ## Unix
 
 is not your enemy!
 
-Just follow the manual and everything is going to be alright.
+Files on switch (<span style="color:red">adress??</span>):
 
-## Vital-it
+- The manual for this practicals: `RNAseq1_unix.html`
 
-A cluster for scientific computing shared between four universities.
+- The unix basics manual: `unix_refresh.html`
 
-![](cluster_cp.png)
-
-## Vital-it
-
-A cluster for scientific computing shared between four universities.
-
-![](cluster_storage.png)
+- This presentation: `introduction.html`
 
 ## Syntax of this exercise
 
@@ -89,6 +83,87 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 
 <sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, please read this blocks and if it does not help, ask one of the assistants.</sub>
 
+## Vital-it
+
+A cluster for scientific computing shared between four universities.
+
+![](cluster_storage.png)
+
+## Vital-it
+scratch
+
+```
+/scratch/cluster/monthly/ # any files older than month are erased
+/scratch/cluster/weekly/  # any files older than week are erased
+/scratch/cluster/daily/   # any files older than day are erased
+```
+
+No backup
+
+1TB quota per user
+
+## Vital-it
+
+Let try to get there...
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+## Vital-it
+
+Let try to get there...
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+Check your home
+```bash
+cd /home/<username>/
+ls -la
+```
+
+## Vital-it
+
+Let try to get there...
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+Check your scratch
+```bash
+cd /scratch/cluster/monthly/<username>
+ls -la
+```
+
+## Vital-it
+
+Let try to get there...
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+Check your scratch
+```bash
+cd /scratch/cluster/monthly/<username>
+ls -la
+```
+Error? Make your scratch then
+```bash
+mkdir /scratch/cluster/monthly/<username>
+```
+
+## Vital-it
+
+Long story short
+
+`/home/<username>` - scripts, configuration files
+
+`/scratch/cluster/monthly/<username>` - data files, analyses
+
 ## Your turn...
 
  command         meaning          command    meaning
@@ -96,6 +171,15 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 `ls`            list files         `cp`       copy
 `pwd`        print working path    `mv`       move
 `cd`         change directory      `rm`      remove
+`man`           manual             `wc`     word count
+
+## Experimental design
+
+![](FIGURE1.png)
+
+## Experimental design
+
+![](complex_experimental_design.png)
 
 ## What is done already this semester?
 
@@ -106,6 +190,18 @@ You have...
 
 >- How many conditions?
 >- How many biological replicates?
+
+## Our experimental design
+
+ condition      full name             batch
+-----------   ---------------       ---------
+   LM          liquid medium        lane 1
+   SA              sand             lane 1
+   WL           wheat leafs         lane 2
+   WR          wheat roots          lane 2
+
+
+4 biological replicates each
 
 ##{}
 
@@ -121,21 +217,37 @@ suppressWarnings(library(knitr))
 kable(out)
 ```
 
-## Experimental design
+## Quality control
 
-![](FIGURE1.png)
+the first computationaly intensive job we have.
 
-## Experimental design
+## Vital-it
 
-![](complex_experimental_design.png)
+![](cluster_cp.png)
 
-## Slide with Plot
+`prd.vital-it.ch` (the front-end of Vital-it):
 
-```{r}
-summary(cars)
+- directly on front-end: small tasks
+- submit to cluster (anything long or computational intensive)
+
+## Vital-it
+
+to submit a job
+
+```bash
+bsub -<parameters> <command> -<command_parameters>
 ```
 
-```{r, echo=FALSE}
-plot(cars)
+- Never sumbit job from your home.
+
+- Do not allow to job to write to the home.
+
+to get a status of all your active jobs
+```bash
+bjobs
 ```
+
+
+
+
 

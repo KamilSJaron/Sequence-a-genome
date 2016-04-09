@@ -5,7 +5,6 @@ output: html_document
 
 During this semester, we will perform analyses requiring a basic knowledge of bash terminal. If you do not feel, that you are familiar with it, you probably want to check `unix_refresh.html`. Still here? Good, read please following section about syntax which will be common in all sessions we will have this semester.
 
-
 ## Syntax of this exercise
 
 * blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after `#` symbol.
@@ -26,6 +25,47 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 * Detail explanations will be written in blocks as follows
 
 <sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, please read this blocks and if it does not help, ask one of the assistants.</sub>
+
+***
+
+### OS X, Linux users
+
+**connection**
+
+Open terminal and connect to Vital-it using `ssh` (secure shell)
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+**file transfer**
+
+To copy file **to** cluster you have to be in the terminal of your computer, then
+```bash
+scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename> # (scp stands for secure copy)
+```
+
+to copy file **from** the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
+```bash
+scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
+```
+
+***
+
+### Windows users
+
+**connection**
+
+1. Install [WinSCP](http://winscp.net/eng/download.php) and [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+2. First start WinSCP by:
+    -	hostname: prd.vital-it.ch
+    -	username: 
+    -	password:
+3. Then start your Putty entering hostname prd.vital-it.ch
+
+**file transfer**
+
+Transfer the file to your computer by drag and drop from the server side. Every time in the exercise you see `scp` command, it is only for Mac/Linux users, you use WinSCP. In the WinSCP navigate your paths and check your folders. 
+
 
 ***
 
@@ -253,7 +293,7 @@ You can put several fastq files with empty space between them. Run fastqc on you
 2. Submit a job, computing a quality control of the biological replicate of yours.
 
 ```bash
-bsub –n 2 –J <job_name> fastqc –t 2 -o <output_folder> <fastq_files>
+bsub -n 2 -J <job_name> fastqc -t 2 -o <output_folder> <fastq_files>
 ```
 
 3. Check `bjobs` to see status of your job and email if you had a problem.
