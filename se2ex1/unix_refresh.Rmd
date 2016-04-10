@@ -24,7 +24,7 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 * Bash commands are meaningful acronyms, the explanation is written after every first occurrence in brackets.
 * Detail explanations will be written in blocks as follows
 
-<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, be read this blocks and if it does not help, ask one of the assistants.</sub>
+<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, read this blocks and if it does not help, ask one of the assistants.</sub>
 
 ---
 ### OS X, Linux users
@@ -80,8 +80,8 @@ ls -l
 
 it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester).
 
-3. make a directory
-4. Use `pwd` (print working directory) to check your location. Go up one directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
+3. make a new directory 
+4. Use `pwd` (print working directory) to check your location. Go to parent directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
 5. Try command `man <command>` (manual) to show manual page of some commands. What does the `-l` mean in the `ls` command few lines above?
 
 <sub>The command `cd` (change directory) and correct handling of paths is essential for everything done in Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = parent directory, `/` = root directory, `~` = home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
@@ -91,7 +91,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ## Copy, move, rename and remove
 
 1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
-2. copy directory `/scratch/cluster/monthly/kjaron/genome` to your working directory using command `cp` (copy)
+2. copy directory `/scratch/cluster/monthly/kjaron/unix_ex` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
@@ -135,7 +135,7 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* we have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so the number of nucleotides is equal to the number of all characters other than newline in the file without the first line (header).
 
 <sub>
-An alternative to pipe is the symbol `>`, which serves for redirection of standard output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the line, you can use `>>` (= concatenate).
+An alternative to pipe is the symbol `>`, which serves for redirection of standard output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the file, you can use `>>` (= concatenate).
 </sub>
 
 ```bash
@@ -146,7 +146,7 @@ wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline characters
 So, how big is the genome? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
 
 <sub>
-The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Do not get confused, amost all softwares are automatically wrapping lines which are too long to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usual `.fasta` even if we already know that is not the case with ours. Also, if our assembly would have several contigs, there should be more header lines in the files. 
+The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Do not get confused, amost all softwares are automatically wrapping lines which are too long to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usual `.fasta` even if we already know that our fasta is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files. 
 </sub>
 
 5. You can simplify your problem using command `tail` which can also print all but a given number of skipped lines from the beginning `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters. Is it same as before? 
