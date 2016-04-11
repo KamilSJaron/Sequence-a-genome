@@ -60,7 +60,7 @@ Files on switch (myunil > classes > sequence a genome II):
 ## Syntax of this exercise
 
 * The comment symbol of Bash is `#`, everything after this symbol is ignored
-* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`.
+* Blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`.
 
 ```bash
 ls -h / # list files and directories 

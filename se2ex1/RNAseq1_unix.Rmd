@@ -7,7 +7,7 @@ During this semester, we will perform analyses requiring a basic knowledge of ba
 
 ## Syntax of this exercise
 
-* blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after `#` symbol.
+* Blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`. Comments in code are after `#` symbol.
 
 ```bash
 ls -h / # list files and directories in -human readable format located at root directory
@@ -24,7 +24,7 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 * Bash commands are meaningful acronyms, the explanation is written after every first occurrence in brackets.
 * Detail explanations will be written in blocks as follows
 
-<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, please read this blocks and if it does not help, ask one of the assistants.</sub>
+<sub>These explanatory blocks should help you to get oriented in documents of Sequence a Genome class and to give you an idea how to read it. So, every time you feel confused, please read this blocks and if it does not help, ask one of the assistants.</sub>
 
 ***
 
@@ -92,18 +92,18 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 2. copy directory `/scratch/cluster/monthly/kjaron/genome` to your working directory using command `cp` (copy)
 
 ```bash
-cp -r /scratch/cluster/monthly/kjaron/sag/genome .
+cp -r /scratch/cluster/monthly/mls_2015/SAGE/genome .
 ```
 
 3. Go inside and check the content (`ls`). You should see genome in `.fasta` format, genome annotation in `.gbk` and `.gtf` formats.
 
-All RNA-seq files, are saved in `/scratch/cluster/monthly/kjaron/sag/RNAseq/<condition>/<biological_replicate>.fastq.gz`. 
+All RNA-seq files, are saved in `/scratch/cluster/monthly/mls_2015/SAGE/RNAseq/<condition>/<biological_replicate>.fastq.gz`. 
 
 4. Go to the folder, check the content. How many conditions we have got? To have overview of sizes of all folders and the sum of sizes of their content, you can use `du -h`.
 5. Exploring further, how many biological replicates per condition we have got? 
 
 <sub>
-Genome files are relatively small, therefore it is fine, if every one of you will have a copy of the file in your folder. However, the raw fastq reads are 34GB, so do not copy them to your folder, rather use the full path `/scratch/cluster/monthly/kjaron/sag/RNAseq/...` to the files, we will share.
+Genome files are relatively small, therefore it is fine, if every one of you will have a copy of the file in your folder. However, the raw fastq reads are 34GB, so do not copy them to your folder, rather use the full path `/scratch/cluster/monthly/mls_2015/SAGE/RNAseq/...` to the files, we will share.
 </sub>
 
 ***
@@ -113,7 +113,7 @@ Genome files are relatively small, therefore it is fine, if every one of you wil
 Some command line tools for text processing:
 
 - Commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and print the beginning (first n lines), the end of input files (last n lines), respectively.
-- Program `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is very good tool.
+- Command `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is very good tool.
 - Command `wc -lwc <text_file>` (word count) is counting number of newline characters, words and characters in the input file. You can specify output by parameters .
 - Command `tr -d '<string_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given string (Note: a character is also a string).
 
@@ -157,19 +157,19 @@ You have working groups, right?
 ```{r set-options, echo=FALSE, cache=FALSE}
 
 out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
-out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'.fastq.gz', sep = ''), sep = '/')
+out$path_to_reads <- paste('/scratch/cluster/monthly/mls_2015/SAGE/RNAseq',out$con, paste(out$con,out$bio_repl,'.fastq.gz', sep = ''), sep = '/')
 suppressWarnings(library(knitr))
 kable(out)
 ```
 
-1. Log to Vital-it
-2. activate Vital-it module `fastqc`
+1. Log to Vital-it.
+2. Activate Vital-it module `fastqc`.
 
 ```bash
 module add UHTS/Quality_control/fastqc/0.11.2;
 ```
 
-3. Go to your working folder (`/scratch/cluster/monthly/mls_2015/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
+3. Go to your working folder (`/scratch/cluster/monthly/mls_2015/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea).
 
 `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
@@ -230,14 +230,24 @@ awk '/>/{ print }' <output.fasta> | wc -l
 3. Are there any red flags?? Is it a problem?
 
 <sub>
-The `fastqc` is program designed for genomic reads in first place, therefore some red flags are not crucial for us. For instance funky QC content or kmer bias are actually expectable properties of RNA seqeunces. What is important is to have high quality data, no adapter content and not too short reads.
+The `fastqc` is a program designed for genomic reads in first place, therefore some red flags are not crucial for us. For instance funky QC content or kmer bias are actually expectable properties of RNA seqeunces. What is important is to have high quality data, no adapter content and not too short reads.
 <sub\>
 
 ***
 
 ## Adapter trimming and quality filtering
 
-1. Searching for adapters
+1. **Bonus**: Searching for adapters (they are actually known). If you dig into source code of fasqc, or check Illumina website, you can find seqeunces of adapters and usually you find an adapter matching your adapter contamination. Another aproach would be to check kmer frequencies, but this is not that practical for RNAseq. We found that adapter of `LM2.fastq.gz` contains sequence `ATCTCGTATGCCGTCTTCTGCTTG`. To identify whole adapter sequence, you can select fulltext search in some subset of your reads (100000 lines). In the subset you use a fulltext search to find reads containing our adapter sequence, select first one hundred of them and show them using `less`.
+
+```bash
+zcat /scratch/cluster/monthly/mls_2015/SAGE/RNAseq/LM/LM2.fastq.gz | head -n 100000 | grep ATCTCGTATGCCGTCTTCTGCTTG | head -n 100 | less
+```
+
+Command `less` allow you a fulltext search as well. Press `?` and copy-paste there a sequence `ATCTCGTATGCCGTCTTCTGCTTG`, hit `Enter`. Now all `ATCTCGTATGCCGTCTTCTGCTTG` should be highlighted. Can you find a pattern? Do we know whole seqeuence of adapter or is it actually longer?
+
+<sub>
+We will actually cut all possible adapters without specifying which one is in our sequence. Therefore we wont use the output of our little adapter investigaton. 
+<sub\>
 
 2. Activate Vital-it module `trimmomatic`
 ```bash
@@ -250,21 +260,36 @@ bsub -n 8 -M 8388608 -J <job_name> trimmomatic SE -threads 8 <input_reads.fastq.
 ```
 
 <sub>
-sometimes, when the fragment is really small, there can be more consetutive adapters sequenced. Those adapters are not cutted in demultiplexing in the sequencing center. It is up on us, to get rid of them. The most of possible adapters of Illumina RNAseq are in the file `/scratch/cluster/monthly/kjaron/sag/RNAseq/RNAseq_adapters.fa`. `trimmomatic` cat try to identify those sequences in the reads and cut them off if the module `ILLUMINACLIP` is used. You have to specify the file with adapters. Other modules of trimmomatic, `LEADING`, `TRAILING` are cutting givenn number bases from the start and end of read if the quality is bellow some internal treshold. Module `SLIDINGWINDOW` performs a sliding window trimming, cutting once the average quality within the window falls below a threshold. Module `MINLEN` simply discards all reads which are after all that trimming shorter than given number of bases.
+Sometimes, when the fragment is really small, there can be more consecutive adapters sequenced. Those adapters are not cut in demultiplexing in the sequencing centre. It is up on us, to get rid of them. The most of possible adapters of Illumina RNAseq are in the file `/scratch/cluster/monthly/mls_2015/SAGE/RNAseq/RNAseq_adapters.fa`. `trimmomatic` cat try to identify those sequences in the reads and cut them off if the module `ILLUMINACLIP` is used. You have to specify the file with adapters. Other modules of trimmomatic, `LEADING`, `TRAILING` are cutting given number bases from the start and end of read if the quality is below some internal threshold. Module `SLIDINGWINDOW` performs a sliding window trimming, cutting once the average quality within the window falls below a threshold. Module `MINLEN` simply discards all reads which are after all that trimming shorter than given number of bases.
 <sub\>
 
 ***
 
 # Install needed software (homework)
 
-You will need `R` and `IGV` on your computer and programs `fastqc`, `Kallisto` and `samtools` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
+## Compulsory part
+
+You will need `R` and `IGV` on your computer and two R packages `edgeR` and `tximport`.
 
 - `R` - is expected to be already installed on your computer.
 - `IGV` - stands for Integrative Genomics Viewer. Follow instructions on the [webpage](https://www.broadinstitute.org/software/igv/download#binary) to install `IGV`.
+
+Start a R session on your computer (NOT on vital-it) and install the following packages from bioconductor:
+
+* `edgeR` on [webpage](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
+* `tximport` 
+
+<sub>
+If you are not sure how to install bioconductor packages, visit [bioconductor webpage](https://www.bioconductor.org/install/)
+<sub\>
+
+## Optional part
+
+Nobody likes it, but a lot of time of bioinformaticians is consumed by software installation. If you want to try run programs `fastqc`, `Kallisto` and `samtools` on your computer (OS X, Linux) to get training in this not that favourite discipline, install those programs on your computer using following instructions. This software is easily installable for Linux and OS X users, the Windows users have to compute everything on Vital-it or face an extreme challenge.
+
 - `fastqc` - is computing statistics of ngs reads for quality control, specifics bellow.
 - `Kallisto` - is quantifying abundances of transcripts from RNA-seq data, specifics bellow.
-- `samtools`
-
+- `samtools` - set of tools for manipulation with alignment formats `.sam` and `.bam`
 
 ### OS X
 
@@ -274,7 +299,7 @@ You will need `R` and `IGV` on your computer and programs `fastqc`, `Kallisto` a
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-<sub> command `curl` downloads an installation script from the URL and ruby is a scripting language which will execute downloaded script. (Ruby is some ways similar with Pearl or Python). Analogical command to `curl` on Linux is `wget`.</sub>
+<sub> command `curl` downloads an installation script from the URL and ruby is a scripting language which will execute downloaded script. (Ruby is some ways similar to Perl or Python). Analogical command to `curl` on Linux is `wget`.</sub>
 
 than switch to scientific collection and install kallisto
 
@@ -306,15 +331,4 @@ sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
 
 ***
 
-## Install needed R packages
-
-### any OS
-
-Start a R session on your computer (NOT on vital-it) and install the following packages from bioconductor:
-
-* `edgeR` on [webpage](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
-* `tximport` 
-
-***
-
-Credits: made by Andrea and Kamil with kind help of Amina and Olivier. Contact: kamil.jaron@isb-sib.ch
+Credits: made by Andrea and Kamil with kind help of Amina and Olivier. Contact: 376090@mail.muni.cz
