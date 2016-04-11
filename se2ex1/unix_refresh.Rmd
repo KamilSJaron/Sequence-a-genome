@@ -146,7 +146,7 @@ wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline characters
 So, how big is the genome? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
 
 <sub>
-The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole gneome is in the second line of the `.fasta` file). Do not get confused, amost all softwares are automatically wrapping lines which are too long to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usual `.fasta` even if we already know that our fasta is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files. 
+The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole genome is in the second line of the `.fasta` file). Do not get confused, almost all software are automatically wrapping lines which are too long to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usual `.fasta` even if we already know that our fasta is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files. 
 </sub>
 
 5. You can simplify your problem using command `tail` which can also print all but a given number of skipped lines from the beginning `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters. Is it same as before? 
@@ -212,7 +212,26 @@ wc -l LM2_L1_R1_headers.txt
 ```
 
 2. Find a way, how to compute total number of nucleotides in `LM2_subset.fastq`.
+
+```{bash echo=FALSE, eval=FALSE}
+python
+```
+
+```{python echo=FALSE, eval=FALSE}
+from Bio import SeqIO 
+total_number = 0;
+
+for seq_record in SeqIO.parse('LM2_subset.fastq', "fastq"):
+    total_number = total_number + len(seq_record)
+
+print(total_number)
+```
+
 3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against the rules of Vital-it.
+
+```{unix echo=FALSE, eval=FALSE}
+find . -exec touch {} \;
+```
 
 <sub>There are loads of different solutions, some possibilities are written in the source file (`unix_refresh.Rmd`) of this `.html` document. <sub\>
 
@@ -221,7 +240,7 @@ wc -l LM2_L1_R1_headers.txt
 ## Tips and tricks
 
 - Command `cd` without any argument changes the working directory to your home. Symbol `~` works the same, it is symbol of home.
-- Press tabulator to call whisperer (autocompletion) every time you are writing a path. It is also handy with long filenames as we can find in genomics (Note that you will have to type all the first letters of the file which are in common with other filenames of same the directory before autocompletion can be achieved by pressing tabulator). It is a good way how to prevent typos.
+- Press tabulator to call whisperer (autocompletion) every time you are writing a path. It is handy with long filenames as we can find in genomics. Note that you will have to type all the first letters of the file which are in common with other filenames of same the directory before autocompletion can be achieved by pressing tabulator. It is a good way how to prevent typos, because autocompleted path is usually valid.
 - Arrows up and down allows to browse your command history saved at `~/.bash_history`
 - Press `Ctrl+R` for a full text search in the command history
 - Press `Ctrl+C` to stop the running process, useful if you use `cat` on a huge file to stop seeing text flowing endlessly... Beware to remove result/temporary files created by the program if you use `Ctrl+C` to stop a running program, otherwise there may be conflicts the next time you run the same program. 
