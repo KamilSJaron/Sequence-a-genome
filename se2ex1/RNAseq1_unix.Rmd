@@ -144,6 +144,42 @@ Now we know what we have, so it is a good time to stop typing commands and to st
 
 <span style="color:red">(if there are no formed groups already, form groups)</span>
 
+
+***
+
+## submit a quality control job
+
+You have working groups, right? 
+
+```{r set-options, echo=FALSE, cache=FALSE}
+
+out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
+out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'/', sep = ''), sep = '/')
+suppressWarnings(library(knitr))
+kable(out)
+```
+
+0. Log to Vital-it
+1. Go to your working folder (`/scrarch/cluster/monthly/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
+
+`fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
+
+```bash
+fastqc –o <fastqc_results> <sequencing_reads>
+```
+
+You can put several fastq files with empty space between them. Run fastqc on your files.
+
+2. Submit a job, computing a quality control of the biological replicate of yours.
+
+```bash
+bsub -n 2 -J <job_name> fastqc -t 2 -o <output_folder> <fastq_files>
+```
+
+3. Check `bjobs` to see status of your job and email if you had a problem (when job is finished, you will get an email).
+
+<sub> For those, who have following error `-bash: fastqc: command not found`. You probably messed up something last time, when we were preparing `~/.bashrc`. Right now, just execute command `module add UHTS/Quality_control/fastqc/0.11.2`, rerun the `fastqc` job and then ask somebody to fix the problem with the setting of `~/.bashrc`. </sub>
+
 ***
 
 ## Extract cds
@@ -172,17 +208,32 @@ awk '/>/{ print }' <S5_cds_output.fasta> | wc -l
 `awk` is a scripting language for parsing text files. What is in curly brackets `'{ command }'` is executed on every line. If there is a pattern written in slashes before, the command will be executed only on lines with this pattern. In our case, the command print whole line (`print`) is executed on all lines containing symbol `>`, which represent lines with headers. Counting number of headers will give us a number of cds we extracted.
 </sub>
 
-**bonus** could you extract lengths of all reads? Hint: biopython provides a very simple solution (for this first run Python by typing "python" in terminal and enter the commands or, alternatively create a script `script_name.py` containing the appropriate header - usually `#!/usr/bin/env python` - as first line of the script and the commands below. The python script can be launched from the terminal with `python script_name.py`)
-```{python echo=FALSE, eval=FALSE}
-from Bio import SeqIO 
+***
 
-for seq_record in SeqIO.parse(<cds.fasta>, "fasta"):
-    print(len(seq_record))
-```
+## Read a quality control output
+
+1. Once, it will be done, copy all fastqc results to your computer. It will take from 10 to 30 minutes (depens on the size of your biological replicate).
+2. Open the files `<fastqc_report>.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality? Is there any variance in quality or in the number of reads between technical replicates? 
+3. Are there any red flags?? Is it a problem?
 
 ***
 
-# Install needed software
+## Adapter trimming and quality filtering
+
+1. Searching for adapters
+
+2. Load modules to R
+```bash
+module add UHTS/Quality_control/cutadapt/1.8
+module add UHTS/Analysis/trimmomatic/0.33
+```
+
+3. Edit the script `vi sag_trimming_job.sh`, put there. Is the adapter sequence correct?
+4. Submit a trimming job (this will take some hours)
+
+***
+
+# Install needed software (homework)
 
 You will need `R` and `IGV` on your computer and programs `fastqc` and `Kallisto` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
 
@@ -252,7 +303,7 @@ module add UHTS/Analysis/samtools/latest
 source /home/<your_user_name>/.bashrc
 ```
 
-<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
+<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
 
 ***
 
@@ -267,43 +318,4 @@ Start a R session on your computer (NOT on vital-it) and install the following p
 
 ***
 
-## Quality control
-
-You have working groups, right? 
-
-```{r set-options, echo=FALSE, cache=FALSE}
-
-out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
-out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'/', sep = ''), sep = '/')
-suppressWarnings(library(knitr))
-kable(out)
-```
-
-0. Log to Vital-it
-1. Go to your working folder (`/scrarch/cluster/monthly/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
-
-`fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
-
-```bash
-fastqc –o <fastqc_results> <sequencing_reads>
-```
-
-You can put several fastq files with empty space between them. Run fastqc on your files.
-
-2. Submit a job, computing a quality control of the biological replicate of yours.
-
-```bash
-bsub -n 2 -J <job_name> fastqc -t 2 -o <output_folder> <fastq_files>
-```
-
-3. Check `bjobs` to see status of your job and email if you had a problem.
-
-<sub> For those, who have following error `-bash: fastqc: command not found`. You probably messed up something last time, when we were preparing `~/.bashrc`. Right now, just execute command `module add UHTS/Quality_control/fastqc/0.11.2`, rerun the `fastqc` job and then ask somebody to fix the problem with the setting of `~/.bashrc`. </sub>
-
-4. Copy all fastqc results to your computer
-5. Open the files `<fastqc_report>.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality? Is there any variance in quality or in the number of reads between technical replicates? 
-6. Compare your output with biological replicate made other groups.
-
-***
-
-Credits: made by Andrea and Kamil
+Credits: made by Andrea and Kamil, Contact: kamil.jaron@isb-sib.ch
