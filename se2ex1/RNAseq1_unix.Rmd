@@ -114,8 +114,12 @@ Some command line tools for text processing:
 
 - Commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and print the beginning (first n lines), the end of input files (last n lines), respectively.
 - Program `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is very good tool.
-- Command `wc -lwc <text_file>` (word count) is counting number of lines, words and characters in the input file. You can specify output by parameters .
-- Command `tr -d '<string_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given string (Notes: a character is also a string, tr can be used with other parameters for multiple uses).
+- Command `wc -lwc <text_file>` (word count) is counting number of newline characters, words and characters in the input file. You can specify output by parameters .
+- Command `tr -d '<string_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given string (Note: a character is also a string).
+
+<sub>
+The number of lines can differ from the number of newline characters, if the last line of the file is without newline character in the end.
+<sub\>
 
 1. Formats `.fasta` and `.gbk` are just formatted plain text formats, so you could use all mentioned command line tools for parsing text. Try it, what is inside of the `.gbk`? 
 
@@ -140,10 +144,9 @@ There are many ways how to read or edit plain text files using command line tool
 
 ***
 
+## Break!
+
 Now we know what we have, so it is a good time to stop typing commands and to start to ask... What are we doing? What do we want to do? What is the meaning of life?
-
-<span style="color:red">(if there are no formed groups already, form groups)</span>
-
 
 ***
 
@@ -154,18 +157,18 @@ You have working groups, right?
 ```{r set-options, echo=FALSE, cache=FALSE}
 
 out <- data.frame(group = 1:16, condition = rep(c('LM','SA','WL','WR'), each = 4), bio_repl = rep(c(1:4),4))
-out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'/', sep = ''), sep = '/')
+out$path_to_reads <- paste('/scratch/cluster/monthly/kjaron/sag/RNAseq',out$con, paste(out$con,out$bio_repl,'.fastq.gz', sep = ''), sep = '/')
 suppressWarnings(library(knitr))
 kable(out)
 ```
 
 0. Log to Vital-it
-1. Go to your working folder (`/scrarch/cluster/monthly/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
+1. Go to your working folder (`/scratch/cluster/monthly/mls_2015/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
 
 `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
 ```bash
-fastqc –o <fastqc_results> <sequencing_reads>
+fastqc -o <output_folder> <sequencing_reads.fastq.gz>
 ```
 
 You can put several fastq files with empty space between them. Run fastqc on your files.
@@ -173,7 +176,7 @@ You can put several fastq files with empty space between them. Run fastqc on you
 2. Submit a job, computing a quality control of the biological replicate of yours.
 
 ```bash
-bsub -n 2 -J <job_name> fastqc -t 2 -o <output_folder> <fastq_files>
+bsub -n 2 -J <job_name> fastqc -t 2 -o <output_folder> <sequencing_reads.fastq.gz>
 ```
 
 3. Check `bjobs` to see status of your job and email if you had a problem (when job is finished, you will get an email).
@@ -212,7 +215,7 @@ awk '/>/{ print }' <S5_cds_output.fasta> | wc -l
 
 ## Read a quality control output
 
-1. Once, it will be done, copy all fastqc results to your computer. It will take from 10 to 30 minutes (depens on the size of your biological replicate).
+1. Copy all fastqc results to your computer.
 2. Open the files `<fastqc_report>.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality? Is there any variance in quality or in the number of reads between technical replicates? 
 3. Are there any red flags?? Is it a problem?
 
@@ -222,20 +225,21 @@ awk '/>/{ print }' <S5_cds_output.fasta> | wc -l
 
 1. Searching for adapters
 
-2. Load modules to R
+2. Load modules on Vital-it
 ```bash
-module add UHTS/Quality_control/cutadapt/1.8
 module add UHTS/Analysis/trimmomatic/0.33
 ```
 
-3. Edit the script `vi sag_trimming_job.sh`, put there. Is the adapter sequence correct?
-4. Submit a trimming job (this will take some hours)
+3. Submit a trimming job (this will take some hours)
+```bash
+bsub -n 8 -M 8388608 -J <job_name> trimmomatic SE -threads 8 LM2.fastq.gz LM2t.fastq.gz ILLUMINACLIP:<adapters.fasta>:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60
+```
 
 ***
 
 # Install needed software (homework)
 
-You will need `R` and `IGV` on your computer and programs `fastqc` and `Kallisto` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
+You will need `R` and `IGV` on your computer and programs `fastqc`, `Kallisto` and `samtools` prepared to use on Vital-it or on your computer (OS X, Linux). Make your mind if you want to run programs locally or on the cluster and follow one of the guides.
 
 - `R` - is expected to be already installed on your computer.
 - `IGV` - stands for Integrative Genomics Viewer. Follow instructions on the [webpage](https://www.broadinstitute.org/software/igv/download#binary) to install `IGV`.
