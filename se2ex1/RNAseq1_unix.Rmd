@@ -162,8 +162,14 @@ suppressWarnings(library(knitr))
 kable(out)
 ```
 
-0. Log to Vital-it
-1. Go to your working folder (`/scratch/cluster/monthly/mls_2015/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
+1. Log to Vital-it
+2. activate Vital-it module `fastqc`
+
+```bash
+module add UHTS/Quality_control/fastqc/0.11.2;
+```
+
+3. Go to your working folder (`/scratch/cluster/monthly/mls_2015/<username>`) and create an output directory for results of quality control (use meaningful name, for instance `<condition><bio_rep>_qc` could be a good idea)
 
 `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
@@ -173,13 +179,13 @@ fastqc -o <output_folder> <sequencing_reads.fastq.gz>
 
 You can put several fastq files with empty space between them. Run fastqc on your files.
 
-2. Submit a job, computing a quality control of the biological replicate of yours.
+4. Submit a job, computing a quality control of the biological replicate of yours.
 
 ```bash
 bsub -n 2 -J <job_name> fastqc -t 2 -o <output_folder> <sequencing_reads.fastq.gz>
 ```
 
-3. Check `bjobs` to see status of your job and email if you had a problem (when job is finished, you will get an email).
+5. Check `bjobs` to see status of your job and email if you had a problem (when job is finished, you will get an email).
 
 <sub> For those, who have following error `-bash: fastqc: command not found`. You probably messed up something last time, when we were preparing `~/.bashrc`. Right now, just execute command `module add UHTS/Quality_control/fastqc/0.11.2`, rerun the `fastqc` job and then ask somebody to fix the problem with the setting of `~/.bashrc`. </sub>
 
@@ -197,14 +203,18 @@ module add UHTS/Assembler/cufflinks/2.2.1;
 3. use `gffread` from cufflinks to extract coding regions from `.fasta` and `.gtf` files
 
 ```bash
-gffread  -g <S5_genome.fasta> -x <S5_cds_output.fasta> <S5_annotation.gtf>
+gffread  -g <S5_genome.fasta> -x <output.fasta> <S5_annotation.gtf>
 ```
 
-4. Check the file `<S5_cds_output.fasta>` using `less` or `head`. Does it look like extracted coding regions? 
+<sub>
+`<output.fasta>` is just any name you will give to your newly created file with coding regions. Wise idea could be to put into name an organism, strain and cds. The `gffread` will also output the index file, which we wont use.
+<sub\>
+
+4. Check the file `<output.fasta>` using `less` or `head`. Does it look like extracted coding regions? 
 5. How many transcripts do we have?
 
 ```bash
-awk '/>/{ print }' <S5_cds_output.fasta> | wc -l
+awk '/>/{ print }' <output.fasta> | wc -l
 ```
 
 <sub>
@@ -219,21 +229,29 @@ awk '/>/{ print }' <S5_cds_output.fasta> | wc -l
 2. Open the files `<fastqc_report>.html` and check and interpret the different graphs. How many reads do you have? Are the reads single or paired-end? Do all the reads have a good quality? Is there any variance in quality or in the number of reads between technical replicates? 
 3. Are there any red flags?? Is it a problem?
 
+<sub>
+The `fastqc` is program designed for genomic reads in first place, therefore some red flags are not crucial for us. For instance funky QC content or kmer bias are actually expectable properties of RNA seqeunces. What is important is to have high quality data, no adapter content and not too short reads.
+<sub\>
+
 ***
 
 ## Adapter trimming and quality filtering
 
 1. Searching for adapters
 
-2. Load modules on Vital-it
+2. Activate Vital-it module `trimmomatic`
 ```bash
 module add UHTS/Analysis/trimmomatic/0.33
 ```
 
 3. Submit a trimming job (this will take some hours)
 ```bash
-bsub -n 8 -M 8388608 -J <job_name> trimmomatic SE -threads 8 LM2.fastq.gz LM2t.fastq.gz ILLUMINACLIP:<adapters.fasta>:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60
+bsub -n 8 -M 8388608 -J <job_name> trimmomatic SE -threads 8 <input_reads.fastq.gz> <output_trimmed.fastq.gz> ILLUMINACLIP:<adapters.fasta>:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60
 ```
+
+<sub>
+sometimes, when the fragment is really small, there can be more consetutive adapters sequenced. Those adapters are not cutted in demultiplexing in the sequencing center. It is up on us, to get rid of them. The most of possible adapters of Illumina RNAseq are in the file `/scratch/cluster/monthly/kjaron/sag/RNAseq/RNAseq_adapters.fa`. `trimmomatic` cat try to identify those sequences in the reads and cut them off if the module `ILLUMINACLIP` is used. You have to specify the file with adapters. Other modules of trimmomatic, `LEADING`, `TRAILING` are cutting givenn number bases from the start and end of read if the quality is bellow some internal treshold. Module `SLIDINGWINDOW` performs a sliding window trimming, cutting once the average quality within the window falls below a threshold. Module `MINLEN` simply discards all reads which are after all that trimming shorter than given number of bases.
+<sub\>
 
 ***
 
@@ -286,29 +304,6 @@ sudo ln -s /path/to/FastQC/fastqc /usr/local/bin/fastqc
 
 <sub>as you might know, if you are using Linux, `sudo` will execute command with administrator rights, therefore the command will ask you for a password to your account. Also, if your account has no administrator rights you wont be able to link the executable to your `/usr/bin/`. In this case you can add path to `fastqc` to your PATH variable as it is described in vital-it section or you can just run it using full path to executive.</sub>
 
-### Vital-it
-
-1. Log to vital-it. Open file `/home/<your_user_name>/.bashrc` in `vi`. 
-
-`vi /home/<your_user_name>/.bashrc`
-
-2. Type `a` to enter writing mode, then copy to the end of the script these lines:
-
-```
-module add UHTS/Analysis/kallisto/0.42.4;
-module add UHTS/Quality_control/fastqc/0.11.2;
-module add UHTS/Analysis/samtools/latest
-```
-
-3. Press `esc` to escape the writing mode, press `:` to enter command mode, type `wq` (write and quit) and confirm by pressing `enter`.
-4. Activate changes by running
-
-```bash
-source /home/<your_user_name>/.bashrc
-```
-
-<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
-
 ***
 
 ## Install needed R packages
@@ -322,4 +317,4 @@ Start a R session on your computer (NOT on vital-it) and install the following p
 
 ***
 
-Credits: made by Andrea and Kamil, Contact: kamil.jaron@isb-sib.ch
+Credits: made by Andrea and Kamil with kind help of Amina and Olivier. Contact: kamil.jaron@isb-sib.ch

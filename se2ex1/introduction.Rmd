@@ -274,10 +274,6 @@ img <- readPNG("./kallistoRNAseq.png")
 
 I will open one of the reports.
 
-## Quality control evaluation
-
-Is it ok, what we have got?
-
 ## Adapter sequences identified by fastqc
 
 >SmallRNA3pAdapter_1.5\
@@ -294,3 +290,15 @@ CAAGCAGAAGACGGCATACGAGCTCTTCCGATCT
 
 >PEPCRPrimer2.0\
 CAAGCAGAAGACGGCATACGAGATCGGTCTCGGCATTCCTGCTGAACCGCTCTTCCGATCT
+
+## Trimmomatic, your friend in dealing with it
+
+It calls modules with user specified parameters
+
+  >- ILLUMINACLIP: Illumina-specific adapter trimming
+  >- LEADING: Cut bases off the start of a read, if below a threshold quality
+  >- TRAILING: Cut bases off the end of a read, if below a threshold quality
+  >- SLIDINGWINDOW: Perform a sliding window trimming, cutting once the average quality within the window falls below a threshold.
+  >- MINLEN: Drop the read if it is below a specified length
+
+

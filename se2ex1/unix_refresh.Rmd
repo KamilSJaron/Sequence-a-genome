@@ -91,12 +91,12 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ## Copy, move, rename and remove
 
 1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
-2. copy directory `/scratch/cluster/monthly/kjaron/unix_ex` to your working directory using command `cp` (copy)
+2. copy directory `/scratch/cluster/monthly/mls_2015/SAGE/unix_ex` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
 # if you dont provide a new name, the old one will be kept
-cp -r /scratch/cluster/monthly/kjaron/sag/unix_ex . #directories need to be copied using -r (stands for recursive)
+cp -r /scratch/cluster/monthly/mls_2015/SAGE/unix_ex . #directories need to be copied using -r (stands for recursive)
 ```
 
 3. Go inside and check the content (you should know how, if you don't, scroll up).
@@ -131,7 +131,7 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 
 1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
 2. Use `less <text_file>` to check `Pseud_protegens_S5_final.fasta`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
-3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of characters, words and lines in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
+3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of words, newline characters and characters in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
 4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* we have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so the number of nucleotides is equal to the number of all characters other than newline in the file without the first line (header).
 
 <sub>
@@ -193,7 +193,7 @@ module add <field>/<category>/<program>/<version>
 4. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
 ```bash
-fastqc –o <fastqc_results> <sequencing_reads>
+fastqc -o <fastqc_results> <sequencing_reads>
 ```
 
 5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `LM2_subset.fastq`.
@@ -253,6 +253,9 @@ cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from gi
 ```
 
 - Bash script `~/.bashrc` is executed every time you open new window terminal.
+
+<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
+
 - (Linux only) You can make your command prompt colourful by adding following line to `~/.bashrc`
 
 ```bash
