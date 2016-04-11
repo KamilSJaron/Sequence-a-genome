@@ -48,13 +48,14 @@ output: ioslides_presentation
 
 is not your enemy!
 
-Files on switch (<span style="color:red">adress??</span>):
+Files on switch (myunil > classes > sequence a genome II):
 
 - The manual for this practicals: `RNAseq1_unix.html`
 
-- The unix basics manual: `unix_refresh.html`
+- <span style="color:red">The unix basics exercise:</span> `unix_refresh.html`
 
 - This presentation: `introduction.html`
+
 
 ## Syntax of this exercise
 
@@ -230,7 +231,7 @@ the first computationaly intensive job we have.
 - directly on front-end: small tasks
 - submit to cluster (anything long or computational intensive)
 
-## Vital-it
+## Quality control on Vital-it
 
 to submit a job
 
@@ -247,7 +248,49 @@ to get a status of all your active jobs
 bjobs
 ```
 
+## Extract coding regions 
 
+while quality control of your reads is computed...
 
+```{r fig.width=6, fig.height=4,echo=FALSE, fig.cap="Classical RNA-seq pipeline"}
+library(png)
+library(grid)
+img <- readPNG("./classicalRNAseq.png")
+ grid.raster(img)
+```
 
+## Extract coding regions 
 
+...lets extract the coding regions for kallisto.
+
+```{r fig.width=6, fig.height=4,echo=FALSE, fig.cap="Kallisto RNA-seq pipeline"}
+library(png)
+library(grid)
+img <- readPNG("./kallistoRNAseq.png")
+ grid.raster(img)
+```
+
+## Quality control evaluation
+
+I will open one of the reports.
+
+## Quality control evaluation
+
+Is it ok, what we have got?
+
+## Adapter sequences identified by fastqc
+
+>SmallRNA3pAdapter_1.5\
+ATCTCGTATGCCGTCTTCTGCTTG
+
+>PCRPrimerIndex1\
+CAAGCAGAAGACGGCATACGAGATCGTGATGTGACTGGAGTTC
+
+>RNAPCRPrimerIndex47\
+CAAGCAGAAGACGGCATACGAGATCTTCGAGTGACTGGAGTTCCTTGGCACCCGAGAATTCCA
+
+>IlluminaSingleEndAdapter2\
+CAAGCAGAAGACGGCATACGAGCTCTTCCGATCT
+
+>PEPCRPrimer2.0\
+CAAGCAGAAGACGGCATACGAGATCGGTCTCGGCATTCCTGCTGAACCGCTCTTCCGATCT
