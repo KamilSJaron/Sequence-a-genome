@@ -28,11 +28,11 @@ output: ioslides_presentation
 >- 24 . - 26.02.  : RNA sequencing (done)
 >- 12.04. : **Data exploration**
 >- 19.04. : Mapping reads and quantifying
->- 21.04. : Downstream analyses
 >- 26.04. : Downstream analyses
->- 03.05. : Analysis of annotated genes
+>- 03.05. : Downstream analyses
 >- 10.05. : Analysis of annotated genes
->- 17.05. : Presentations
+>- 17.05. : Analysis of annotated genes
+>- 24.05. : Presentations
 
 ## Today
 
@@ -135,7 +135,7 @@ ssh <username>@prd.vital-it.ch
 
 Check your scratch
 ```bash
-cd /scratch/cluster/monthly/<username>
+cd /scratch/cluster/monthly/mls_2015/<username>
 ls -la
 ```
 
@@ -149,12 +149,12 @@ ssh <username>@prd.vital-it.ch
 
 Check your scratch
 ```bash
-cd /scratch/cluster/monthly/<username>
+cd /scratch/cluster/monthly/mls_2015/<username>
 ls -la
 ```
 Error? Make your scratch then
 ```bash
-mkdir /scratch/cluster/monthly/<username>
+mkdir /scratch/cluster/monthly/mls_2015/<username>
 ```
 
 ## Vital-it
@@ -166,6 +166,8 @@ Long story short
 `/scratch/cluster/monthly/<username>` - data files, analyses
 
 ## Your turn...
+
+MyUnil > courses > Sequence a Genome II > RNAseq1_unix.html
 
  command         meaning          command    meaning
 ---------    ----------------    ---------  ---------
@@ -235,7 +237,7 @@ kable(out)
 
 ## Quality control
 
-the first computationaly intensive job we have.
+the first computationally intensive job we have.
 
 ## Vital-it
 
@@ -254,9 +256,9 @@ to submit a job
 bsub -<parameters> <command> -<command_parameters>
 ```
 
-- Never sumbit job from your home.
+- Never submit a job from your home.
 
-- Do not allow to job to write to the home.
+- Do not allow to a job to write to the home.
 
 to get a status of all your active jobs
 ```bash
@@ -265,7 +267,7 @@ bjobs
 
 ## Extract coding regions 
 
-while quality control of your reads is computed...
+while the quality control of your reads is computed...
 
 ```{r fig.width=6, fig.height=4,echo=FALSE, fig.cap="Classical RNA-seq pipeline"}
 library(png)
@@ -306,6 +308,16 @@ CAAGCAGAAGACGGCATACGAGCTCTTCCGATCT
 >PEPCRPrimer2.0\
 CAAGCAGAAGACGGCATACGAGATCGGTCTCGGCATTCCTGCTGAACCGCTCTTCCGATCT
 
+## Adapter sequences - grep trick
+
+```bash
+zcat /scratch/cluster/monthly/mls_2015/SAGE/RNAseq/LM/LM2.fastq.gz | 
+  head -n 100000 | 
+  grep ATCTCGTATGCCGTCTTCTGCTTG | 
+  head -n 100 | 
+  less
+```
+
 ## Trimmomatic, your friend in dealing with adapters
 
 It calls modules with user specified parameters
@@ -317,3 +329,17 @@ It calls modules with user specified parameters
   >- MINLEN: Drop the read if it is below a specified length
 
 ## What do we have to do now?
+
+  >- no hints this time, tell me...
+  >- any ideas???
+  
+  
+## Scheduled for the next week
+
+  >- some RNAseq theory
+  >- mapping & quantifying reads
+  >- visualisation of mapping
+  
+## See you next week
+
+Thanks for your attention!
