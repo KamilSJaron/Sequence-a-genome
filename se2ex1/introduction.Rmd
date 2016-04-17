@@ -7,9 +7,9 @@ output: ioslides_presentation
 
 ## What have we done last semester?
 
-  - isolated 2 strains of Pseudomonas
-  - sequenced both genomes
-  - annotated genes of interest
+  >- isolated 2 strains of Pseudomonas
+  >- sequenced both genomes
+  >- annotated genes of interest
 
 ## What have we done last semester?
 
@@ -38,11 +38,10 @@ output: ioslides_presentation
 
 - 12.04. : Data exploration
 
-    >- exploration of the data
-    >- overview of experiment
-    >- installation of all needed programs
-    >- formation of working groups
-    >- quality control
+    - exploration of the data
+    - overview of experiment
+    - formation of working groups
+    - quality control
 
 ## Unix
 
@@ -52,10 +51,11 @@ Files on switch (myunil > classes > sequence a genome II):
 
 - The manual for this practicals: `RNAseq1_unix.html`
 
+- Theory: `RNAseq_experimental_design.html`
+
 - <span style="color:red">The unix basics exercise:</span> `unix_refresh.html`
 
 - This presentation: `introduction.html`
-
 
 ## Syntax of this exercise
 
@@ -72,7 +72,7 @@ ls -h / # list files and directories
 
 * Anything in `< >` you have to replace by meaningful paths, file names or parameters.
 
-```bash
+```R
 ssh <username>@prd.vital-it.ch #this will be written in this document
 ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 ```
@@ -93,7 +93,7 @@ A cluster for scientific computing shared between four universities.
 ## Vital-it
 scratch
 
-```
+```R
 /scratch/cluster/monthly/ # any files older than month are erased
 /scratch/cluster/weekly/  # any files older than week are erased
 /scratch/cluster/daily/   # any files older than day are erased
@@ -174,6 +174,11 @@ Long story short
 `cd`         change directory      `rm`      remove
 `man`           manual             `wc`     word count
 
+
+## Get prepared for a discussion
+
+Read `RNAseq_experimental_design.html`
+
 ## Experimental design
 
 ![](FIGURE1.png)
@@ -203,6 +208,16 @@ You have...
 
 
 4 biological replicates each
+
+## {}
+
+```{r fig.width=8, fig.height=6,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./SAGE_workflow.png")
+ grid.raster(img)
+```
+
 
 ##{}
 
@@ -291,7 +306,7 @@ CAAGCAGAAGACGGCATACGAGCTCTTCCGATCT
 >PEPCRPrimer2.0\
 CAAGCAGAAGACGGCATACGAGATCGGTCTCGGCATTCCTGCTGAACCGCTCTTCCGATCT
 
-## Trimmomatic, your friend in dealing with it
+## Trimmomatic, your friend in dealing with adapters
 
 It calls modules with user specified parameters
 
@@ -301,4 +316,4 @@ It calls modules with user specified parameters
   >- SLIDINGWINDOW: Perform a sliding window trimming, cutting once the average quality within the window falls below a threshold.
   >- MINLEN: Drop the read if it is below a specified length
 
-
+## What do we have to do now?

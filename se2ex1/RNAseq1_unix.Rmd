@@ -89,7 +89,7 @@ it is probably empty. `scratch/monthly/` is a working place, all files and folde
 ## Get the genome, locate the reads
 
 1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
-2. copy directory `/scratch/cluster/monthly/kjaron/genome` to your working directory using command `cp` (copy)
+2. copy directory `/scratch/cluster/monthly/mls_2015/SAGE/genome` to your working directory using command `cp` (copy)
 
 ```bash
 cp -r /scratch/cluster/monthly/mls_2015/SAGE/genome .
