@@ -115,12 +115,17 @@ This will take some time.
 
 ## Conversion of pseudoaligment for IGV
 
-Now we have a read counts (outputs saved in folders) and the pseudoalignment file. The `.sam` file produced by kallisto is mapping reads relatively to transctipts, what we want is to visualise reads on whole genome. 
+Now we have a read counts (outputs saved in folders) and the pseudoalignment file. The `.sam` file produced by kallisto is mapping reads relatively to transctipts, what we want is to visualise reads on whole genome. Since direct usage of `bsub` with command is not that streightforward with pipes, we will use a script `submit_conversion.sh` to submit a job.
 
-1. Use script `kallisto_sam_convertor.py` written in python 3 to redefine a `.sam` file. The redefined file we want to compress, sort and index, therefore we can pipe the output of the script to `samtools`. 
+1. Copy scipts `kallisto_sam_convertor.py` and `submit_conversion.sh` from `/scratch/cluster/monthly/mls_2015/SAGE/scripts/` to your directory.
+2. Edit `submit_conversion.sh` for your input file, name the output and a job using `vi` or `nano`.
+
+Script `kallisto_sam_convertor.py` redefines a `.sam` file for `IGV` and prints it on standard output. The redefined file we want to compress, sort and index, therefore we can pipe the output of the script to `samtools`. 
+
+3. Submit a job using edited `submit_conversion.sh` script and `bsub` command
 
 ```bash
-bsub -J <job_name> -q priority python3 kallisto_sam_convertor.py <kallisto_out.sam> <annotation.gtf> | samtools view -bS - | samtools sort - -o <output.bam>
+bsub < submit_conversion.sh
 ```
 
 <sub>
@@ -131,7 +136,7 @@ The program distributing jobs across the computational cluster registers several
 
 ## Indexing of bam file
 
-IGV needs to build an index on the `.bam` file. Building an index is not too much computationally inensive, you can run the command directly on `prd` computer.
+IGV needs to build an index on the `.bam` file. Building an index is not too much computationally inensive, you can run the command directly on `prd` computer or use a priority queue.
 
 1. Build an index
 
@@ -148,7 +153,7 @@ samtools index <file.bam>
 - genome (`.fasta`)
 - genome annotation (`.gtf`)
 - pseudoalignment (`.bam`)
-- Index file of pseudoalignment (`.bam.bai`)
+- Index file of the pseudoalignment (`.bam.bai`)
 
 ***
 
@@ -165,7 +170,7 @@ img <- readPNG("./steps_igv_Genomes_CreateGenomeFile.png")
  grid.raster(img)
 ```
 
-4. You should see following screen with loaded genome and annonation
+4. Check if you see following screen with loaded genome and annonation
 
 ```{r fig.width=6, fig.height=4,echo=FALSE}
 library(png)
