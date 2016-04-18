@@ -1,0 +1,208 @@
+---
+title: "Sequence a genome II"
+author: "Kamil S Jaroň"
+date: "Spring 2016"
+output: ioslides_presentation
+subtitle: mapping
+---
+
+## This semester
+
+- 24 . - 26.02.  : RNA sequencing (done)
+- 12.04. : Data exploration
+- 19.04. : **Mapping reads and quantifying**
+- 26.04. : Downstream analyses
+- 03.05. : Downstream analyses
+- 10.05. : Analysis of annotated genes
+- 17.05. : Analysis of annotated genes
+- 24.05. : Presentations
+
+## Today
+
+- 12.04. : Mapping reads and quantifying
+
+    - indexing of cds (.fasta -> .idx)
+    - mapping of reads (.idx and .fastq -> .sam and .tsv)
+    - RNAseq theory
+    - visualisation of mapping (IGV)
+
+## Vital-it reminder
+
+Long story short
+
+`/home/<username>` - scripts, configuration files
+
+`/scratch/cluster/monthly/<username>` - data files, analyses
+
+`prd` - is a computer you are logging to, the interface between you and cluster
+`bsub` - is a command you use to run a task on cluster, not on the `prd` computer
+
+## Organisation of our files
+
+Compute everything in **your** folder. 
+
+When the job is done, move the result to common folders in `/scratch/cluster/monthly/mls_2015/SAGE/...`
+
+>- `RNAseq/` - raw reads (fastq.gz)
+>- `genome/` - genome and annotatation (.fasta, .gtf, .gff)
+>- `RNAseq_trimmed/` - prepared for trimmed reads (.fq.gz)
+>- `scripts/` - all scripts and script templetes
+>- `mapping/` - prepared for mapping files (.bam, .bam.bai)
+>- `read_counts/` - prepared for read counts
+
+## Your turn...
+
+MyUnil > courses > Sequence a Genome II > RNAseq2_mapping.html
+
+## So to keep everything in order...
+
+Check a quality control of reads of yours...
+
+If your trimmed reads are fine, move them to appropriate folder
+
+```bash
+mv <my_trimmed_reads.fastq.gz> \
+/scratch/cluster/monthly/mls_2015/SAGE/RNAseq_trimmed/<condition>/
+```
+
+## packagess of Vital-it
+
+```bash
+module add <package_path>/<package_name>
+```
+
+## Indexing of coding regions
+
+```bash
+bsub -q priority -J <job_name> \
+    kallisto index -i <indexed_cds.idx> <S5_cds.fasta>
+```
+
+- Parameter `-q` of the `bsub` set a queue for your job
+
+- `<indexed_cds.idx>` will be the output
+- `<S5_cds.fasta>` is the file with coding regions we created last week
+
+## Kallisto output
+
+```bash
+kallisto quant -i <indexed_cds.idx> -o <output_folder> -b 100 --single \
+              -l <mean> -s <sd> --pseudobam <input_files> > <output.sam>
+```
+
+`./<output_folder>/`
+
+ - `abundances.h5` is a HDF5 binary file containing run info, abundance estimates, bootstrap estimates, and transcript length information length
+ - `abundances.tsv` is a plain text file of the abundance estimates.
+ - `run_info.json` is a file containing information about the run
+
+## Kallisto output
+
+```bash
+kallisto quant -i <indexed_cds.idx> -o <output_folder> -b 100 \
+  --single -l <mean> -s <sd> --pseudobam <input_files> \
+  > <output.sam>
+```
+
+`./<output.sam>` is a file with pseudoalignment
+
+## Break
+
+...on through to the other side
+
+##{}
+
+```{r fig.width=8, fig.height=6,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./bow_kal_sam_header.png")
+ grid.raster(img)
+```
+
+##{}
+
+```{r fig.width=8, fig.height=6,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./bow_kal_sam_alignment.png")
+ grid.raster(img)
+```
+
+##A script
+
+```bash
+#!/bin/bash
+
+#BSUB -L /bin/bash
+#BSUB -J <job_name>
+#BSUB -q normal
+
+module add UHTS/Analysis/samtools/latest
+
+python3 kallisto_sam_convertor.py <pseudoalignment.sam> \
+  /scratch/.../SAGE/genome/Pseudomonas_protegens_S5_genome.gtf \
+  | samtools view -bS - | samtools sort - -o <output.bam>
+```
+
+##How to edit a script
+
+```bash
+cd /scratch/cluster/monthly/mls_2015/<username>/<kallisto_folder>
+cp ../../SAGE/scripts/* .
+```
+
+```bash
+vim submit_conversion.sh
+```
+
+##Vim - opened file
+
+```{r fig.width=8, fig.height=6,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./vim1.png")
+ grid.raster(img)
+```
+
+##Vim - insert mode
+
+```{r fig.width=8, fig.height=6,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./vim2.png")
+ grid.raster(img)
+```
+
+##Vim - commad mode, quit and write
+
+```{r fig.width=8, fig.height=6,echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("./vim3.png")
+ grid.raster(img)
+```
+
+## How to submit a sript to vital-it
+
+```bash
+bsub < submit_conversion.sh
+```
+
+## IGV
+
+- Find out how to load a data to IGV.
+- Does the mapping have a sense?
+- Can you check a gene you have annotated last semester?
+- Do you see any "expressed" non coding region?
+- Is it technically possible to see a read mapped to non coding region, given the fact, we used kallisto?
+- Why?
+
+## Scheduled for the next week
+
+  >- Quality accessment (yes, again)
+  >- Clustering of sample-to-sample distances
+  >- Differential expression
+  
+## See you next week
+
+Thanks for your participation!
