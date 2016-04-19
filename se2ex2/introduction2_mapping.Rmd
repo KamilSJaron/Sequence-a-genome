@@ -34,8 +34,8 @@ Long story short
 
 `/scratch/cluster/monthly/<username>` - data files, analyses
 
-`prd` - is a computer you are logging to, the interface between you and cluster
-`bsub` - is a command you use to run a task on cluster, not on the `prd` computer
+- `prd` - is a computer you are logging to, the interface between you and cluster
+- `bsub` - is a command you use to run a task on cluster, not on the `prd` computer
 
 ## Organisation of our files
 
@@ -46,7 +46,7 @@ When the job is done, move the result to common folders in `/scratch/cluster/mon
 >- `RNAseq/` - raw reads (fastq.gz)
 >- `genome/` - genome and annotatation (.fasta, .gtf, .gff)
 >- `RNAseq_trimmed/` - prepared for trimmed reads (.fq.gz)
->- `scripts/` - all scripts and script templetes
+>- `scripts/` - all scripts and script templates
 >- `mapping/` - prepared for mapping files (.bam, .bam.bai)
 >- `read_counts/` - prepared for read counts
 
@@ -71,6 +71,10 @@ mv <my_trimmed_reads.fastq.gz> \
 module add <package_path>/<package_name>
 ```
 
+```bash
+module add UHTS/Analysis/kallisto/0.42.4;
+```
+
 ## Indexing of coding regions
 
 ```bash
@@ -86,8 +90,9 @@ bsub -q priority -J <job_name> \
 ## Kallisto output
 
 ```bash
-kallisto quant -i <indexed_cds.idx> -o <output_folder> -b 100 --single \
-              -l <mean> -s <sd> --pseudobam <input_files> > <output.sam>
+kallisto quant -i <indexed_cds.idx> -o <output_folder> -b 100 \
+  --single -l <mean> -s <sd> --pseudobam \
+  <input_files> > <output.sam>
 ```
 
 `./<output_folder>/`
@@ -100,8 +105,8 @@ kallisto quant -i <indexed_cds.idx> -o <output_folder> -b 100 --single \
 
 ```bash
 kallisto quant -i <indexed_cds.idx> -o <output_folder> -b 100 \
-  --single -l <mean> -s <sd> --pseudobam <input_files> \
-  > <output.sam>
+  --single -l <mean> -s <sd> --pseudobam \ 
+  <input_files> > <output.sam>
 ```
 
 `./<output.sam>` is a file with pseudoalignment
@@ -188,6 +193,13 @@ img <- readPNG("./vim3.png")
 bsub < submit_conversion.sh
 ```
 
+## Back to
+
+...future.
+
+ehm, lecture.
+
+
 ## IGV
 
 - Find out how to load a data to IGV.
@@ -199,7 +211,7 @@ bsub < submit_conversion.sh
 
 ## Scheduled for the next week
 
-  >- Quality accessment (yes, again)
+  >- Quality assessment (yes, again)
   >- Clustering of sample-to-sample distances
   >- Differential expression
   

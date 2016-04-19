@@ -25,14 +25,14 @@ Today, we will check the quality of the trimmed reads. If it is fine, we will bu
 Please, keep in mind following:
   
 * do not compute in your `home` folder, but in your `scratch`
-* do not run computationally intensive on the `prd`, but submit those jobs to cluster using `bsub`
+* do not run computationally intensive jobs on the `prd`, but submit those jobs to cluster using `bsub`
 
 ***
   
 ## Fastqc of trimmed reads
   
 1. Have you managed to get rid of those adapters? If no, let us know.
-2. In case of successful trimming, move trimmed reads to apropriate folder
+2. In case of successful trimming, move trimmed reads to appropriate folder
 
 ```bash
 /scratch/cluster/monthly/mls_2015/SAGE/RNAseq_trimmed/<condition>/
@@ -59,10 +59,14 @@ bsub -q priority -J <job_name> kallisto index -i <indexed_cds.idx> <S5_cds.fasta
 ```
 
 \footnotesize
-You can think about indexing as about creating a table of content with is usually saved at the begging of the file. Kallisto wants to have an quick access to the table of content of the coding region sequences. Later today, we will index an alignment format `.bam` for `IGV`. In that case the idex is stored externaly in `.bai` file.
+  The program distributing jobs across the computational cluster registers several queues. The most common queues are priority, normal (default) and long. Jobs in priority queue are excited in shorter time, but they are limited by one hour of running time, which is fine for this conversion which can take about 20 minutes. Normal queue is limited by one day and long queue is limited by 10 days of running time. You can check a list of all queues writing command `bqueues`. Specifics about any queue you can print by `bqueues -l <queue_name>`.
+\normalsize
+
+\footnotesize
+You can think about indexing as about creating a table of content with is usually saved at the begging of the file. Kallisto wants to have an quick access to the table of content of the coding region sequences. Later today, we will index an alignment format `.bam` for `IGV`. In that case the index is stored external in `.bai` file.
 \normalsize
   
-4. Check if you have a `.idx` file present in the directory.
+4. Check if you have a `.idx` file present in the working directory directory.
 
 ***
   
@@ -95,6 +99,9 @@ suppressWarnings(library(knitr))
 kable(out)
 ```
 
+\footnotesize
+The `.fq` stands for `.fastq`. Sometimes you can see, this two letter extension instead of the long `.fastq`. The same fassion occurs in renaming `.fasta` files to `.fa` files. People are lazy to write too many letters. In my case, I just wanted to save some space.
+\normalsize
 
 Now, we want to map the RNAseq reads of each biological replicate to indexed coding regions, we also want to save pseudoalignment in the `.bam` format for visualisation (IGV). You have to specify: `<mode>` to be `quant`, `-i` indexed file with coding regions, `-o` output folder (will be created if does not exist), `-b` number of bootstraps, the type of reads `--single` ( = single end reads), `-l` mean fragment size in library (320), `-s` standard deviation of fragment sizes in library (60).
 
@@ -107,9 +114,9 @@ kallisto <mode> -i  <indexed_cds.idx> -o <output_folder> -b <number_of_bootstrap
 symbol `\` tells bash, that command continues on the next line. This is because pdf lines are not like html lines automatically wrapping.
 \normalsize
 
-Since we want to capture a `.sam` file, we have to specify an option `--pseudobam`. This option cause, that kallisto will print a `.sam` file on standard output, therefore we have to redirect the ourput stream to a `<output.sam>` file. Dont forget to use trimmed reads you have created last time. 
+Since we want to capture a `.sam` file, we have to specify an option `--pseudobam`. This option cause, that kallisto will print a `.sam` file on standard output, therefore we have to redirect the output stream to a `<output.sam>` file. Do not forget to use trimmed reads you have created last time. 
 
-1. Run `kallisto` according all decription above. Putting all together gives us
+1. Run `kallisto` according all description above. Putting all together gives us
 
 ```bash
 bsub -J <job_name> kallisto quant -i  <indexed_cds.idx> -o <output_folder> -b 100 \
@@ -128,27 +135,27 @@ This will take some time.
   
 ## Conversion of pseudoaligment for IGV
   
-Now we have a read counts (outputs saved in folders) and the pseudoalignment file. The `.sam` file produced by kallisto is mapping reads relatively to transctipts, what we want is to visualise reads on whole genome. Since direct usage of `bsub` with command is not that streightforward with pipes, we will use a script `submit_conversion.sh` to submit a job.
+Now we have a read counts (outputs saved in folders) and the pseudoalignment file. The `.sam` file produced by kallisto is mapping reads relatively to transcripts, what we want is to visualise reads on whole genome. Since direct usage of `bsub` with command is not that straightforward with pipes, we will use a script `submit_conversion.sh` to submit a job.
 
-1. Copy scipts `kallisto_sam_convertor.py` and `submit_conversion.sh` to your directory from 
+1. Copy scripts `kallisto_sam_convertor.py` and `submit_conversion.sh` to your directory from 
 
 ```bash
 /scratch/cluster/monthly/mls_2015/SAGE/scripts/
 ```
 
+Script `kallisto_sam_convertor.py` redefines a `.sam` file for `IGV` and prints it on standard output. We want to compress, sort and index the redefined file, therefore we pipe the output of the script to `samtools` - software for manipulation with alignments in `.sam` and `.bam` formats. Submitting jobs with pipes to cluster can get tricky. One way out is to create a script, which will be submitted containing both parameters for cluster (job name, number of requested cores, ...) and the computational task. The template of the script is `submit_conversion.sh`.
+
 2. Edit `submit_conversion.sh` for your input file, name the output and a job using `vi` or `nano`.
-
-Script `kallisto_sam_convertor.py` redefines a `.sam` file for `IGV` and prints it on standard output. The redefined file we want to compress, sort and index, therefore we can pipe the output of the script to `samtools`. 
-
 3. Submit a job using edited `submit_conversion.sh` script and `bsub` command
 
 ```bash
 bsub < submit_conversion.sh
 ```
 
-\footnotesize
-  The program distributing jobs across the computational cluster registers several queues. The most comon queues are priority, normal (default) and long. Jobs in priority queue are excuted in shorter time, but they are limited by one hour of running time, which is fine for this conversion which can take about 20 minutes. Normal queue is limited by one day and long queue is limited by 10 days of running time. You can check a list of all queues writing command `bqueues`. Specifics about any queue you can print by `bqueues -l <queue_name>`.
+\footnotesize 
+Writing a job submission script is a good practise for more reasons. First of all it helps a lot to reproduce computations you have already done. If you find anything suspicious later on, it is always good to keep a track of all your parameter settings and versions of programs you have used. This practise also allows you to chain several computational tasks without submitting every single one of them.
 \normalsize
+
   
 ***
 
@@ -160,7 +167,7 @@ bsub < submit_conversion.sh
   
 ## Indexing of bam file
   
-IGV needs to build an index on the `.bam` file. Building an index is not too much computationally inensive, you can run the command directly on `prd` computer or use a priority queue.
+IGV needs to build an index on the `.bam` file. Building an index is not too much computationally intensive, you can run the command directly on `prd` computer or use a priority queue.
 
 1. Build an index
 
@@ -194,7 +201,7 @@ img <- readPNG("./steps_igv_Genomes_CreateGenomeFile.png")
 grid.raster(img)
 ```
 
-4. Check if you see following screen with loaded genome and annonation
+4. Check if you see following screen with loaded genome and annotation
 
 ```{r fig.width=6, fig.height=4,echo=FALSE}
 library(png)
@@ -204,7 +211,7 @@ grid.raster(img)
 ```
 
 5. Load your mapped reads: File > Load from File... > select your `.bam` file.
-6. Browse the genome, find your annotaded genes. Are they expressed?
+6. Browse the genome, find your annotated genes. Are they expressed?
 
 ***
   
