@@ -43,7 +43,7 @@ Compute everything in **your** folder.
 
 When the job is done, move the result to common folders in `/scratch/cluster/monthly/mls_2015/SAGE/...`
 
->- `RNAseq/` - raw reads (fastq.gz)
+>- `RNAseq/` - raw reads (.fastq.gz)
 >- `genome/` - genome and annotatation (.fasta, .gtf, .gff)
 >- `RNAseq_trimmed/` - prepared for trimmed reads (.fq.gz)
 >- `scripts/` - all scripts and script templates
@@ -73,6 +73,20 @@ module add <package_path>/<package_name>
 
 ```bash
 module add UHTS/Analysis/kallisto/0.42.4;
+```
+
+## packagess of Vital-it
+
+```bash
+module add <package_path>/<package_name>
+```
+
+```bash
+module add UHTS/Analysis/kallisto/0.42.4;
+```
+
+```bash
+module list
 ```
 
 ## Indexing of coding regions
@@ -202,6 +216,8 @@ ehm, lecture.
 
 ## IGV
 
+MyUnil > courses > Sequence a Genome II > IGV.pdf
+
 - Find out how to load a data to IGV.
 - Does the mapping have a sense?
 - Can you check a gene you have annotated last semester?
@@ -211,10 +227,8 @@ ehm, lecture.
 
 ## Scheduled for the next week
 
-  >- Quality assessment (yes, again)
-  >- Clustering of sample-to-sample distances
-  >- Differential expression
+- Analysis of transcript abundancies in R
   
 ## See you next week
 
-Thanks for your participation!
+Thank you for your participation!
