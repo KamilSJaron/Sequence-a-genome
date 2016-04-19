@@ -7,7 +7,11 @@ se1ex2:
 *   RNAseq1_unix - actual exercise; orientation in data; fastqc
 
 se2ex2:
-*   RNAseq2 - indexing genome, mapping reads, exploring results in IGV
+*   RNAseq2_mapping - indexing genome, mapping reads, exploring results in IGV
+*   RNAseq2_mapping_pdfv.Rmd - source reformated for pdf
+*   introduction2_mapping.Rmd - presentation
+*   kallisto_sam_convertor.py - python script for conversion of the kallisto sam for IGV
+*   submit_conversion.sh - bash script template for conversion pipeline
 
 se2ex3:
 *   RNAseq3 - file with some theory, will be filled with commands as well
