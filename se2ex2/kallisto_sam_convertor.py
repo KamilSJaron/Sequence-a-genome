@@ -37,6 +37,6 @@ with open(sys.argv[1],'r') as samfile:
 			except KeyError:
 				print('Something is wrong here, gene ',samline[2],' is not in the list.')
 				break
-		genome_pos = tr_pos + int(gen_pos)
+		genome_pos = tr_pos + int(gen_pos) - 1
 		print(genome_pos, end="\t")
 		print('\t'.join(samline[4:]), end='')
