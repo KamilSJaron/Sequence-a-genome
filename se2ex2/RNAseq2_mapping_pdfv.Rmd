@@ -119,8 +119,8 @@ Since we want to capture a `.sam` file, we have to specify an option `--pseudoba
 1. Run `kallisto` according all description above. Putting all together gives us
 
 ```bash
-bsub -J <job_name> kallisto quant -i  <indexed_cds.idx> -o <output_folder> -b 100 \
---single -l <mean> -s <sd> --pseudobam <input_files> > <output.sam>
+bsub -J <job_name> 'kallisto quant -i  <indexed_cds.idx> -o <output_folder> -b 100 \
+--single -l <mean> -s <sd> --pseudobam <input_files> > <output.sam>'
 ```
 
 This will take some time.
