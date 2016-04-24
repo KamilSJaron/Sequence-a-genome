@@ -66,6 +66,8 @@ grid.raster(img)
 5. Load your mapped reads: File $\rightarrow$ Load from File... $\rightarrow$ select your `.bam` file.
 6. Browse the genome, find your annotated genes. Are they expressed?
 
+***
+
 \clearpage
 
 ## 1. Reading annotaiton.
@@ -119,6 +121,8 @@ gtf <- aggregate(gtf$width, list(gtf$gene_id), max)
 \textbf{agregate}: Function `aggregate` can apply a functinon (`max` in our case) to subsets given by a `vector` or a `list`.
 \normalsize
 
+***
+
 ## 2. Load data
 
 \footnotesize
@@ -151,11 +155,10 @@ library(GenomicFeatures)
 path_to_abundances <- '../abundances/'
 files <- dir(path_to_abundances, pattern=".tsv$")
 files <- paste(path_to_abundances,files, sep = '')
-head(files)
-
+files
 ```
 
-3. Load function `tximport` from script `tximport.R`. You can download the script from `/scratch/cluster/monthly/mls_2015/SAGE/scripts/tximport.R`. We will use this function to load transcript abundances
+3. Load function `tximport` from script `tximport.R`. You can download the script from \newline `/scratch/cluster/monthly/mls_2015/SAGE/scripts/tximport.R`. We will use this function to load transcript abundances
 
 ```{r, message=FALSE}
 source('../scripts/tximport.R')
@@ -171,10 +174,14 @@ source('../scripts/tximport.R')
 txi <- tximport(files, type = "kallisto", tx2gene = genes, reader = read_tsv)
 names(txi)
 
-colnames(txi$counts) <- substr(files,nchar(path_to_abundances)+1,nchar(path_to_abundances)+3)
-# paste(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4),sep='') #if you would load all 16 files
+# reading names of conditions from filenames
+colnames(txi$counts) <- substr(files,nchar(path_to_abundances)+1,
+                               nchar(path_to_abundances)+3)
+# if you load all 16 files:
+# paste(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4),sep='') 
 ```
 
+***
 
 ## 3. Data transformation
 
@@ -191,11 +198,6 @@ head(rawcounts)
 ggplot(rawcounts, aes(x = WL1)) + geom_histogram(fill = "#525252", binwidth = 2000) + ggtitle("Histogram on Raw Counts for WL 1 sample")
 ```
 
-```{r}
-# for students  
-# hist(rawcounts$LM1, breaks = 100)
-```
-
 3. Transform counts to log scale.
 
 ```{r}
@@ -209,32 +211,46 @@ For data exploration and visualization, it is useful to work with transformed ve
 
 Log base 2 is typically used as it facilitates the conversion back to the original scale: a difference of 1 on the log base 2 scale corresponds to a fold change of 2 on the original count scale. Since count values for a gene can be zero in some conditions (and non-zero in others), we advocates the use of pseudocounts, i.e. transformations of the form
 
-Y = log2(K+1); more generally Y = log2(K + k0), where K represents the count values and k0 is a positive constant.
+$Y = log_2(K+1)$; more generally $Y = log_2(K + k_0)$, where $K$ represents the count values and $k_0$ is a positive constant.
 
 Even more, common statistical methods for exploratory analysis of multidimensional data, especially methods for clustering and ordination (e. g., principal-component analysis and the like), work best for (at least approximately) homoskedastic data; this means that the variance of an observable quantity (i.e., here, the expression strength of a gene) does not depend on the mean. 
 \normalsize
 
-4. Plot a histogram of counts.
+4. Plot a histogram of tranformed counts.
 
 ```{r, echo = FALSE}
 ggplot(pseudoCount, aes(x = WL1)) + ylab(expression(log[2](count + 1))) +
   geom_histogram(colour = "white", fill = "#525252", binwidth = 0.6) + ggtitle("Histogram on PseudoCounts for LM 1 sample")
 ```
 
+***
+
+## 4. Raw data filtering
+
+Data quality assessment (QA) and exploration are essential steps of any data analysis. These steps should typically be performed very early in the analysis of a new data set, preceding or in parallel to the normalization step and differential expression testing. 
+Our purpose is the detection of differentially expressed genes, not of experimental errors. In particular, we want to identify and possibly remove samples whose experimental treatment suffered from an abnormality that renders the data points obtained from these particular samples detrimental to our purpose. 
+
+The QA processes run on the raw data might reveal technical issues, but other biases might still be present in your data and the best (only?) way to control for those is visual. For example, one could compare replicates (in which case, biological replicates are best), by: 
+
+-	looking differences in count distribution between samples, 
+-	plotting a scatterplot of replicates, 
+-	sample clustering
+
+In RNA-Seq data, however, variance grows with the mean, with larger variances for larger counts. For example, if one performs PCA directly on a matrix of “normalized” read counts, the result typically depends only on the few most strongly expressed genes because they show the largest absolute differences between samples. A simple strategy to avoid this is to take the logarithm of the “normalized” count values plus a small constant; however, now the genes with low counts tend to dominate the results because, due to the strong “Poisson” noise inherent to small count values, they show the strongest relative differences between samples.
+
+In order to make counts approximately homoskedastic, the packages edgeR offers function to transform the data:
+
+\textcolor{red}{WARNING:} Note that these transformations are provided for applications other than differential testing. For differential testing to operate on raw counts and to use discrete distributions.
+
+1. Calculate counts per milion
+
 ```{r}
-### for students
-# hist(pseudoCount$LM1, breaks = 100)
+cpms <- cpm(rawcounts)
 ```
 
-#### 3. RAW DATA FILTERING
+2. Trash weakly expressed genes - keep the features above the 1 count per milion in at least one groups
 
 ```{r}
-# calculate counts per milion
-cpms <- cpm(rawcounts)
-
-### check this still
-# throw weakly expressed ones - keep the features above the 1 count per milion, 
-# have to be expressed in at least one groups 
 keep <- rowSums(cpms > 1) >= 4
 countsFilter <- rawcounts[keep,]
 
@@ -247,6 +263,8 @@ dim(countsFilter)
 pseudocountsFilter <- log2(countsFilter+1)
 ```
 
+3. Plot histogram of pseudocounts
+
 ```{r, echo = FALSE}
 dfFilter <- melt(pseudocountsFilter)
 dfFilter <- data.frame(dfFilter, Condition = substr(dfFilter$variable, 1, 2))
@@ -255,78 +273,86 @@ ggplot(dfFilter, aes(x = value, colour = variable, fill = variable)) +
   theme(legend.position = "top") + xlab("pseudocounts") + ggtitle("Filtered Pseudocounts distribution")
 ```
 
-```{r}
-### for students
-# hist(pseudocountsFilter$LM1, breaks = 100)
+***
+
+## 5. Data exploration and quality assessment
+
+The boxplot provides an easy way to visualize the distribution of pseoudocounts in each sample. In the boxplot display, a box is formed with sides at the 25-th and 75-th quantiles of the distribution. A line within the box represent median. Whiskers, those lines out of the box, extend out from the box to minimal and maximal value respectively, but at most in the distance of the 1.5x interquartile range. Data points outside of this range are usually called outliers and plotted as individual points.
+
+1. Make boxplots per samples using `boxplot`, `legend` or `ggplot`.
+
+```{r, echo=FALSE}
+df.samples <- melt(countsFilter)
+df.samples  <- data.frame(df.samples, Condition = substr(df.samples$variable, 1, 2))
+
+ggplot(df.samples, aes(x = variable, y = value, fill = Condition)) + 
+  geom_boxplot(outlier.shape = NA) + xlab("") +
+  ylab(expression(log[2](count + 1))) + scale_fill_manual(values = c("#619CFF", "#F564E3")) +
+  ylim(0,400) + ggtitle("Samples boxplot")
 ```
 
-## 4. DATA EXPLORATION AND QUALITY ASSESSMENT (ex3)
+***
+\clearpage
 
-\footnotesize
-Data quality assessment (QA) and exploration are essential steps of any data analysis. These steps should typically be performed very early in the analysis of a new data set, preceding or in parallel to the normalization step and differential expression testing. 
-Our purpose is the detection of differentially expressed genes, not of experimental errors. In particular, we want to identify and possibly remove samples whose experimental treatment suffered from an abnormality that renders the data points obtained from these particular samples detrimental to our purpose. 
+## 6. Clustering of the sample-to-sample distances
 
-The QA processes run on the raw data might reveal technical issues, but other biases might still be present in your data and the best (only?) way to control for those is visual. For example, one could compare replicates (in which case, biological replicates are best), by: 
-
--	looking differences in count distribution between samples, 
--	plotting a scatterplot of replicates, 
--	sample clustering
-\normalsize
-
-In RNA-Seq data, however, variance grows with the mean, with larger variances for larger counts. For example, if one performs PCA directly on a matrix of “normalized” read counts, the result typically depends only on the few most strongly expressed genes because they show the largest absolute differences between samples. A simple strategy to avoid this is to take the logarithm of the “normalized” count values plus a small constant; however, now the genes with low counts tend to dominate the results because, due to the strong “Poisson” noise inherent to small count values, they show the strongest relative differences between samples.
-
-In order to make counts approximately homoskedastic, the packages edgeR offers function to transform the data:
-
-`cpm(..., prior.count = 2, log = TRUE){edgeR}`
-
-WARNING: Note that these transformations are provided for applications other than differential testing. For differential testing to operate on raw counts and to use discrete distributions.
-
-
-### 4.1.1. Boxplots per samples
-The boxplot method provides an easy way to visualize the distribution of pseoudocounts in each sample. In the boxplot display, a box is formed with sides at the 25-th and 75-th percentiles of the distribution. A line is also drawn within the box at the level of the median. Whiskers are also drawn extending beyond each end of the box with points beyond the whiskers typically indicating outliers.
-
-` Code Figure - Boxplots per sample (y-axis -> log2(count+1))`
-
-
-### 4.1.2. MA-plot between samples
-An MA-plot is a plot of log-fold change (M-values, i.e. the log of the ratio of level counts for each gene between two samples) against the log-average (A-values, i.e. the average level counts for each gene across the two samples). 
-The MA-plot is a useful to visualize reproducibility between samples of an experiment. From a MA-plot one can see if normalization is needed. In MA plot, genes with similar expression levels in two samples will appear around the horizontal line y = 0. A lowess fit (in red) is plotted underlying a possible trend in the bias related to the mean expression. Below we show the code to produce a simple MA-plot (e.g. between control 1 and control 2 samples).
-
-`## x - pseudocounts of sample1 , y - pseudocounts of sample2`
-`## M-values M = x - y ## A-values A = (x + y)/2`
-`Figure - plot M vs A`
-
-
-### 4.1.3. Clustering of the sample-to-sample distances
 To explore the similarities and dissimilarities between samples, it is often instructive to look a clustering heatmap of sample-to-sample distance matrix. 
 A heatmap is a two-dimensional, rectangular, coloured grid. It displays data that themselves come in the form of a square matrix:
 
 - the colour of each rectangle is determined by the value of the corresponding entry in the matrix, 
 -	the rows and columns of the matrix are rearranged independently according to some hierarchical clustering method (Euclidean distance is the most used one), so that similar rows and columns are placed next to each other, respectively
 
-`# CODE`
-`Figure - heatmap of sample distances`
+1. Plot a heatmap of Spearman correlations
 
+```{r}
+heatmap.plotting.replicates <- function(x, name){
+  library(reshape2)
+	library(ggplot2)
+	spearman.tissue <- melt(cor(x, method = "spearman"))
+	colnames(spearman.tissue)[3] <- "spear.corr"
 
-### 4.1.4 MDS of samples
+	qp <- qplot(x=Var1, y=Var2, 
+	            data=spearman.tissue, fill=spear.corr, 
+	            geom="tile", xlab = "", ylab = "") + 
+	  theme(panel.grid.major = element_blank(), 
+	        panel.grid.minor = element_blank(), 
+	        panel.background = element_blank(), 
+	        axis.text.x = element_text(angle = 45, hjust = 1)) + 
+	  labs(title = name)
+
+	return(qp)
+}
+
+heatmap.plotting.replicates(pseudocountsFilter, "Heatmap WR-WL samples")
+```
+
+***
+
+## 7. MDS of samples
 The purpose of multidimensional scaling (MDS) is to provide a visual representation of the pattern of proximities (i.e., similarities or distances) among a set of objects. MDS takes a set of similarities and returns a set of points such that the distances between the points are approximately equal to the similarities. The similarities between each pair of samples (columns) is the root-mean-square deviation (Euclidean distance) for the top genes. Distances on the plot can be interpreted as leading log2-fold-change, meaning the typical (root-mean-square) log2-fold-change between the samples for the genes that distinguish those samples. The function plotMDS has an argument gene.selection which, set to "common", chooses as top genes those with the largest root-mean-square deviations between samples.
 
 The plotMDS is a simple helper function from edgeR that performs the MDS and makes the plot
 
-`## CODE of plotMDS on our samples`
+1. Build a MDS plot of samples
 
-### My genes
+```{r}
+conditions <- c(rep("WL",3), rep("WR",3))
+d <- DGEList(counts = countsFilter, group = conditions)
+d <- calcNormFactors(d) # TMM is default - Estimate normalization factors
+# inspect the relationships between your samples by mds plot
+plotMDS(d, labels = colnames(cpms), 
+        col = c("darkgreen","blue")[factor(conditions)], 
+        main = "MDS plot on samples")
+```
 
-list of genes I ve anotated -> list of expressions of those genes.
+## 8. Your genes
+
+**Challenge**
+
+1. make a list of genes you ve anotated
+2. list of expressions of those genes
+3. compare visually those expression under different conditions
 
 ***
 
-
-
-
-
-
-
-
-
-made by Andrea and Kamil
+content by Andrea; typesetting by Kamil
