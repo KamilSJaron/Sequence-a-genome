@@ -4,7 +4,7 @@
 
 #RNA-seq downstream analysis
 
-Today, we will visualise mapped reads in IGV. Then, we load abundances to R, transform counts to more practical units and perform a differential expression analysis.
+Today, we will visualise mapped reads in IGV. Then, we will load abundances to R, transform counts to more practical units and perform a differential expression analysis.
 
 ## Previously in Sequence a genome...
 
@@ -12,7 +12,7 @@ Today, we will visualise mapped reads in IGV. Then, we load abundances to R, tra
   
 - remote connection and file transfer `ssh`, `scp` to server `<username>@prd.vital-it.ch`
 - basic commands `pwd`, `ls`, `cd`, `cp`, `mv`, `mkdir` and finally `man` if you forgot anything
-- text processing tools `cat`, `head`, `tail`, `less` and `vi`
+- text processing tools `cat`, `head`, `tail`, `less` and `vim`
 - operations on cluster `module add`, `bsub` and `bjobs`
 
 **data exploration**
@@ -30,7 +30,7 @@ Today, we will visualise mapped reads in IGV. Then, we load abundances to R, tra
 
 ### Recomended organisation of your local files
 
-Both IGV and R you will run locally, so let me suggest you an organisation of the files, that I will use. If you will use the same, you will have much less work with reusing of the code and also it will simplify problem diagnostics to your assistants.
+Both IGV and R will be run locally. Here, I present you my own file organisation and I strongly suggest you to use the same one. If you do so, you will have much less work with your personal modifications for code reusing, also simplifying the problem diagnostics task for your assistants.
 
 ```
 ./se2ex3/<your_script>
@@ -47,7 +47,7 @@ Both IGV and R you will run locally, so let me suggest you an organisation of th
 
 1. Start IGV.
 2. Create a genome: Genomes $\rightarrow$ Create .genome file.
-3. Fill unique descriptor, name and load the `.fasta` and `gtf` files (see following screenshot).
+3. Fill unique descriptor, name and load the `.fasta` and `gtf` files, according to the following screenshot:
 
 ```{r fig.width=6, fig.height=4,echo=FALSE}
 library(png)
@@ -56,7 +56,7 @@ img <- readPNG("./steps_igv_Genomes_CreateGenomeFile.png")
 grid.raster(img)
 ```
 
-4. Check if you see following screen with loaded genome and annotation
+4. Check if you see following screen with loaded genome and annotation:
 
 ```{r fig.width=6, fig.height=4,echo=FALSE}
 img <- readPNG("./IGV_fasta_and_gtf_loaded.png")
@@ -64,19 +64,24 @@ grid.raster(img)
 ```
 
 5. Load your mapped reads: File $\rightarrow$ Load from File... $\rightarrow$ select your `.bam` file.
+
 6. Browse the genome, find your annotated genes. Are they expressed?
 
 ***
 
 \clearpage
 
-## 1. Reading annotaiton.
+## 1. Reading annotation.
 
 First of all, we need to load information about realtion transcripts to genes and lengths of genes from annotation file.
 
 1. Use `import.gff` function form `rtracklayer` package to load annotation and convert it to `data.frame`
 
 ```{r, message=FALSE, warning=FALSE}
+## Load the packages
+# source("http://bioconductor.org/biocLite.R")
+# biocLite("rtracklayer")
+
 library(rtracklayer)
 
 gtf <- import.gff("../genome/Pseudomonas_protegens_S5_genome.gtf")
@@ -84,10 +89,10 @@ gtf <- as.data.frame(gtf)
 ```
 
 \footnotesize
-Once, the `.gtf` file is loaded, variable `gtf` carries an non-standard R object. We can convert it to `data.frame`, which we are more fimiliar with.
+Once, the `.gtf` file is loaded, the variable `gtf` will carry an non-standard R object. We can convert it to a `data.frame` object, which we are more fimiliar with.
 \normalsize
 
-We are going to need a dictionary of transcripts and gene ids to quantify expression of genes.
+We are going to need a dictionary of transcripts and gene IDs to quantify expression of genes.
 
 2. Create a `data.frame` which will be used as dictionary between transcripts and genes. 
 
@@ -106,10 +111,10 @@ table(table(genes$gene_id))
 ```
 
 \footnotesize
-\textbf{table of table}: `table` transforms a vector to table of counts from the vector. If you apply function `table` to vector `c('A','A','B','C','C','C','D','D')` it returns a vector `c(2,1,3,2)` with names `c('A','B','C','D')`. If you apply function `table` to the returned vector (the vector `c(2,1,3,2)`), it computes counts of counts - the output will be then `c(1,2,1)` with names `c(1,2,3)`. So we see, that in the original vector there was a one unique letter, two letters twice and one letter three times.
+\textbf{table of table}: `table` transforms a vector to table of counts from the vector. If you apply function `table` to vector `c('A','A','B','C','C','C','D','D')` it returns a vector `c(2,1,3,2)` with names `c('A','B','C','D')`. If you apply function `table` to the returned vector (the vector `c(2,1,3,2)`), it computes counts of counts - the output will be then `c(1,2,1)` with names `c(1,2,3)`. So we can see that in the original vector there was one letter represented one time (`'B'`), two letters represented twice (`'A'`, `'D'`) and one letter represented three times (`'C'`).
 \normalsize
 
-We are also going to need to know lengths of genes to compute RPKM.
+We are also going to need to know lengths of genes, before computing RPKM.
 
 4. Compute lengths of all genes as the length of the longest transcript. 
 
@@ -118,7 +123,7 @@ gtf <- aggregate(gtf$width, list(gtf$gene_id), max)
 ```
 
 \footnotesize
-\textbf{agregate}: Function `aggregate` can apply a functinon (`max` in our case) to subsets given by a `vector` or a `list`.
+\textbf{aggregate}: Function `aggregate` can apply a function (`max` in our case) to objects of type `vector` or `list`.
 \normalsize
 
 ***
@@ -133,42 +138,46 @@ The set of gene-wise counts for sample j makes up the expression profile or libr
 
 1. Download abundancies
 
-The windows users have to use WinSCP, but OS X and Linux users can use command `rsync` for downloading shared directories. The advantage of `rsync` is that it does not simply copy, but rather synchronise. So if you folder already contains some files, they wont be downloaded again. If somebody is feeling unconfortible with this feature, he can use `scp` instead.
+Windows users have to use WinSCP, but OS X and Linux users can use command `rsync` for downloading shared directories. The advantage of `rsync` is that it does not simply copy, but rather synchronise. So if you folder already contains some files, they won't be downloaded again. If you are feeling unconfortable with this feature, you can use `scp` instead.
 
 ```bash
 rsync -r <username>@prd.vital-it.ch:/scratch/cluster/monthly/mls_2015/SAGE/abundances .
 ```
 
-2. Load all needed packagess, save all filenames of abundancies to variable `files` using function `dir`. Check in the manual what the function does.
+2. Load all needed packages, save all filenames of abundances to variable `files` using function `dir`. Check in the manual what this function does.
 
 ```{r, message=FALSE, warning=FALSE}
 ## Load the packages
 # source("http://bioconductor.org/biocLite.R")
 # biocLite("edgeR")
-
 library(edgeR)
+# install.packages("readr")
 library(readr)
+# install.packages("ggplot2")
 library(ggplot2)
+# install.packages("pheatmap")
 library(pheatmap)
 library(reshape2)
+# biocLite("GenomicFeatures")
 library(GenomicFeatures)
+
 path_to_abundances <- '../abundances/'
 files <- dir(path_to_abundances, pattern=".tsv$")
 files <- paste(path_to_abundances,files, sep = '')
 files
 ```
 
-3. Load function `tximport` from script `tximport.R`. You can download the script from \newline `/scratch/cluster/monthly/mls_2015/SAGE/scripts/tximport.R`. We will use this function to load transcript abundances
+3. Load the function `tximport` from the script `tximport.R`. You can download the script from \newline `/scratch/cluster/monthly/mls_2015/SAGE/scripts/tximport.R`. We will use this function to load transcript abundances.
 
 ```{r, message=FALSE}
 source('../scripts/tximport.R')
 ```
 
 \footnotesize
-\textbf{tximport}: is a package which is not released for current version of R. If you will try to install package via bioconductor, you probably fail, if you dont have installed non-yet-released version of R-3.3. However, the package is quite simple, therefore we can whole content of package load to R just using `source()` on the download source code of the package.
+\textbf{tximport}: is a package which is not released for the current version of R (R-2.x). If you will try to install package via bioconductor, you will probably fail, unless you have installed the non-yet-released version of R (beta R-3.3). Hopefully, the content of this package is quite simple. Therefore, we can load the content of the package load to R by just using `source()` on the source code of the package.
 \normalsize
 
-4. Import transcript abundancies using function `tximport`. This function automatically recompute transcript abundances to gene abundances using the list you have created earlier. Rename names of columns to condtion and biological replicate...
+4. Import transcript abundances using function `tximport`. This function automatically recomputes transcript abundances to gene abundances using the list you have created earlier. Rename names of columns to condtion and biological replicate.
 
 ```{r, message=FALSE}
 txi <- tximport(files, type = "kallisto", tx2gene = genes, reader = read_tsv)
@@ -209,14 +218,14 @@ Do you have an idea, why there is a +1? What would happed if it was not there?
 \footnotesize
 For data exploration and visualization, it is useful to work with transformed versions of the count data. As the count values distribution is highly skewed, the log2 transformation helps to approximately normalize the distributions.
 
-Log base 2 is typically used as it facilitates the conversion back to the original scale: a difference of 1 on the log base 2 scale corresponds to a fold change of 2 on the original count scale. Since count values for a gene can be zero in some conditions (and non-zero in others), we advocates the use of pseudocounts, i.e. transformations of the form
+Log base 2 is typically used as it facilitates the conversion back to the original scale: a difference of 1 on the log base 2 scale corresponds to a fold change of 2 on the original count scale. Since count values for a gene can be zero in some conditions (and non-zero in others), we advocate the use of pseudocounts, i.e. transformations of the form
 
 $Y = log_2(K+1)$; more generally $Y = log_2(K + k_0)$, where $K$ represents the count values and $k_0$ is a positive constant.
 
-Even more, common statistical methods for exploratory analysis of multidimensional data, especially methods for clustering and ordination (e. g., principal-component analysis and the like), work best for (at least approximately) homoskedastic data; this means that the variance of an observable quantity (i.e., here, the expression strength of a gene) does not depend on the mean. 
+Even more, common statistical methods for exploratory analysis of multidimensional data, especially methods for clustering and ordination (e. g., principal-component analysis and the like), work best for (at least approximately) homoscedastic data; this means that the variance of an observable quantity (i.e., here, the expression strength of a gene) does not depend on the mean. 
 \normalsize
 
-4. Plot a histogram of tranformed counts.
+4. Plot a histogram of transformed counts.
 
 ```{r, echo = FALSE}
 ggplot(pseudoCount, aes(x = WL1)) + ylab(expression(log[2](count + 1))) +
@@ -238,7 +247,7 @@ The QA processes run on the raw data might reveal technical issues, but other bi
 
 In RNA-Seq data, however, variance grows with the mean, with larger variances for larger counts. For example, if one performs PCA directly on a matrix of “normalized” read counts, the result typically depends only on the few most strongly expressed genes because they show the largest absolute differences between samples. A simple strategy to avoid this is to take the logarithm of the “normalized” count values plus a small constant; however, now the genes with low counts tend to dominate the results because, due to the strong “Poisson” noise inherent to small count values, they show the strongest relative differences between samples.
 
-In order to make counts approximately homoskedastic, the packages edgeR offers function to transform the data:
+In order to make counts approximately homoscedastic, the packages edgeR offers function to transform the data:
 
 \textcolor{red}{WARNING:} Note that these transformations are provided for applications other than differential testing. For differential testing to operate on raw counts and to use discrete distributions.
 
@@ -349,9 +358,9 @@ plotMDS(d, labels = colnames(cpms),
 
 **Challenge**
 
-1. make a list of genes you ve anotated
+1. make a list of genes you've annotated
 2. list of expressions of those genes
-3. compare visually those expression under different conditions
+3. visually compare those expression under different conditions
 
 ***
 
