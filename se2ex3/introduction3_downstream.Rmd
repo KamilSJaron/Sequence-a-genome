@@ -1,0 +1,58 @@
+---
+title: "Sequence a genome II"
+author: "Kamil S Jaroň"
+date: "Spring 2016"
+output: ioslides_presentation
+subtitle: Downstream analyses
+---
+
+## This semester
+
+<font color="green"> 
+
+- 24 . - 26.02.  : RNA sequencing (done)
+- 12.04. : Data exploration (done)
+- 19.04. : Mapping reads and quantifying (done)
+
+</font>
+
+- 26.04. : **Visualisation & downstream analyses**
+- 03.05. : Downstream analyses
+- 10.05. : Analysis of annotated genes
+- 17.05. : Analysis of annotated genes
+- 24.05. : Presentations
+
+## Results from last week
+
+Common folders are full of results! Well done, Thank YOU!
+
+- `scripts/` - all scripts and script templates
+- `mapping/` - mapping files for IGV (.bam, .bam.bai)
+- `abundances/` - read counts
+
+You have two possibilities right now. To use this material to create your own `.Rmd` document or just simple `.R` script. 
+
+## Today
+
+- `IGV` - browsing of mapping
+- `R` - downstream analysis
+
+## Your turn...
+
+MyUnil > courses > Sequence a Genome II > RNAseq3_downstream.html
+
+## SPACE FOR SOME MORE EXPLANATION
+
+If we encounter common problem in R, we will modify this slide during class. Presentation online will be updated afterwards.
+
+```
+prepared block of code
+```
+
+## Scheduled for the next week
+
+- More analysis of transcript abundancies in R
+  
+## See you next week
+
+Thank you for your participation!
