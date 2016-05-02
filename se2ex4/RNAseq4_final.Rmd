@@ -316,11 +316,9 @@ What do you see when you compare your conditions?
 
 ***
 
-## 8. DIFFERENTIAL EXPRESSION ANALYSIS
+## 8. DIFFERENTIAL EXPRESSION ANALYSIS OF GENES (gene-level)
 
 Normalization is a process designed to identify and remove systematic technical differences between samples that occur in the data to ensure that technical bias has minimal impact on the results. The most common symptom of the need for normalization is differences in the total number of aligned reads.
-
-*Depending on our data – TMM or upperquartile normalization method, explain here.
 
 0. Normalize your data using TMM method.
 
@@ -335,8 +333,6 @@ Our focus:
 - Based on a count table, we want to detect differentially expressed genes between different conditions. How can we detect genes for which the counts of reads change between conditions more systematically than expected by chance (i.e. in the absence of a biologically interesting difference)?
 - We would like to use statistical testing to decide whether, for a given gene, an observed difference in read counts is significant, that is, whether it is greater than what would be expected just due to natural random variation
 
-(PLACE WHERE TESTING SHOULD IN FEW SENTENCES)
-
 **p-values**: It is a usual convention in biology to use a critical p-value of 0.05 (often called alpha, $\alpha$). This means that the probability of observing data as extreme as this if the null hypothesis is true is 0.05 (5% or 1 in 20); in other words, it indicates that the null hypothesis is unlikely to be true.
 
 In hypothesis tests, researchers bounded the probability of making a type I error by $\alpha$, an “acceptable” risk of type I errors, conventionally set at 0.05. Problems arise, however, when researchers do not perform a single hypothesis test but many of them, in our case one for each gene. Because each test again has a probability of producing a type I error, by performing a large number of hypothesis tests a substantial number of false positives may accumulate. This problem is called the problem of multiple testing. The key goal of multiple testing methods is to control, or at least to quantify, the flood of type I errors that arise when many hypothesis tests are performed simultaneously
@@ -346,7 +342,7 @@ Those that control the false discovery rate (FDR), give by FDR = E(Q).
 
 The FDR looks at the expected proportion of false positives among all of the genes initially identified as being differentially expressed – that is, among all the rejected null hypotheses.
 
-What we are going to look for in this tutorial is the FDR < 0.05.
+What we are going to look for in this tutorial is the **FDR of 1% or 5%**. This values you can be easily changed according to your needs.
 
 Once negative binomial models are fitted and dispersion estimates are obtained for each gene (as explained in the lecture  - “Theory of RNAseq”), it is straight-forward to look for differentially expressed genes. To contrast two conditions, e.g., to see whether there is differential expression between conditions “control” and “treated”, we simply call the function exactTest in edgeR package. 
 
@@ -398,49 +394,73 @@ We can identify genes (points) in the two regions of interest on the plot: point
 
 ***
 
-## 8b. Differential expression of transcripts
+## 8b. Differential expression of transcripts (transcript-level)
+
+Many transcriptomic studies aim to compare either abundance levels (gene-levels) or transcriptome composition (transcript-levels) between given conditions, in our case wheat or non wheat with different type of medias. Please note that in first part of the exercise, we have done analysis on the gene-level (tximport function). However, since annotation of our genome is incomplete and there is no consensus regarding the optimal resolution  or method for quantification and downstream analysis of transcriptomic output, we are going to observe how differentially expressed are the transcripts.
 
 ```{r}
 conditions <- paste0(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4))
 
-# read kallisto files again to get counts of transcripts
-tr_counts <- readDGE(files, 
+# read kallisto files again 
+transcripts <- readDGE(files, 
                      columns = c(1,4), 
                      group = rep(c('LM','SA','WL','WR'), each = 4), 
-                     labels = conditions)$counts
+                     labels = conditions)
 
+# have a look at your data
+transcripts
+# get counts of transcripts
+tr_counts <- transcripts$counts
+# calculate counts per milion
 tr_cpms <- cpm(tr_counts)
 
 keep <- rowSums(tr_cpms > 1) >= 4
 tr_counts_clean <- tr_counts[keep,]
 
-## mabye stronger filtering? Like this is filter overall one value...
+## check how many transcripts did you filter out
 sum(!keep)
 
-d <- DGEList(counts = tr_counts_clean, 
+
+# form edgeR-friendly list for differential expression analysis
+dt <- DGEList(counts = tr_counts_clean, 
              group = rep(c('LM','SA','WL','WR'), each = 4))
 
-d <- calcNormFactors(d)
-plotMDS(d, 
+# normalize the libraries with TMM
+dt <- calcNormFactors(dt)
+
+# plot your conditions
+plotMDS(dt, 
         labels = colnames(tr_cpms), 
         col = c(rep("darkgreen",4),rep("blue",4), rep("red",4), rep("orange",4)))
 
-d <- estimateCommonDisp(d)
-d <- estimateTagwiseDisp(d)
+# do the normalization according to the dispersions of the genes
+dt <- estimateCommonDisp(dt)
+dt <- estimateTagwiseDisp(dt)
 
 ## here you have to choose two conditions to test
-de <- exactTest(d, pair = c("WL","WR"))
+de.tr <- exactTest(dt, pair = c("WL","WR"))
 
-## for every gene you have performed a test, check histogram of p-values of all tests. WHat distribution you expect you would observe a differential expression in same biological condition? Do you remember what was FPR?
-hist(de$table$PValue, breaks = 50, xlab = 'p-value (without correction)')
-
-## topTags is function for multiple testing correction, sorting and filtering of diff. expr. transcripts
-## argument n filters top n diff. exp. genes, p.value will set a treshold of corrected p-value (FPR < value), since we are just curous
-tT <- topTags(de, n = nrow(d), p.value = 0.05)$table
-
-write.csv(tT, file = "diff_exp_WL_WR.csv")
 ```
 
+
+For every gene you have performed a test, check histogram of p-values of all tests. What distribution you expect you would observe a differential expression in same biological condition? Do you remember what was FDR?
+
+
+```{r, echo = F}
+hist(de.tr$table$PValue, breaks = 50, xlab = 'p-value (without correction)')
+```
+
+```{r}
+## check what topTags function does by ?topTags
+tT.transcripts <- topTags(de.tr, n = nrow(dt), p.value = 0.05)
+
+# your differentially expressed transcript list
+det.list <- tT.transcripts$table
+head(det.list)
+
+# save in a csv.file
+write.csv(det.list, file = "diff_exp_WL_WR.csv")
+```
 
 
 ***
@@ -463,6 +483,7 @@ rpkm <- function(counts, lengths) {
 }
 
 ## merging the rownames so we have ordered things
+## to know what does %in%, check the ?match function :)
 geneLengths <- geneLength[(geneLength$gene_name) %in% (rownames(rawcounts)),]
 
 ## just to check if gene names are in same order in geneLengths table and rawcounts matrix
@@ -492,18 +513,20 @@ pheatmap(log_rpkm.topgenes, main = 'Heatmap of top 100 genes')
 1. make a list of transcripts / genes you have annotated
 
 ```{r}
-annotated_transctipts <- paste0('S5_genome_',201:250)
-annotated_genes <- tx2genes$gene_id[tx2genes$tx_name %in% annotated_transctipts]
+annotated_transcripts <- paste0('S5_genome_',201:250)
+annotated_genes <- tx2genes$gene_id[tx2genes$tx_name %in% annotated_transcripts]
 ```
 
 
 \footnotesize
-This is just an example, I lets say, that I have anotated genes "S5_genome_201" to "S5_genome_250".
+Example: I have anotated genes "S5_genome_201" to "S5_genome_250".
 \normalsize
 
-2. Take a subset of defferentatinally expressed genes from those you have annotated. Are some of them differentially expressed?
+2. Take a subset of differentially expressed genes/transcripts from those you have annotated. Are some of them differentially expressed?
 
 ```{r}
+
+# deg.list comes from the beginning of this file
 df_annotated <- annotated_genes[annotated_genes %in% rownames(deg.list[deg.list$FDR < 0.05,])]
 length(df_annotated)
 ```
