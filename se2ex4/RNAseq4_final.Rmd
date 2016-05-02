@@ -401,14 +401,47 @@ We can identify genes (points) in the two regions of interest on the plot: point
 ## 8b. Differential expression of transcripts
 
 ```{r}
+conditions <- paste0(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4))
 
 # read kallisto files again to get counts of transcripts
-tr_counts <- readDGE(files, columns = c(1,4), group = rep(c('LM','SA','WL','WR'), each = 4), labels = paste0(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4)))$counts
+tr_counts <- readDGE(files, 
+                     columns = c(1,4), 
+                     group = rep(c('LM','SA','WL','WR'), each = 4), 
+                     labels = conditions)$counts
 
-head(tr_counts)
+tr_cpms <- cpm(tr_counts)
+
+keep <- rowSums(tr_cpms > 1) >= 4
+tr_counts_clean <- tr_counts[keep,]
+
+## mabye stronger filtering? Like this is filter overall one value...
+sum(!keep)
+
+d <- DGEList(counts = tr_counts_clean, 
+             group = rep(c('LM','SA','WL','WR'), each = 4))
+
+d <- calcNormFactors(d)
+plotMDS(d, 
+        labels = colnames(tr_cpms), 
+        col = c(rep("darkgreen",4),rep("blue",4), rep("red",4), rep("orange",4)))
+
+d <- estimateCommonDisp(d)
+d <- estimateTagwiseDisp(d)
+
+## here you have to choose two conditions to test
+de <- exactTest(d, pair = c("WL","WR"))
+
+## for every gene you have performed a test, check histogram of p-values of all tests. WHat distribution you expect you would observe a differential expression in same biological condition? Do you remember what was FPR?
+hist(de$table$PValue, breaks = 50, xlab = 'p-value (without correction)')
+
+## topTags is function for multiple testing correction, sorting and filtering of diff. expr. transcripts
+## argument n filters top n diff. exp. genes, p.value will set a treshold of corrected p-value (FPR < value), since we are just curous
+tT <- topTags(de, n = nrow(d), p.value = 0.05)$table
+
+write.csv(tT, file = "diff_exp_WL_WR.csv")
 ```
 
-<the rest is similar>
+
 
 ***
 
