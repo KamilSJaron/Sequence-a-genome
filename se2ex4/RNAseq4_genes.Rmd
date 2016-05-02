@@ -6,7 +6,7 @@ We expected, that you will use this document as manual of tools for your analysi
 
 ***
 
-#RNA-seq downstream analysis (ex3)
+#RNA-seq downstream analysis on the gene level
 
 ## 1. Reading annotation.
 
@@ -318,8 +318,6 @@ What do you see when you compare your conditions?
 
 Normalization is a process designed to identify and remove systematic technical differences between samples that occur in the data to ensure that technical bias has minimal impact on the results. The most common symptom of the need for normalization is differences in the total number of aligned reads.
 
-*Depending on our data – TMM or upperquartile normalization method, explain here.
-
 0. Normalize your data using TMM method.
 
 ```{r}
@@ -342,7 +340,7 @@ Those that control the false discovery rate (FDR), give by FDR = E(Q).
 
 The FDR looks at the expected proportion of false positives among all of the genes initially identified as being differentially expressed – that is, among all the rejected null hypotheses.
 
-What we are going to look for in this tutorial is the FDR < 0.05.
+What we are going to look for in this tutorial is the **FDR of 1% or 5%**. This values you can be easily changed according to your needs.
 
 Once negative binomial models are fitted and dispersion estimates are obtained for each gene (as explained in the lecture  - “Theory of RNAseq”), it is straight-forward to look for differentially expressed genes. To contrast two conditions, e.g., to see whether there is differential expression between conditions “control” and “treated”, we simply call the function exactTest in edgeR package. 
 
@@ -482,17 +480,18 @@ Before you start with following, switch to file `SAGE_RNAseq_2016.Rmd`, everythi
 1. make a list of transcripts / genes you have annotated
 
 ```{r}
-annotated_transctipts <- paste0('S5_genome_',201:250)
-annotated_genes <- tx2genes$gene_id[tx2genes$tx_name %in% annotated_transctipts]
+annotated_transcripts <- paste0('S5_genome_',201:250)
+annotated_genes <- tx2genes$gene_id[tx2genes$tx_name %in% annotated_transcripts]
 ```
 
 \footnotesize
-This is just an example, I lets say, that I have annotated genes "S5_genome_201" to "S5_genome_250".
+Example: I have annotated genes "S5_genome_201" to "S5_genome_250".
 \normalsize
 
-2. Take a subset of deferentially expressed genes from those you have annotated. Are some of them differentially expressed?
+2. Take a subset of deferentially expressed genes or transcript from those you have annotated. Are some of them differentially expressed?
 
 ```{r}
+# deg.list comes from the section 8
 df_annotated <- annotated_genes[annotated_genes %in% rownames(deg.list[deg.list$FDR < 0.05,])]
 length(df_annotated)
 ```
