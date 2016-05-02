@@ -473,7 +473,7 @@ The computed dendrogram (tree) resulting from the clustering is added to a side 
 
 In order to test for differential expression, we operate on raw counts and use discrete distributions as described. Since common statistical methods for clustering and ordination, work best for (at least approximately) homoskedastic data; this means that all the observed data (i.e., here, the expression strength of a gene) share the same finite variance (also called homogenity of variance). In RNA-Seq data, however, variance grows with the mean.
 
-1. Compute RMKMs.
+1. Compute RPKMs.
 
 ```{r}
 ## rpkm calculations
