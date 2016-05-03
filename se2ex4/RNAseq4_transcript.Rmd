@@ -1,0 +1,75 @@
+---
+output: pdf_document
+---
+#RNA-seq downstream analysis on the transcript level
+
+Many transcriptomic studies aim to compare either abundance levels (gene-levels) or transcriptome composition (transcript-levels) between given conditions, in our case wheat or non wheat with different type of medias. Please note that in first part of the exercise, we have done analysis on the gene-level (tximport function). However, since annotation of our genome is incomplete and there is no consensus regarding the optimal resolution  or method for quantification and downstream analysis of transcriptomic output, we are going to observe how differentially expressed are the transcripts.
+
+## 8b. Differential expression of transcripts
+
+```{r, echo = F, message=F}
+library(edgeR)
+library(readr)
+library(ggplot2)
+library(pheatmap)
+library(reshape2)
+
+path_to_abundances <- '../abundances/'
+# this imports the .tsv files in your R environment 
+files <- dir(path_to_abundances, pattern=".tsv$")
+# paste the path to your files - make sure that you have the path in front the files
+files <- paste0(path_to_abundances, files)
+```
+
+```{r}
+conditions <- paste0(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4))
+
+# read kallisto files again to get counts of transcripts
+transcripts <- readDGE(files, 
+                     columns = c(1,4), 
+                     group = rep(c('LM','SA','WL','WR'), each = 4), 
+                     labels = conditions)
+
+# have a look at your data
+transcripts
+# get counts of transcripts
+tr_counts <- transcripts$counts
+
+tr_cpms <- cpm(tr_counts)
+
+keep <- rowSums(tr_cpms > 1) >= 4
+tr_counts_clean <- tr_counts[keep,]
+
+## check how many transcripts did you filter out
+sum(!keep)
+
+# form edgeR-friendly list for differential expression analysis
+dt <- DGEList(counts = tr_counts_clean, 
+             group = rep(c('LM','SA','WL','WR'), each = 4))
+
+# normalize the libraries with TMM
+dt <- calcNormFactors(dt)
+
+# plot your conditions
+plotMDS(dt, 
+        labels = colnames(tr_cpms), 
+        col = c(rep("darkgreen",4),rep("blue",4), rep("red",4), rep("orange",4)))
+
+# do the normalization according to the dispersions of the genes
+dt <- estimateCommonDisp(dt)
+dt <- estimateTagwiseDisp(dt)
+
+## here you have to choose two conditions to test
+de.tr <- exactTest(dt, pair = c("WL","WR"))
+
+## topTags is function for multiple testing correction, sorting and filtering of diff. expr. transcripts
+## argument n filters top n diff. exp. genes, p.value will set a treshold of corrected p-value (FPR < value), since we are just curous
+tT.transcripts <- topTags(de.tr, n = nrow(dt), p.value = 0.05)
+
+# your differentially expressed transcript list
+det.list <- tT.transcripts$table
+head(det.list)
+
+# save in a csv.file
+write.csv(tT.transcripts, file = "diff_exp_WL_WR.csv")
+```
