@@ -1,19 +1,24 @@
 ---
-output: pdf_document
+output: 
+  pdf_document
 ---
 #RNA-seq downstream analysis on the transcript level
 
-Many transcriptomic studies aim to compare either abundance levels (gene-levels) or transcriptome composition (transcript-levels) between given conditions, in our case wheat or non wheat with different type of medias. Please note that in first part of the exercise, we have done analysis on the gene-level (tximport function). However, since annotation of our genome is incomplete and there is no consensus regarding the optimal resolution  or method for quantification and downstream analysis of transcriptomic output, we are going to observe how differentially expressed are the transcripts.
+Many transcriptomic studies aim to compare either abundance levels (gene-levels) or transcriptome composition (transcript-levels) between given conditions, in our case wheat or non wheat with different type of media. Please note that in first part of the exercise, we have done analysis on the gene-level (tximport function). However, since annotation of our genome is incomplete and there is no consensus regarding the optimal resolution  or method for quantification and downstream analysis of transcriptomic output, we are going to observe how differentially expressed are the transcripts.
 
-## 8b. Differential expression of transcripts
+## Prepare evironment
 
-```{r, echo = F, message=F}
+You already done exactly same for analysis on gene level
+
+1. Load package `edgeR`
+
+```{r}
 library(edgeR)
-library(readr)
-library(ggplot2)
-library(pheatmap)
-library(reshape2)
+```
 
+2. Locate files with abundances
+
+```{r}
 path_to_abundances <- '../abundances/'
 # this imports the .tsv files in your R environment 
 files <- dir(path_to_abundances, pattern=".tsv$")
@@ -21,55 +26,100 @@ files <- dir(path_to_abundances, pattern=".tsv$")
 files <- paste0(path_to_abundances, files)
 ```
 
-```{r}
-conditions <- paste0(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4))
+3. Save biological replicate names
 
+```{r}
+samples <- paste0(rep(c('LM','SA','WL','WR'), each = 4), rep(1:4,4))
+```
+
+## Read transcript abundances
+
+1. Use function `readDGE` to load transcript counts. 
+
+```{r}
 # read kallisto files again to get counts of transcripts
 transcripts <- readDGE(files, 
                      columns = c(1,4), 
                      group = rep(c('LM','SA','WL','WR'), each = 4), 
-                     labels = conditions)
+                     labels = samples)
 
 # have a look at your data
 transcripts
 # get counts of transcripts
 tr_counts <- transcripts$counts
+```
 
+\footnotesize
+Argument `columns` specifies column of labels (first in our files) and column of read counts (fourth column). Condition of every biological replicate we specify using argument `group`.
+\normalsize
+
+2. Compute counts per million
+
+```{r}
 tr_cpms <- cpm(tr_counts)
+```
 
+3. Filter lowly expressed transcripts. Check how many transcripts did you filtered out.
+
+```{r}
 keep <- rowSums(tr_cpms > 1) >= 4
 tr_counts_clean <- tr_counts[keep,]
 
-## check how many transcripts did you filter out
+
 sum(!keep)
+```
 
-# form edgeR-friendly list for differential expression analysis
-dt <- DGEList(counts = tr_counts_clean, 
-             group = rep(c('LM','SA','WL','WR'), each = 4))
+## Differential expression
 
-# normalize the libraries with TMM
+1. Save filtered counts into edgeR list using function `DGEList` and compute normalization factors for libraries using `calcNormFactors`
+
+```{r}
+dt <- DGEList(counts = tr_counts_clean, group = rep(c('LM','SA','WL','WR'), each = 4))
+
 dt <- calcNormFactors(dt)
+```
 
+2. Make a MDSplot with all conditions
+
+```{r}
 # plot your conditions
 plotMDS(dt, 
         labels = colnames(tr_cpms), 
         col = c(rep("darkgreen",4),rep("blue",4), rep("red",4), rep("orange",4)))
+```
 
-# do the normalization according to the dispersions of the genes
+3. Do the normalization according to the dispersions of the genes.
+
+```{r}
 dt <- estimateCommonDisp(dt)
 dt <- estimateTagwiseDisp(dt)
+```
 
-## here you have to choose two conditions to test
+4. Choose two conditions to test (please, not all the same) and perform a test.
+
+```{r}
 de.tr <- exactTest(dt, pair = c("WL","WR"))
+```
 
-## topTags is function for multiple testing correction, sorting and filtering of diff. expr. transcripts
-## argument n filters top n diff. exp. genes, p.value will set a treshold of corrected p-value (FPR < value), since we are just curous
+5. Compute correction for multiple testing and sort diff. expr. transcripts.
+
+```{r}
 tT.transcripts <- topTags(de.tr, n = nrow(dt), p.value = 0.05)
+```
 
-# your differentially expressed transcript list
+\footnotesize
+`topTags` is function for multiple testing correction, sorting and filtering of diff. expr. transcripts. Argument `n` filters top `n` diff. exp. genes, `p.value` will set a threshold of corrected p-value (FPR < value), since we are just curious
+\normalsize
+
+6. Extract a list of your differentially expressed transcripts.
+
+```{r}
 det.list <- tT.transcripts$table
 head(det.list)
+```
 
-# save in a csv.file
+7. Save the result into `.csv` file
+
+```{r}
 write.csv(tT.transcripts, file = "diff_exp_WL_WR.csv")
 ```
