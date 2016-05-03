@@ -108,7 +108,7 @@ tT.transcripts <- topTags(de.tr, n = nrow(dt), p.value = 0.05)
 ```
 
 \footnotesize
-`topTags` is function for multiple testing correction, sorting and filtering of diff. expr. transcripts. Argument `n` filters top `n` diff. exp. genes, `p.value` will set a threshold of corrected p-value (FPR < value), since we are just curious
+`topTags` is function for multiple testing correction, sorting and filtering of diff. expr. transcripts. Argument `n` filters top `n` diff. exp. genes, `p.value` will set a threshold of corrected p-value (FDR < value).
 \normalsize
 
 6. Extract a list of your differentially expressed transcripts.
@@ -121,5 +121,5 @@ head(det.list)
 7. Save the result into `.csv` file
 
 ```{r}
-write.csv(tT.transcripts, file = "diff_exp_WL_WR.csv")
+write.csv(det.list, file = "diff_exp_WL_WR.csv")
 ```
