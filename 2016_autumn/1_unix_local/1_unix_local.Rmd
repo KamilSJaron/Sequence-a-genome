@@ -1,0 +1,239 @@
+---
+output: pdf_document
+---
+
+#Unix introduction
+
+Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82), [R](http://edu.isb-sib.ch/course/view.php?id=52) and [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
+
+## Syntax of this exercise
+
+* The comment symbol of bash is `#`, everything after this symbol is ignored.
+* Blocks of code will be in boxes, note also the usual syntax of Unix commands `command -parameters location`.
+
+```bash
+ls -h / # list files and directories in -human readable format located at root directory
+```
+
+* Anything in `< >` you have to replace by meaningful paths, file names or parameters.
+
+```bash
+ssh <username>@prd.vital-it.ch #this will be written in this document
+ssh kjaron@prd.vital-it.ch #this is example, how it can be used
+```
+
+* Bash commands are (usually) meaningful acronyms, the explanation is written after every first occurrence in brackets.
+* Detail explanations will be written in blocks as follows
+
+<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, read this blocks and if it does not help, ask one of the assistants.</sub>
+
+***
+
+## Open terminal and get to cluster
+
+### Windows users
+
+1. Install [WinSCP](http://winscp.net/eng/download.php) and [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+2. First start WinSCP by:
+    -	hostname: prd.vital-it.ch
+    -	username: 
+    -	password:
+3. Then start your Putty entering hostname prd.vital-it.ch
+
+### Linux / OS X users
+
+Open terminal and connect to Vital-it using `ssh` (secure shell)
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+***
+
+\newpage
+
+## bash as explorer
+
+Now you should see a command line in front of you. 
+
+### browsing
+
+1. go to your home directory `/home/<user_name>` and check the content using `ls` (list segments). You will probably see nothing (i.e. your home is empty).
+2. make a new directory, enter the directory
+
+```bash
+mkdir SAGE
+cd Sage
+```
+
+<sub>
+Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE. Therefore the error message you see `cd: Sage: No such file or directory`.
+</sub>
+
+3. Use `pwd` (print working directory) to check your location. 
+4. Correct the comannd `cd Sage` to actually enter the directory `SAGE`.
+5. Use `pwd` to check your location. 
+5. Go to parent directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
+
+<sub>The command `cd` (change directory) and correct handling of paths is essential for everything done in Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./SAGE` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /home/kjaron`). Meanings of symbols are as follows: `.` = current directory, `..` = parent directory, `/` = root directory, `~` = home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
+
+### copy, move, rename and remove
+
+1. copy directory `/scratch/beegfs/monthly/mls_2016/UNIX_testfiles` to your working directory using command `cp` (copy)
+
+```bash
+cp -<parameters> <path/file> <path/new_file_name> # generally
+# if you dont provide a new name, the old one will be kept
+cp -r /scratch/beegfs/monthly/mls_2016/UNIX_testfiles .
+# directories need to be copied using -r (stands for recursive)
+```
+
+3. Go inside and check the content (you should know how, if you don't, scroll up).
+4. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cd`, for all inbuild commands there is a manual page you can check).
+5. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move it back to `UNIX_testfiles`.
+
+```bash
+cd ./nonemptydir
+mv browsing.txt <your_new_name>.txt
+mv <your_new_name>.txt ..
+cd ..
+```
+
+6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `nonemptydir`? 
+
+<sub>Command `mv` (move) moves file to the given path and renames it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
+
+7. Remove the copied file.
+
+```bash
+rm <your_new_name>
+```
+
+8. Remove directory `nemptydir`. 
+
+<sub> Command `rm` is to remove files, `rmdir` to remove empty directories. If you want to remove a directory with files inside, you have to specify it `rm -r <dir_to_delete>`. However, be careful, there is nothing like "Trash" in the bash, i.e. what is deleted is permanently lost! </sub>
+
+9. Try command `man <command>` (manual) to show manual page of some commands. What does the `-l` mean in the `ls` command?
+
+***
+
+## Break!!!
+
+\newpage
+
+## more than explrorer
+
+There are two types of commands you can use in `bash`. Inbuild and default commands (usually with `man` page). And programs you have installed. "installed" on linux means usually that you have copied a binary file to location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command `echo $PATH`. First of all, we will get familiar with inbuild commads of bash, that have a great use in all data oriented science.
+
+### Commands text processing
+
+There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder.
+
+1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `browsing.txt`, respectively. How many lines are in the file?
+2. Use `less <text_file>` to check `AllIllumina-PEadapters.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file.
+3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of, newline characters, words and characters in the input file. You can specify output by parameters. How many lines are in `browsing.txt`?
+
+Command `grep` searches the file and prints all lines containg a pattern specified by a paramater: `grep <pattern> <file.txt>`. I heavily recommend to write pattern in quotes, because if it contains any characters interepreted in command line (like spaces, symbols ">", "|", ".", "\\"...)
+
+4. Explore behaviour of `grep` selecting different lines in file `browsing.txt`. Example:
+
+```bash
+grep "to check" browsing.txt
+```
+
+One the most powerful and simple tools for reading text files in terminal is `less`. It is loading to memory only parts of opened file that are read, therefore you can use this tool to check files of any sizes (even files exceding the operational memory of your computer). To browse file you can use arrows, pageup/down or scroll of a mouse.
+
+5. Look at the `sample.fasta` file using program `less <file_to_read>`
+
+### Pipes
+
+The output of commands is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many Illumina adapters are in the file `AllIllumina-PEadapters.fa`. File `AllIllumina-PEadapters.fa` is a fasta file, so every sequence is represented by headerline starting by symbol ">" and the seqeunce itself.
+
+1. How many adapters are saved in the file `AllIllumina-PEadapters.fa`?
+
+```bash
+grep ">" AllIllumina-PEadapters.fa | wc -l
+```
+
+To redirect an output to a file rather than to other command, you can use the symbol `>`. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the file, you can use `>>` (= concatenate).
+
+Using the same tools we aswer various questions. Another example of usage to compute a number of nucleotides in simple fasta.
+
+2. How many nucleotides are in file `sample.fasta`? Hint: check `-v` argument of grep. 
+3. The very same problem you can also solve using command `tail` which can also print all but a given number of skipped lines from the beginning `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters.
+
+```bash
+tail -n +2 sample.fasta | wc -c
+```
+
+However, this command shows number of characters (newline characters included). It is not entirely correct.
+
+4. We can use `tr` (translate characters) command to delete all newline characters before you count them using `wc`. Note how the commands are nested, you can use as many pipes as you need.
+
+```bash
+tail -n +2 sample.fasta | tr -d '\n' | wc -c
+```
+
+<sub>
+There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed` or `grep`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
+</sub>
+
+5. Editing files can be done using editors like `nano <textfile>` or `vi <textfile>`. Open `browsing.txt` in `vi`, press `a` to enter the editing mode. Correct one of the typos in text (for instance, second line: `enther` -> `enter`). Press `<Esc>` to escape from the writing mode. Press `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed edit the file.
+
+<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
+
+***
+
+## Challenges
+
+1. Extract all header lines of `AllIllumina-PEadapters.fa` file to separated file. If you do the same on `sample.fasta`, how many headers you extract?
+
+```{bash echo=FALSE, eval=FALSE}
+grep ">" AllIllumina-PEadapters.fa > adapter_headers.txt
+wc -l adapter_headers.txt
+```
+
+2. Compute total number length of low-complexity sequences (lower-case) in nucleotides in `sample.fasta`.
+3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all your files, verify the success using `ls -l`.
+
+```{unix echo=FALSE, eval=FALSE}
+find . -exec touch {} \;
+```
+
+<sub>There are loads of different solutions. <sub\>
+
+***
+
+## Tips and tricks
+
+- Command `cd` without any argument changes the working directory to your home. Symbol `~` works the same, it is symbol of home.
+- Press tabulator to call whisperer (autocompletion) every time you are writing a path. It is handy with long filenames as we can find in genomics. Note that you will have to type all the first letters of the file which are in common with other filenames of same the directory before autocompletion can be achieved by pressing tabulator. It is a good way how to prevent typos, because autocompleted path is usually valid.
+- Arrows up and down allows to browse your command history saved at `~/.bash_history`
+- Press `Ctrl+R` for a full text search in the command history
+- Press `Ctrl+C` to stop the running process, useful if you use `cat` on a huge file to stop seeing text flowing endlessly... Beware to remove result/temporary files created by the program if you use `Ctrl+C` to stop a running program, otherwise there may be conflicts the next time you run the same program. 
+- You can use wild characters `?`, `[]` and `*`, to specify a group of files. `?` stands for any single character, `[XYZ]` one of the specifies characters (XYZ in this case, you can also use numbers), `*` any number of any characters. See examples
+
+```bash
+cat *.txt # prints all text files
+ls ?? # lists all files or directories with exactly two letter names
+cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from given <path>
+```
+
+- Bash script `~/.bashrc` is executed every time you open new window terminal.
+
+<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
+
+- (recommended) You can make your command prompt colourful by adding following line to `~/.bashrc`
+
+```bash
+export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '
+```
+
+<sub> You can write the command on one line only. The last symbol in line `\` means, that command continues on the next line, however the second `\` (first character of the second line) is needed for the expression to work properly. Evironmental variable `PS1` defines how every new line will look like. For instance, if you specify PS1='', prompt will disapear completely.
+<sub\>
+
+***
+
+Credits: based on Nadja's material, made by Andrea and Kamil;
+Contact: kamiljaron@gmail.com

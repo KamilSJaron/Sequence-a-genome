@@ -1,0 +1,236 @@
+\documentclass[xcolor=dvipsnames]{beamer} 
+\mode<presentation>
+{
+\setbeamercolor{structure}{fg=Red!75!black}
+\usetheme{Madrid} 
+\setbeamercovered{transparent}
+}
+
+\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{array}
+\urlstyle{sf}
+
+%%%%%% SET TO CORRECT PATHS
+\graphicspath{{/Volumes/dump/pictures/pool/}}
+
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\title[ ]{Introduction to UNIX}
+\author{Kamil S Jaron, Marc Robinson-Rechavi}
+\date{22.9.~2016}
+
+\usenavigationsymbolstemplate{}
+\defbeamertemplate*{footline}{mytheme}{}
+
+\begin{document}
+
+\Large
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}
+	\huge
+	\begin{center}
+	Sequencing reads of 14 genomes \\
+	~\\
+	$\approx$ 1GB of plain text data / species \\
+	~\\
+	$\approx$ 640938 of pages
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		Why UNIX?	
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+	\huge
+	How to check a file?? \\
+	\vspace{1cm}
+	
+	\Large
+	\begin{tabular}{C{0.4\textwidth}C{0.4\textwidth}}
+	Notepad? & Office? \\
+	\includegraphics[scale=0.3]{UNIX/notepad-icon} & \includegraphics[scale=0.2]{UNIX/office_logo} \\
+	\small not well suited for big files & \small Use at least read-only mode\\
+	\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/gene_name_errors_excel}
+	\end{center}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/GUI_pipeline}
+	\end{center}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster computing\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{/UNIX/Vital-IT-cluster}
+	\end{center}
+\end{frame}	
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		Well, and how can UNIX help us?	
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	Command line $\approx$ explorer + toolbox of commands
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{/UNIX/Windows-7-Explorer-Tweaked-Folder}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{/UNIX/Windows-7-Explorer-Tweaked-Folder}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/commnad_line}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (where am I?)
+	\begin{center}
+		\includegraphics[width=1.8\textwidth]{/UNIX/pwd}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (browse directories)
+	\begin{center}
+		\includegraphics[width=1.4\textwidth]{/UNIX/cd_ls}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (copy and move files)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/relative_path_cp}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{verbatim}
+### relative paths
+.     # this directory
+..    # parent directory
+~     # my home directory
+### absolute path
+/     # root directory
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (remove files)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/mv_rm}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{verbatim}
+		command -<parameters> <arguments>
+	\end{verbatim}Í
+	Examples:
+	\begin{verbatim}
+		ls -lah  #list long, all, human readable
+		ls -la ..  #list in parent directory
+		cp -r <what_dir> <were> # recursive
+		rm -rf <what dir>       # -||- , force
+		# careful with this one...
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\Huge
+	\begin{center}
+		OK, try it!	
+	\end{center}
+	\Large
+	\begin{verbatim}
+		
+		
+		
+		
+		
+		
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\Huge
+	\begin{center}
+		OK, try it!	
+	\end{center}
+	\Large
+	\begin{verbatim}
+		# Auto Completion by <tab>
+		cd /<tab><tab>   # lists all in root
+		cd ~/k<tab><tab> # lists all in home
+		
+		
+		
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\Huge
+	\begin{center}
+		OK, try it!	
+	\end{center}
+	\Large
+	\begin{verbatim}
+		# Auto Completion by <tab>
+		cd /<tab><tab>   # lists all in root
+		cd ~/k<tab><tab> # lists all in home
+		# Command history
+		<arrow_up>       # last excuted command
+		<Ctrl+R>         # full-text search
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		What about that toolbox?	
+	\end{center}
+\end{frame}
+
+\end{document}
+
+
+
