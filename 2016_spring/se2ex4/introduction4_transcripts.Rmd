@@ -1,0 +1,97 @@
+---
+title: "Sequence a genome II"
+author: "Kamil S Jaroň"
+date: "Spring 2016"
+output: ioslides_presentation
+subtitle: Downstream analyses II
+---
+
+## This semester
+
+<font color="green"> 
+
+- 24 . - 26.02.  : RNA sequencing (done)
+- 12.04. : Data exploration (done)
+- 19.04. : Mapping reads and quantifying (done)
+- 26.04. : Visualisation & downstream analyses (done)
+
+</font>
+
+- 03.05. : **Differential expression & functional analysis**
+- 10.05. : Analysis of annotated genes
+- 17.05. : Analysis of annotated genes
+- 24.05. : Presentations
+
+## Results from last week
+
+Common folders are still full of results!
+
+- `scripts/` - all scripts and script templates
+- `mapping/` - mapping files for IGV (.bam, .bam.bai)
+- `abundances/` - read counts
+
+## Analysis on gene level
+
+`1`. Reading annotation.
+
+```
+tx2genes <- ...
+```
+
+`2`. Load data
+
+```
+files <- ...
+tximport(files, tx2genes)
+```
+
+`3`. Visualisation, controls, playing around
+
+`4`. **Diff. expression analysis, RPKMs**
+
+## Genes??
+
+```r
+mean(tx2genes$tx_name == tx2genes$gene_id)
+[1] 0.7312925
+```
+
+...but you spend on it already 4 hours!
+
+## Lets stick to transcript level
+
+`1`. skip ... Reading annotation.
+
+`2`. Load data
+
+```
+files <- ...
+readDGE(files)
+```
+
+`3`. skip most of playing around
+
+`4`. Diff. expression analysis, save resuts for functional analysis
+
+## Today
+
+- (genes) Diff. expression analysis, RPKMs
+
+- (transcripts) Load data
+
+- (transcripts) Diff. expression analysis
+
+- Functional analysis
+
+## Your turn...
+
+MyUnil > courses > Sequence a Genome II 
+
+- RNAseq4_genes.pdf
+- RNAseq4_transcript.pdf
+- SAGE_downstream_analysis.docx 
+
+  
+## See you next week
+
+Thank you for your participation!
