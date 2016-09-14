@@ -141,7 +141,7 @@ Command `grep` searches the file and prints all lines containing a pattern speci
 grep "to check" browsing.txt
 ```
 
-One the most powerful and simple tools for reading text files in terminal is `less`. It is loading to memory only parts of opened file that are read, therefore you can use this tool to check files of any sizes (even files exceeding the operational memory of your computer). To browse file you can use arrows, page-up/down or scroll of a mouse.
+One of the most powerful and simple tools for reading text files in terminal is `less`. It is loading to memory only parts of opened file that are read, therefore you can use this tool to check a file of any size (even files exceeding RAM of your computer). To browse file you can use arrows, page-up/down or scroll of a mouse.
 
 5. Look at the `sample.fasta` file using program `less <file_to_read>`
 
