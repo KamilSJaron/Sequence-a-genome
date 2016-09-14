@@ -127,7 +127,12 @@ There are two types of commands you can use in `bash`. Inbuilt and default comma
 
 ### Commands text processing
 
-There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder.
+There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder. Some of commands for text processing:
+
+- Commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and print the beginning (first n lines), the end of input files (last n lines), respectively.
+- Command `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is very good tool.
+- Command `wc -lwc <text_file>` (word count) is counting number of newline characters, words and characters in the input file. You can specify output by parameters .
+- Command `tr -d '<string_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given string (Note: a character is also a string).
 
 1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `browsing.txt`, respectively. How many lines are in the file?
 2. Use `less <text_file>` to check `AllIllumina-PEadapters.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file.

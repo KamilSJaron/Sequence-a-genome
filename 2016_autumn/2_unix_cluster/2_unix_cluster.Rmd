@@ -124,6 +124,23 @@ ls -l
 it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester). From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
 
 2. **Copy your data to your working dir.**
+3. **Get reference**
+
+***
+
+## Explore genomic reads
+
+The files you got is a compressed textfile, if you try `head <file_name>`, you will get just meaningless characters. There are two solutions, either you can uncompress your files by command `gunzip` or preferably you can use command `zcat` to print the file on the standard output. Do not forget that it is still a half GB file each - a lot of letters, you better pipe them somewhere.
+
+1. Format `.fastq` is just formatted plain text formats, so you could use all line tools for parsing text. Check the format with `head`
+
+```bash
+zcat <read_file.fastq.gz> | head
+```
+
+Every read is represented by four lines: header line, sequence line, quality of basecalling (in PHRED score) and comments (usually blank line).
+
+2. How many reads are in the files `R1` and `R2`? Is it a same number?
 
 ***
 
