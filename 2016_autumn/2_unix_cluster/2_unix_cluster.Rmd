@@ -56,7 +56,7 @@ One of the advantages of the command line over programs based on mouse and click
 0. connect to Vital-it
 1. define variable `VAR` to `1`
 
-since terminal is primarly trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
+since terminal is primarily trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
 
 2. print your variable on terminal
 
@@ -64,9 +64,13 @@ since terminal is primarly trying to execute commands, variables has to be calle
 echo $VAR
 ```
 
-there are several pre-defined veriables in the terminal defining a behaviour of the terminal called environmental variables. One of them is especially important. The variable `PATH` lists all locations of programs (binaries) that bash will search everytime you type a command. You can check it using `echo` (do not forget `$` symbol)
+there are several pre-defined variables in the terminal defining a behaviour of the terminal called environmental variables. One of them is especially important. The variable `PATH` lists all locations of programs (binaries) that bash will search every time you type a command. You can check it using `echo` (do not forget `$` symbol)
 
 3. look at locations of binaries
+
+***
+
+\newpage
 
 ## Pimp my bash
 
@@ -87,20 +91,27 @@ Great, terminal is colourful now, however, if you exit and start a new terminal 
 2. Add the line in the end of your `~/.bashrc` file
 
 ```bash
-echo $"export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+echo "export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
 \[\033[01;34m\]\w\[\033[00m\]\$ '" >> ~/.bashrc
 ```
 
-You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.).
+<sub>
+Note, how do we add the line to the end of the `.bashrc`. Quotes `""` serve to tell bash, that he should not take the text inside as a command, but treat it as a plain text, echo just tells bash to print what is quotes and finally using `>>` operator we redirected the output stream to file `~/.bashrc`. `echo` automatically adds a newline character in the end of every message its printing. The very same effect could be achieved, if you open the document in a text editor (line `vi`) and copy-paste the line.
+<sub\>
 
-In fact, we would like to see hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use. You can
+You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use. 
 
+1. Create an alias by adding following line `alias ll='ls -lah'` to the end of `~/.bashrc`.
 
-Very popular alias is `alias ll='ls -lah'`. If you add this line to your `~/.bashrc` you can use from now on command `ll` instead of `ls -lah` (list all, long format, in human readable units).
+You can use from now on a command `ll` instead of `ls -lah` (list all, long format, in human readable units).
+
+***
+
+\newpage
 
 ## Prepare a workspace
 
-Before anything, keep in mind that you can save a lot of energy and mistakes by using `<tab>` for auto completion of all existing pathes you type and by using your command history (up and down arrows and `Ctrl+r`)
+Before anything, keep in mind that you can save a lot of energy and mistakes by using `<tab>` for auto completion of all existing paths you type and by using your command history (up and down arrows and `Ctrl+r`)
 
 1. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>` (make directory). Check the content. What do you expect?
 
@@ -112,7 +123,11 @@ ls -l
 
 it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester). From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
 
+2. **Copy your data to your working dir.**
+
 ***
+
+\newpage
 
 ## Basic cluster operations
 
@@ -126,6 +141,12 @@ module add <field>/<category>/<program>/<version>
 
 2. The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software). Find there a command for program fastqc and execute it.
 
+<sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
+
+3. Now, check how your `PATH` has changed. 
+
+Adding module is nothing more than just adding a new path to list of directories searched for binaries.
+
 ### Running a simple job
 
 1. You will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
@@ -134,9 +155,7 @@ module add <field>/<category>/<program>/<version>
 bsub <bsub_parameters> <command> <command_parameters>
 ```
 
-<sub>
 Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end. Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
-</sub>
 
 `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
@@ -144,9 +163,12 @@ Vital-it is a computing cluster - hundreds of computers connected in a huge grid
 fastqc -o <fastqc_results> <sequencing_reads>
 ```
 
-5. Now you should be able to create an output folder `<fastqc_results>` and submit a job computing a quality control of read file `LM2_subset.fastq`.
-6. Check the status of the submitted job
-7. Once it finishes, verify the existence of files. Copy those files to your computer (explained at beginning) and check the html file.
+2. Create a folder `<fastqc_results>` for an output of `fastqc` and submit a job computing a quality control of read file you have copied.
+3. Check the status of the submitted job
+
+**BREAK**
+
+4. Once it finishes, verify the existence of files. Copy those files to your computer (explained at beginning) and check the html file.
 
 ***
 
