@@ -4,7 +4,7 @@ output: pdf_document
 
 #Unix introduction
 
-Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82).
+Here are more materials about [UNIX](edu.isb-sib.ch/course/view.php?name=UNIX_I).
 
 ## Syntax of this exercise
 
@@ -83,7 +83,7 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> # generally
-# if you dont provide a new name, the old one will be kept
+# if you do not provide a new name, you must add space dot (“ .”) at the end, and the old name will be kept
 cp -r /scratch/beegfs/monthly/mls_2016/UNIX_testfiles .
 # directories need to be copied using -r (stands for recursive)
 ```
@@ -133,7 +133,7 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 2. Use `less <text_file>` to check `AllIllumina-PEadapters.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file.
 3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of, newline characters, words and characters in the input file. You can specify output by parameters. How many lines are in `browsing.txt`?
 
-Command `grep` searches the file and prints all lines containing a pattern specified by a parameter: `grep <pattern> <file.txt>`. I heavily recommend to write pattern in quotes, because if it contains any characters interpreted in command line (like spaces, symbols ">", "|", ".", "\\"...)
+Command `grep` searches the file and prints all lines containing a pattern specified by a parameter: `grep <pattern> <file.txt>`. We heavily recommend to write such patterns in quotes "", because characters can have a meaning in the command line with will interfer with what you want to do (for example spaces, or the symbols ">", "|", ".", "\\", etc.).
 
 4. Explore behaviour of `grep` selecting different lines in file `browsing.txt`. Example:
 
