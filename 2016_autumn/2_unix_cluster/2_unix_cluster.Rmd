@@ -1,32 +1,10 @@
 ---
-output: html_document
+output: pdf_document
 ---
-#Unix refreshment
+#Unix cluster computing
 
-Here are more materials about [UNIX](http://edu.isb-sib.ch/course/view.php?id=82), [R](http://edu.isb-sib.ch/course/view.php?id=52) and [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
+Last time we got familiar with basic concept of UNIX shell bash. Now we would like to learn how to compute on cluster and how to behave there. Here are more materials about the cluster we will use [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
 
-## Syntax of this exercise
-
-* The comment symbol of Bash is `#`, everything after this symbol is ignored.
-* Blocks of code (bash or R) will be in boxes, note also the usual syntax of Unix commands `command -parameters location`.
-
-```bash
-ls -h / # list files and directories in -human readable format located at root directory
-```
-
-* Anything in `< >` you have to replace by meaningful paths, file names or parameters.
-
-```bash
-ssh <username>@prd.vital-it.ch #this will be written in this document
-ssh kjaron@prd.vital-it.ch #this is example, how it can be used
-```
-
-* Bash commands are meaningful acronyms, the explanation is written after every first occurrence in brackets.
-* Detail explanations will be written in blocks as follows
-
-<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, read this blocks and if it does not help, ask one of the assistants.</sub>
-
----
 ### OS X, Linux users
 
 **connection**
@@ -48,7 +26,6 @@ to copy file **from** the cluster to your computer, you still have to be in the 
 scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
 ```
 
-
 ### Windows users
 
 **connection**
@@ -66,112 +43,90 @@ Transfer the file to your computer by drag and drop from the server side. Every 
 
 ***
 
-## Warm-up
+\newpage
+
+## Scripts
+
+One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands you use in scripts also helps you to reuse it.
+
+## Variables
+
+`bash` also allows to use variables, similarly to `R` or `python`. You can define them by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
 
 0. connect to Vital-it
-1. go to your home directory `/home/<user_name>` and check the content using `ls` (list segments).
-2. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>` (make directory). Check the content. What do you expect?
+1. define variable `VAR` to `1`
+
+since terminal is primarly trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
+
+2. print your variable on terminal
 
 ```bash
-mkdir /scratch/cluster/monthly/mls_2015/<username> #if it doesnt exist
-cd /scratch/cluster/monthly/mls_2015/<username>
+echo $VAR
+```
+
+there are several pre-defined veriables in the terminal defining a behaviour of the terminal called environmental variables. One of them is especially important. The variable `PATH` lists all locations of programs (binaries) that bash will search everytime you type a command. You can check it using `echo` (do not forget `$` symbol)
+
+3. look at locations of binaries
+
+## Pimp my bash
+
+Your terminal is now white and when you type `ls` it is hard to get oriented. One wonderful feature how to make life in terminal easier is to colour it! You can do so by setting an environmental variable `PS1`.
+
+1. Change colour of your terminal
+
+```bash
+export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '
+```
+
+<sub> You can write the command on one line only. The last symbol in line `\` means, that command continues on the next line, however the second `\` (first character of the second line) is needed for the expression to work properly. Environmental variable `PS1` defines how every new line will look like. For instance, if you specify `PS1=''`, prompt will disappear completely.
+<sub\>
+
+Great, terminal is colourful now, however, if you exit and start a new terminal session, it will be white again (this behaviour helps you not to mess with your own terminal). The way, how to make changes in terminal permanent is to edit a bash script `~/.bashrc`, which is executed every time you open new terminal window.
+
+2. Add the line in the end of your `~/.bashrc` file
+
+```bash
+echo $"export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '" >> ~/.bashrc
+```
+
+You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.).
+
+In fact, we would like to see hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use. You can
+
+
+Very popular alias is `alias ll='ls -lah'`. If you add this line to your `~/.bashrc` you can use from now on command `ll` instead of `ls -lah` (list all, long format, in human readable units).
+
+## Prepare a workspace
+
+Before anything, keep in mind that you can save a lot of energy and mistakes by using `<tab>` for auto completion of all existing pathes you type and by using your command history (up and down arrows and `Ctrl+r`)
+
+1. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>` (make directory). Check the content. What do you expect?
+
+```bash
+mkdir /scratch/beegfs/monthly/mls_2016/<username> #if it doesnt exist
+cd /scratch/beegfs/monthly/mls_2016/<username>
 ls -l
 ```
 
-it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester).
-
-3. make a new directory 
-4. Use `pwd` (print working directory) to check your location. Go to parent directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
-5. Try command `man <command>` (manual) to show manual page of some commands. What does the `-l` mean in the `ls` command few lines above?
-
-<sub>The command `cd` (change directory) and correct handling of paths is essential for everything done in Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./data` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /scratch/cluster`). Meanings of symbols are as follows: `.` = current directory, `..` = parent directory, `/` = root directory, `~` = home directory. Note that symbol `~` carry different path for every user: `/home/<username>`</sub>
+it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester). From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
 
 ***
 
-## Copy, move, rename and remove
+## Basic cluster operations
 
-1. go to your working directory (`/scratch/cluster/monthly/mls_2015/<username>`).
-2. copy directory `/scratch/cluster/monthly/mls_2015/SAGE/unix_ex` to your working directory using command `cp` (copy)
+### Modules
 
-```bash
-cp -<parameters> <path/file> <path/new_file_name> #generally for copy of files
-# if you dont provide a new name, the old one will be kept
-cp -r /scratch/cluster/monthly/mls_2015/SAGE/unix_ex . #directories need to be copied using -r (stands for recursive)
-```
-
-3. Go inside and check the content (you should know how, if you don't, scroll up).
-4. Copy file `text_file.txt` in the directory `dir_1`. Do you need the parameter `-r`? If you are not sure, check manual page.
-5. Go to `dir_1`, rename `text_file.txt` to `<your_new_name>.txt` and move it back to `unix_exec`.
+1. Programs available on the Vital-it you can loaded using 
 
 ```bash
-cd ./dir_1
-mv text_file.txt <your_new_name>.txt
-mv <your_new_name>.txt ..
-cd ..
+module add <field>/<category>/<program>/<version>
 ```
 
-6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `dir_1`? 
+2. The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software). Find there a command for program fastqc and execute it.
 
-<sub>Command `mv` (move) moves file to the given path and renames it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
-
-7. Remove the copied file.
-
-```bash
-rm <your_new_name>
-```
-
-8. Remove directory `dir_2`. Problem? Check manual or Google.
-9. **bonus** copy again file `text_file.txt` in directory `dir_1`. Can you move the copy to your directory and rename it using one command only?
-
-***
-
-## Text processing
-
-There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder.
-
-1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `text_file.txt`, respectively. How many lines are in the file?
-2. Use `less <text_file>` to check `Pseud_protegens_S5_final.fasta`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file. Do you have an idea, what would happen if you would use `cat`?
-3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of words, newline characters and characters in the input file. You can specify output by parameters. How many lines are in `text_file.txt`?
-4. Standard output is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many nucleotides are in the genome of *Pseudomonas protegens* we have sequenced last semester. File `Pseud_protegens_S5_final.fasta` is a simple fasta file, so the number of nucleotides is equal to the number of all characters other than newline in the file without the first line (header).
-
-<sub>
-An alternative to pipe is the symbol `>`, which serves for redirection of standard output stream to a file. Be careful, if the target file exists, it will be overwritten. To add lines to the end of the file, you can use `>>` (= concatenate).
-</sub>
-
-```bash
-head -n 1 Pseud_protegens_S5_final.fasta | wc -c # returns the number of characters in the first line
-wc Pseud_protegens_S5_final.fasta -lc # returns the number of newline characters and the number of all characters in the file
-```
-
-So, how big is the genome? Do you remember approx the size of the *P. protegens* genome from the last semester? Is it consistent with your knowledge?
-
-<sub>
-The sequences in `.fasta` files are usually stored in 60 nucleotides per line, but bioinformatians are messy and the format of the `.fasta` slightly differs sometimes. In the case of our genome there are no newline characters in the sequence (i.e. the whole genome is in the second line of the `.fasta` file). Do not get confused, almost all software are automatically wrapping lines which are too long to make a document more readable. Using `less Pseud_protegens_S5_final.fasta` gives you a feeling of a usual `.fasta` even if we already know that our fasta is not the case. Also, if our assembly would have several contigs, there should be more header lines in the files. 
-</sub>
-
-5. You can simplify your problem using command `tail` which can also print all but a given number of skipped lines from the beginning `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters. Is it same as before? 
-
-```bash
-tail -n +2 Pseud_protegens_S5_final.fasta | wc -c
-```
-
-6. **bonus** if you would have an usual `.fasta` you can use `tr` (translate characters) command to delete all newline characters before you count them using `wc`. But in our case it should return the very same result. Note how the commands are nested. You can use as many pipes as you need.
-
-```bash
-tail -n +2 Pseud_protegens_S5_final.fasta | tr -d '\n' | wc -c
-```
-
-<sub>
-There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialised for text processing like `awk` or `sed` or `grep`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
-</sub>
-
-7. Editing files can be done using editors like `nano <textfile>` or `vi <textfile>`. Open `text_file.txt` in `vi`, press `a` to enter the editing mode. Add number 11 to the series of number. Press `<Esc>` to escape from the writing mode and `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed to add there the value by `cat`, `less` or using `wc` (should return 20 lines now).
-
-<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
-
-***
-
-## Vital-it
+### Running a simple job
 
 1. You will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
 
@@ -183,14 +138,7 @@ bsub <bsub_parameters> <command> <command_parameters>
 Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end. Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
 </sub>
 
-2. Programs available on the Vital-it you can loaded using 
-
-```bash
-module add <field>/<category>/<program>/<version>
-```
-
-3. The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/software/tools.php). Find there a command for program fastqc and run it.
-4. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
+`fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
 
 ```bash
 fastqc -o <fastqc_results> <sequencing_reads>
@@ -202,67 +150,5 @@ fastqc -o <fastqc_results> <sequencing_reads>
 
 ***
 
-## Challenges
-
-1. Extract all header lines of `LM2_subset.fastq` file to separated file. If you do the same on `Pseud_protegens_S5_final.fasta`, how many headers you extract?
-
-```{bash echo=FALSE, eval=FALSE}
-awk '/>/{ print }' LM2_subset.fastq > LM2_L1_R1_headers.txt
-wc -l LM2_L1_R1_headers.txt
-```
-
-2. Find a way, how to compute total number of nucleotides in `LM2_subset.fastq`.
-
-```{bash echo=FALSE, eval=FALSE}
-python
-```
-
-```{python echo=FALSE, eval=FALSE}
-from Bio import SeqIO 
-total_number = 0;
-
-for seq_record in SeqIO.parse('LM2_subset.fastq', "fastq"):
-    total_number = total_number + len(seq_record)
-
-print(total_number)
-```
-
-3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all files in `/scratch/cluster/monthly` to ensure, that your data will stay there for another month. Note, that writing a script doing this automatically is against the rules of Vital-it.
-
-```{unix echo=FALSE, eval=FALSE}
-find . -exec touch {} \;
-```
-
-<sub>There are loads of different solutions, some possibilities are written in the source file (`unix_refresh.Rmd`) of this `.html` document. <sub\>
-
-***
-
-## Tips and tricks
-
-- Command `cd` without any argument changes the working directory to your home. Symbol `~` works the same, it is symbol of home.
-- Press tabulator to call whisperer (autocompletion) every time you are writing a path. It is handy with long filenames as we can find in genomics. Note that you will have to type all the first letters of the file which are in common with other filenames of same the directory before autocompletion can be achieved by pressing tabulator. It is a good way how to prevent typos, because autocompleted path is usually valid.
-- Arrows up and down allows to browse your command history saved at `~/.bash_history`
-- Press `Ctrl+R` for a full text search in the command history
-- Press `Ctrl+C` to stop the running process, useful if you use `cat` on a huge file to stop seeing text flowing endlessly... Beware to remove result/temporary files created by the program if you use `Ctrl+C` to stop a running program, otherwise there may be conflicts the next time you run the same program. 
-- You can use wild characters `?`, `[]` and `*`, to specify a group of files. `?` stands for any single character, `[XYZ]` one of the specifies characters (XYZ in this case, you can also use numbers), `*` any number of any characters. See examples
-
-```bash
-cat *.txt # prints all text files
-ls ?? # lists all files or directories with exactly two letter names
-cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from given <path>
-```
-
-- Bash script `~/.bashrc` is executed every time you open new window terminal.
-
-<sub> script `.bashrc` located at your home directory is a bash script which is executed every time you start a new session of terminal. You can easily check how it works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). </sub>
-
-- (Linux only) You can make your command prompt colourful by adding following line to `~/.bashrc`
-
-```bash
-PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-```
-
-***
-
 Credits: based on Nadja's material, made by Andrea and Kamil;
-Contact: kamil.jaron@isb-sib.ch
+Contact: kamiljaron@gmail.com
