@@ -1,0 +1,65 @@
+---
+output: pdf_document
+---
+# Quality control
+
+***
+
+## Read a quality control output
+
+1. How many reads you have?
+2. What is the length of reads?
+3. Are there any sequencing adapters present in the dataset?
+4. Could you approximate a coverage we have given the length of the genome (**XX** Mbp).
+
+***
+
+## Hands-on adapter search
+
+Searching for adapter contamination is not that hard since, the sequences are actually known. If you dig into source code of fasqc, or check Illumina website, you can find seqeunces of adapters and usually you find an adapter matching your adapter contamination. Another aproach would be to check kmer frequencies. **We found that adapter of `data.fastq.gz` contains sequence `ATCTCGTATGCCGTCTTCTGCTTG`. **
+
+1. To identify whole adapter sequence, you can select fulltext search in some subset of your reads (100000 lines). In the subset you use a fulltext search (grep) to find reads containing the adapter sequence (overrepresented kmer), select first one hundred of them and show them using `less`.
+
+```bash
+zcat <reads1.fastq.gz> | head -n 100000 | grep <overrepresented kmer> | head -n 100 | less
+```
+
+Command `less` allow you a fulltext search as well. Press `?` and copy-paste there the sequence `<overrepresented kmer>`, hit `Enter`. Now all `<overrepresented kmer>` sequences will be highlighted. Can you find a pattern? Do we know whole seqeuence of adapter or is it actually longer?
+
+<sub>
+We will actually cut all possible adapters without specifying which one is in our sequence. Therefore we wont use the output of our little adapter investigaton. 
+<sub\>
+
+***
+
+## Adapter trimming and quality filtering
+
+1. Activate Vital-it module `trimmomatic`
+```bash
+module add UHTS/Analysis/trimmomatic/0.33
+```
+
+3. Submit a trimming job (this will take some minutes)
+```bash
+ISOLATE=<name_of_the_isolate>
+bsub -n 8 -M 4194304 -J <job_name> trimmomatic PE -threads 8 \
+<input_readsR1.fastq.gz> <input_readsR2.fastq.gz> \
+$ISOLATE''_R1t_$is.fq.gz $ISOLATE''_R1np_$is.fq.gz \
+$ISOLATE''_R2t_$is.fq.gz $ISOLATE''_R2np_$is.fq.gz \
+ILLUMINACLIP:<adapters.fa>:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60
+```
+
+<sub>
+Sometimes, when the fragment is really small, there can be more consecutive adapters sequenced. Those adapters are not cut in demultiplexing in the sequencing centre. It is up on us, to get rid of them. The most of possible adapters of Illumina sequencing are in the file `<adapters.fa>`. `trimmomatic` cat try to identify those sequences in the reads and cut them off if the module `ILLUMINACLIP` is used. You have to specify the file with adapters. Other modules of trimmomatic, `LEADING`, `TRAILING` are cutting given number bases from the start and end of read if the quality is below some internal threshold. Module `SLIDINGWINDOW` performs a sliding window trimming, cutting once the average quality within the window falls below a threshold. Module `MINLEN` simply discards all reads which are after all that trimming shorter than given number of bases.
+<sub\>
+
+***
+
+## QC
+
+
+
+
+
+
+Credits: made by Kamil based on materials of the last semester. Contact: kamil.jaron@gmail.com
