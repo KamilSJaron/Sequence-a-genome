@@ -42,7 +42,7 @@
 \begin{frame}
 	\huge
 	\begin{center}
-	Sequencing reads of 14 genomes \\
+	Sequencing reads of 15 genomes \\
 	~\\
 	$\approx$ 1GB of plain text data / species \\
 	~\\
@@ -98,7 +98,7 @@
 \begin{frame}
 	\Huge
 	\begin{center}
-		Well, and how can UNIX help us?	
+		How can UNIX help us?	
 	\end{center}
 \end{frame}
 
@@ -208,9 +208,8 @@
 \end{frame}
 
 \begin{frame}[fragile]
-	\Huge
 	\begin{center}
-		OK, try it!	
+		MyUnil $\rightarrow$ Sequence a Genome II $\rightarrow$ 1\_unix\_local.pdf
 	\end{center}
 	\Large
 	\begin{verbatim}
@@ -228,6 +227,181 @@
 	\begin{center}
 		What about that toolbox?	
 	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+	\huge
+	How to check a file?? \\
+	\vspace{1cm}
+	
+	\Large
+	\begin{tabular}{C{0.4\textwidth}C{0.4\textwidth}}
+	Notepad? & Office? \\
+	\includegraphics[scale=0.3]{UNIX/notepad-icon} & \includegraphics[scale=0.2]{UNIX/office_logo} \\
+	\small not well suited for big files & \small Use at least read-only mode\\
+	\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Look at a plain-text file
+	\Large
+	\begin{verbatim}
+		command <text_file>	
+	
+		head 
+		tail 
+		cat   # catenate
+		less  # > more; text reader
+		
+		wc    # word count
+		tr    # transform
+		grep  # global regular expression print 
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	IO streams - a way how to build pipes!
+	\Large
+	\begin{verbatim}
+		command <text_file> 
+	           == cat <text_file> | command
+		head 
+		tail 
+		cat   # catenate
+		less  # > more
+		
+		wc    # word count
+		tr    # transform
+		grep  # global regular expression print 
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/GUI_pipeline}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	IO streams!
+	\Large
+	\begin{verbatim}
+		
+	
+		ls | wc -w
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Streams in the service of genomics!
+	\Large
+	\begin{verbatim}
+		
+	
+		grep ">" seq.fasta | wc -l
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	input file
+	\Large
+	\begin{verbatim}
+		
+	
+		grep -v ">" seq.fasta | \
+		  tr -d '\n' | wc -l
+		
+		
+		>seq1
+		CGATCGTCGTAGCTACGAT
+		>seq2
+		ACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	\verb!grep -v ">"!
+	\Large
+	\begin{verbatim}
+		
+	
+		grep -v ">" seq.fasta | \
+		  tr -d "\n" | wc -l
+		
+		
+		CGATCGTCGTAGCTACGAT
+		ACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	\verb!tr -d "\n"!
+	\Large
+	\begin{verbatim}
+		
+	
+		grep -v ">" seq.fasta | \
+		  tr -d "\n" | wc -l
+		
+		
+		CGATCGTCGTAGCTACGATACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	\verb!wc -l!
+	\Large
+	\begin{verbatim}
+		
+	
+		grep -v ">" seq.fasta | \
+		  tr -d "\n" | wc -l
+		
+		
+		38
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Stream redirection overview
+	\Large
+	\begin{verbatim}
+		
+	
+		grep ">" seq.fasta         # print
+		grep ">" seq.fasta | wc    # pipe
+		grep ">" seq.fasta > file  # write
+		grep ">" seq.fasta >> file # append
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Your turn
+	\Large
+	\begin{verbatim}
+		command <text_file>	
+	
+		head 
+		tail 
+		cat   # catenate
+		less  # > more; text reader
+		
+		wc    # word count
+		tr    # transform
+		grep  # global regular expression print 
+	\end{verbatim}
 \end{frame}
 
 \end{document}
