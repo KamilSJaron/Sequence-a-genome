@@ -176,18 +176,23 @@
 \end{frame}
 
 \begin{frame}[fragile]
-	\Huge
-	\begin{center}
-		OK, try it!	
-	\end{center}
+	\huge
+	Special characters \verb!*, ?, []!
 	\Large
 	\begin{verbatim}
+		$cd /
+		$echo b
+		b
 		
+		$echo b*
+		bin boot
 		
+		$echo b\*
+		b*
 		
-		
-		
-		
+		$echo B*
+		B*
+
 	\end{verbatim}
 \end{frame}
 
@@ -251,8 +256,8 @@
 	\begin{verbatim}
 		command <text_file>	
 	
-		head 
-		tail 
+		echo
+		head / tail 
 		cat   # catenate
 		less  # > more; text reader
 		
@@ -269,8 +274,8 @@
 	\begin{verbatim}
 		command <text_file> 
 	           == cat <text_file> | command
-		head 
-		tail 
+		echo
+		tail / head
 		cat   # catenate
 		less  # > more
 		
@@ -393,10 +398,10 @@
 	\begin{verbatim}
 		command <text_file>	
 	
-		head 
-		tail 
+		echo
+		tail / head
 		cat   # catenate
-		less  # > more; text reader
+		less  # text reader
 		
 		wc    # word count
 		tr    # transform
