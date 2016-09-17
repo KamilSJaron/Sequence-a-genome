@@ -40,20 +40,20 @@
 \end{frame}
 
 \begin{frame}
-	\huge
+	\Huge
 	\begin{center}
-	Sequencing reads of 15 genomes \\
-	~\\
-	$\approx$ 1GB of plain text data / species \\
-	~\\
-	$\approx$ 640938 of pages
+		Why UNIX?	
 	\end{center}
 \end{frame}
 
 \begin{frame}
-	\Huge
+	\huge
 	\begin{center}
-		Why UNIX?	
+	Sequencing reads of 15 genomes \\
+	~\\
+	$\approx$ 1GB of plain text data / genome \\
+	~\\
+	$\approx$ 640938 of pages
 	\end{center}
 \end{frame}
 
@@ -122,27 +122,6 @@
 	\end{center}
 \end{frame}
 
-\begin{frame}
-	bash $\approx$ explorer (where am I?)
-	\begin{center}
-		\includegraphics[width=1.8\textwidth]{/UNIX/pwd}
-	\end{center}
-\end{frame}
-
-\begin{frame}
-	bash $\approx$ explorer (browse directories)
-	\begin{center}
-		\includegraphics[width=1.4\textwidth]{/UNIX/cd_ls}
-	\end{center}
-\end{frame}
-
-\begin{frame}
-	bash $\approx$ explorer (copy and move files)
-	\begin{center}
-		\includegraphics[width=1\textwidth]{/UNIX/relative_path_cp}
-	\end{center}
-\end{frame}
-
 \begin{frame}[fragile]
 \begin{verbatim}
 ### relative paths
@@ -155,9 +134,80 @@
 \end{frame}
 
 \begin{frame}
-	bash $\approx$ explorer (remove files)
+	bash $\approx$ explorer (print working directory)
 	\begin{center}
-		\includegraphics[width=1\textwidth]{/UNIX/mv_rm}
+		\includegraphics[width=1\textwidth]{/UNIX/pwd}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (list segments)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/ls}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (change directory)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/cd}
+	\end{center}
+\end{frame}
+		
+
+\begin{frame}
+	bash $\approx$ explorer (copy)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/cp_rename}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (copy)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/cp}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (move)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/mv_ls}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (move)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/mv}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (rename)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/rename}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (rename to existing file)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/rename_rm}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash $\approx$ explorer (remove)
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/rm}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	bash makes readable errors
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/errors}
 	\end{center}
 \end{frame}
 
@@ -172,13 +222,14 @@
 		cp -r <what_dir> <were> # recursive
 		rm -rf <what dir>       # -||- , force
 		# careful with this one...
+		
+		man <command>
 	\end{verbatim}
 \end{frame}
 
 \begin{frame}[fragile]
-	\huge
-	Special characters \verb!*, ?, []!
 	\Large
+	Special characters \verb!*, ?, []!, escape character \verb!\!
 	\begin{verbatim}
 		$cd /
 		$echo b
@@ -203,6 +254,10 @@
 	\end{center}
 	\Large
 	\begin{verbatim}
+		# Manual	
+		man <command>
+	
+	
 		# Auto Completion by <tab>
 		cd /<tab><tab>   # lists all in root
 		cd ~/k<tab><tab> # lists all in home
@@ -218,9 +273,13 @@
 	\end{center}
 	\Large
 	\begin{verbatim}
+		# Manual	
+		man <command>
+		
 		# Auto Completion by <tab>
 		cd /<tab><tab>   # lists all in root
-		cd ~/k<tab><tab> # lists all in home
+		cd ~/<tab><tab> # lists all in home
+		
 		# Command history
 		<arrow_up>       # last excuted command
 		<Ctrl+R>         # full-text search
@@ -315,13 +374,13 @@
 
 \begin{frame}[fragile]
 	\huge
-	input file
+	input stream (file)
 	\Large
 	\begin{verbatim}
 		
 	
 		grep -v ">" seq.fasta | \
-		  tr -d '\n' | wc -l
+		  tr -d '\n' | wc -c
 		
 		
 		>seq1
@@ -339,7 +398,7 @@
 		
 	
 		grep -v ">" seq.fasta | \
-		  tr -d "\n" | wc -l
+		  tr -d "\n" | wc -c
 		
 		
 		CGATCGTCGTAGCTACGAT
@@ -355,7 +414,7 @@
 		
 	
 		grep -v ">" seq.fasta | \
-		  tr -d "\n" | wc -l
+		  tr -d "\n" | wc -c
 		
 		
 		CGATCGTCGTAGCTACGATACCGATCAAACCGTCGTAA
@@ -364,13 +423,13 @@
 
 \begin{frame}[fragile]
 	\huge
-	\verb!wc -l!
+	\verb!wc -c!
 	\Large
 	\begin{verbatim}
 		
 	
 		grep -v ">" seq.fasta | \
-		  tr -d "\n" | wc -l
+		  tr -d "\n" | wc -c
 		
 		
 		38
@@ -396,7 +455,7 @@
 	Your turn
 	\Large
 	\begin{verbatim}
-		command <text_file>	
+		command <parameters> <text_file>	
 	
 		echo
 		tail / head
