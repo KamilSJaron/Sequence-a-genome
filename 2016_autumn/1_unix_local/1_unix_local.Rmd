@@ -4,7 +4,7 @@ output: pdf_document
 
 #Unix introduction
 
-Here are more materials about [UNIX](edu.isb-sib.ch/course/view.php?name=UNIX_I).
+Unix is an essential tool for work with big amounts of data, this tutorial is trying to show the practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX you can find all over the internet, for instance [edu.isb-sib.ch/course/view.php?name=UNIX_I](edu.isb-sib.ch/course/view.php?name=UNIX_I).
 
 ## Syntax of this exercise
 
@@ -52,14 +52,14 @@ ssh <username>@prd.vital-it.ch
 
 \newpage
 
-## bash as explorer
+## Bash as explorer
 
 Now you should see a command line in front of you. 
 
-### browsing directories
+### Browsing directories
 
-1. go to your home directory `/home/<user_name>` and check the content using `ls` (list segments). You will probably see nothing (i.e. your home is empty).
-2. make a new directory, enter the directory
+1. Go to your home directory `/home/<user_name>` and check the content using `ls` (list segments). You will probably see nothing (i.e. your home is empty).
+2. Make a new directory, enter the directory
 
 ```bash
 mkdir SAGE
@@ -73,13 +73,13 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 3. Use `pwd` (print working directory) to check your location. 
 4. Correct the command `cd Sage` to actually enter the directory `SAGE`.
 5. Use `pwd` to check your location. 
-5. Go to parent directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
+6. Go to parent directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
 
 <sub>The command `cd` (change directory) and correct handling of paths is essential for everything done in Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./SAGE` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /home/kjaron`). Meanings of symbols are as follows: `.` is a current directory, `..` is a parent directory, `/` is a root directory, `~` is your home directory. Note that symbol `~` carry different path for every user: `/home/<username>` and symbols `.` and `..` carry different path in every single directory, hence a path specified using one of these two symbols is called relative path. </sub>
 
-### copy, move, rename and remove
+### Copy, move, rename and remove
 
-1. copy directory `/scratch/beegfs/monthly/mls_2016/UNIX_testfiles` to your working directory using command `cp` (copy)
+1. Copy directory `/scratch/beegfs/monthly/mls_2016/UNIX_testfiles` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> # generally
@@ -101,7 +101,13 @@ cd ..
 
 6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `nonemptydir`? 
 
-<sub>Command `mv` (move) moves file to the given path and renames it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command `mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>`, the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
+<sub>Command `mv` (move) moves file to the given path and renames it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command 
+
+```bash
+mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>
+```
+
+, the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
 
 7. Remove the copied file.
 
@@ -109,11 +115,11 @@ cd ..
 rm <your_new_name>
 ```
 
-8. Remove directory `nemptydir`. 
+8. Try to remove directory `nonemptydir`. Could you figure out why `rm <dir>` and `rmdir <dir>` is not working?
 
 <sub> Command `rm` is to remove files, `rmdir` to remove empty directories. If you want to remove a directory with files inside, you have to specify it `rm -r <dir_to_delete>`. However, be careful, there is nothing like "Trash" in the bash, i.e. what is deleted is permanently lost! </sub>
 
-9. Try command `man <command>` (manual) to show manual page of some commands. What does the `-l` mean in the `ls` command?
+9. Try command `man <command>` (manual) to show manual page of some commands. What does the `-a` mean in the `ls` command? Could you use this parameter to find out why `rmdir` is not working on `nonemptydir`, even through `ls` is not showing any files inside?
 
 ***
 
@@ -121,7 +127,7 @@ rm <your_new_name>
 
 \newpage
 
-## more than explrorer
+## More than explrorer
 
 There are two types of commands you can use in `bash`. Inbuilt and default commands (usually with `man` page). And programs you have installed. "installed" on Linux means usually that you have copied a binary file to location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command `echo $PATH`. First of all, we will get familiar with inbuilt commands of bash, that have a great use in all data oriented science.
 
@@ -138,7 +144,7 @@ There are many many ways how to show a plain text file in the terminal, so if yo
 2. Use `less <text_file>` to check `AllIllumina-PEadapters.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file.
 3. To get an idea, about the file, you can use command `wc` (word count), which is counting number of, newline characters, words and characters in the input file. You can specify output by parameters. How many lines are in `browsing.txt`?
 
-Command `grep` searches the file and prints all lines containing a pattern specified by a parameter: `grep <pattern> <file.txt>`. We heavily recommend to write such patterns in quotes "", because characters can have a meaning in the command line with will interfer with what you want to do (for example spaces, or the symbols ">", "|", ".", "\\", etc.).
+Command `grep` searches the file and prints all lines containing a pattern specified by a parameter: `grep <pattern> <file.txt>`. I heavily recommend to write such patterns in quotes "", because some characters have a special meaning in the command line (for example white spaces, or the symbols ">", "|", ".", "\\", etc.).
 
 4. Explore behaviour of `grep` selecting different lines in file `browsing.txt`. Example:
 
@@ -183,18 +189,6 @@ tail -n +2 sample.fasta | tr -d '\n' | wc -c
 There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialized for text processing like `awk` or `sed` or `grep`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
 </sub>
 
-### Manual changes in files
-
-Editing files can be done using editors like `nano <textfile>` or `vi <textfile>`. Open `browsing.txt` in `vi`, press `a` to enter the editing mode. 
-
-1. Correct one of the typos in text (for instance, second line: `enther` -> `enter`). Press `<Esc>` to escape from the writing mode. Press `:` to enter to command mode, write `wq` to save changes (write) and exit back to terminal (quit). Verify, that you managed edit the file.
-
-<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
-
-2. Once you finish with Challenges you would like to achieve, delete whole directory `UNIX_testfiles`
-
-***
-
 ## Challenges
 
 1. Extract all header lines of `AllIllumina-PEadapters.fa` file to separated file. If you do the same on `sample.fasta`, how many headers you extract?
@@ -207,7 +201,7 @@ wc -l adapter_headers.txt
 2. Compute total number length of low-complexity sequences (lower-case) in nucleotides in `sample.fasta`.
 3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all your files, verify the success using `ls -l`.
 
-```{unix echo=FALSE, eval=FALSE}
+```{bash echo=FALSE, eval=FALSE}
 find . -exec touch {} \;
 ```
 
@@ -232,5 +226,5 @@ cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from gi
 
 ***
 
-Credits: based on Nadja's material, made by Andrea and Kamil;
+Credits: made by Kamil, based on Andrea's and Nadja's materials from previous years;
 Contact: kamiljaron@gmail.com
