@@ -1,8 +1,48 @@
 ---
 output: pdf_document
 ---
+
 # Quality control
 
+## Prepare a workspace
+
+Keep in mind that you can save a lot of energy and mistakes by using `<tab>` for auto completion of all existing paths you type and by using your command history (up and down arrows and `Ctrl+r`)
+
+1. go to your scratch directory.
+2. Copy your data (`/scratch/beegfs/monthly/mls_2016/data/F5_<strain>*`) to your working dir (to scratch).
+
+Can you figure out why do you have two files? What could possibly R1 and R2 mean??
+
+***
+
+## Explore genomic reads
+
+The files you got is a compressed textfile, if you try `head <file_name>`, you will get just meaningless characters. There are two solutions, either you can uncompress your files by command `gunzip` or preferably you can use command `zcat` to print the file on the standard output. Do not forget that it is still a half GB file each - a lot of letters, you better pipe them somewhere.
+
+1. Format `.fastq` is just formatted plain text formats, so you could use all line tools for parsing text. Check the format with `head`
+
+```bash
+zcat <read_file.fastq.gz> | head
+```
+
+Every read is represented by four lines: header line, sequence line, quality of basecalling (in PHRED score) and comments (usually blank line).
+
+2. How many reads are in the files `R1` and `R2`? Is it a same number?
+
+***
+
+## Submit a quality control job
+
+Reads from the sequencing center are just roughly parsed, it is on users to make sure, that reads are without any problem. There are pretty efficient tools checking various aspects of read quality, one of them is `fastqc`, which is already installed on Vital-it. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
+
+```bash
+fastqc -o <fastqc_results> <sequencing_reads>
+```
+
+1. Activate Vital-IT module `UHTS/Quality_control/fastqc/0.11.2` using command `module add`
+2. Create a folder `<fastqc_results>` for an output of `fastqc` and submit a job computing a quality control of read files of yours
+3. Check the status of the submitted job
+4. Once it finishes, verify the existence of files. Copy those files to your computer (explained at beginning) and check the html file.
 
 ## Read a quality control output
 
@@ -12,11 +52,9 @@ output: pdf_document
 4. Are there any sequencing adapters present in the dataset?
 5. Could you approximate a coverage we have given the length of the genome is 1.5 - 2.5 Mbp. For the calculation be conservative, compute the minimal coverage you have.
 
-***
-
 ## Hands-on adapter search
 
-Searching for adapter contamination is not that hard since, the sequences are actually known. If you dig into source code of fasqc, or check Illumina website, you can find seqeunces of adapters and usually you find an adapter matching your adapter contamination. Another aproach would be to check kmer frequencies. **We found that adapter of `data.fastq.gz` contains sequence `ATCTCGTATGCCGTCTTCTGCTTG`. **
+Searching for adapter contamination is not that hard since, the sequences are actually known. If you dig into source code of fasqc, or check Illumina website, you can find seqeunces of adapters and usually you find an adapter matching your adapter contamination. Another aproach would be to check kmer frequencies.
 
 1. To identify whole adapter sequence, you can select fulltext search in some subset of your reads (100000 lines). In the subset you use a fulltext search (grep) to find reads containing the adapter sequence (overrepresented kmer), select first one hundred of them and show them using `less`.
 
@@ -37,18 +75,27 @@ We will actually cut all possible adapters without specifying which one is in ou
 Later on, we are going to "glue" reads together into nice assembly, this process is rather complicated, therefore we need to help assembler as much as possible by giving it as good data as possible. Besides trimming of addapters, we can reduce number of errors by filtering and trimming reads according to quality. A one handy tool integrating all those read pre processing steps is `trimmomatic`.
 
 1. Activate Vital-it module `trimmomatic`
+
 ```bash
 module add UHTS/Analysis/trimmomatic/0.33
 ```
 
+2. Copy file with adapters that might be inside the sequencing
+
+```bash
+cp /scratch/beegfs/monthly/mls_2016/adapeters/TruSeq3-PE.fa .
+```
+
 3. Submit a trimming job (this will take some minutes)
+
 ```bash
 ISOLATE=<name_of_the_isolate>
-bsub -n 8 -M 4194304 -J <job_name> trimmomatic PE -threads 8 \
+bsub -n 8 -M 4194304 -J <job_name> 'trimmomatic PE -threads 8 \
 <input_readsR1.fastq.gz> <input_readsR2.fastq.gz> \
 $ISOLATE''_R1t.fq.gz $ISOLATE''_R1np.fq.gz \
 $ISOLATE''_R2t.fq.gz $ISOLATE''_R2np.fq.gz \
-ILLUMINACLIP:<adapters.fa>:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60
+ILLUMINACLIP:TruSeq3-PE.fa:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60 \
+&> trimming_$ISOLATE.log'
 ```
 
 <sub>
@@ -57,7 +104,7 @@ Those adapters are comming from situations when a DNA fragment is really small, 
 
 ***
 
-## Again quality control
+## Quality control - again
 
 Right now you have to verify, that trimmer have sucessfully trimmed your reads. 
 
@@ -66,7 +113,7 @@ Right now you have to verify, that trimmer have sucessfully trimmed your reads.
 3. download the `.html` reports and check if reads look better now. What is the distribution of length? How many reads were discarded? Is quality dropout in the tail of reads better now?
 
 
-
+***
 
 
 Credits: made by Kamil based on materials of the last semester. Contact: kamil.jaron@gmail.com
