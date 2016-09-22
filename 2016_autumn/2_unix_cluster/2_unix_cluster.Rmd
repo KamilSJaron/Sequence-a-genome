@@ -10,18 +10,21 @@ Last time we got familiar with basic concept of UNIX shell bash. Now we would li
 **connection**
 
 Open terminal and connect to Vital-it using `ssh` (secure shell)
+
 ```bash
 ssh <username>@prd.vital-it.ch
 ```
 
 **file transfer**
 
-To copy file **to** cluster you have to be in the terminal of your computer, then
+To copy file **to** cluster you have to be in the terminal of your computer using `scp` (secure copy)
+
 ```bash
-scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename> # (scp stands for secure copy)
+scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename> 
 ```
 
 to copy file **from** the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
+
 ```bash
 scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
 ```
@@ -47,14 +50,14 @@ Transfer the file to your computer by drag and drop from the server side. Every 
 
 ## Scripts
 
-One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands you use in scripts also helps you to reuse it.
+One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before.
 
 ## Variables
 
 `bash` also allows to use variables, similarly to `R` or `python`. You can define them by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
 
 0. connect to Vital-it
-1. define variable `VAR` to `1`
+1. define variable `VAR` as `1`
 
 since terminal is primarily trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
 
@@ -70,7 +73,77 @@ there are several pre-defined variables in the terminal defining a behaviour of 
 
 ***
 
-\newpage
+We will text bit more commands and concepts on files located at `/scratch/beegfs/monthly/mls_2016/UNIX_testfiles/`, be sure that you have a copy at your working directory.
+
+## Edit a file
+
+Editing files using command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small script and minor edits is more then useful to keep at least basic knowledge of these tools. Here I describe work with more widespread editor `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
+
+1. Open file `browsing.txt` in `vi`
+2. Press `a` or `i` to enter the editing mode. 
+3. Correct one of the typos in text (for instance, second line: `enther` -> `enter`). 
+4. Press `<Esc>` to escape the writing mode. 
+5. Press `:` to enter to command mode
+6. Write `wq` and hit `<Enter>` to save changes (write) and exit back to terminal (quit). 
+7. Verify, that you managed edit the file.
+
+<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
+
+***
+
+## Write a script
+
+All bash scripts should start by line that specify a language used for interpretation. It is not essential if interpreter is specified during execution (see bellow).
+
+```bash
+#!/bin/bash
+```
+
+the script is then executed as follows
+
+```
+bash ./<script.sh>
+```
+
+Lets create a script that will compute number of sequences in file `AllIllumina-PEadapters.fa`,
+
+1. Open an empty file in `vi`
+
+```sh
+vi <script.sh>
+```
+
+2. Copy there a first line (do not forget to enter insert mode first by pressing `a` or `i`)
+3. Add there a new line computing a number lines of file `AllIllumina-PEadapters.fa`, save file and quit `vi`
+4. Execute script in folder where is `AllIllumina-PEadapters.fa`
+
+```sh
+bash <script.sh>
+```
+
+However, maybe the script will be more useful if it will be generally computing number of reads in any `.fasta` file. For this we can use a predefined variable `1`, which carry a value of the first argument when the script is called.
+
+5. open the same script in `vi`
+
+```bash
+vi <script.sh>
+```
+
+6. replace in the script the name of the fasta file with adapters by `$1` (`$` is there because values of variables are called through operator `$`)
+7. save, quit and execute script on the fasta file with adapters
+
+```bash
+bash <script.sh> AllIllumina-PEadapters.fa
+```
+
+<sub>
+Special variables in `bash` scripts are 
+`$1 $2 $3 ...`: first, second, third ... argument;
+`$0`: name of the script;
+`$*`: all arguments
+</sub>
+
+***
 
 ## Pimp my bash
 
@@ -107,87 +180,72 @@ You can use from now on a command `ll` instead of `ls -lah` (list all, long form
 
 ***
 
-\newpage
-
-## Prepare a workspace
-
-Before anything, keep in mind that you can save a lot of energy and mistakes by using `<tab>` for auto completion of all existing paths you type and by using your command history (up and down arrows and `Ctrl+r`)
-
-1. go to your scratch directory. If it does not exist for any reason, make the directory using `mkdir <dir_name>` (make directory). Check the content. What do you expect?
-
-```bash
-mkdir /scratch/beegfs/monthly/mls_2016/<username> #if it doesnt exist
-cd /scratch/beegfs/monthly/mls_2016/<username>
-ls -l
-```
-
-it is probably empty. `scratch/monthly/` is a working place, all files and folders older than one month are automatically deleted (all data from the last semester). From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
-
-2. **Copy your data to your working dir.**
-3. **Get reference**
-
-***
-
-## Explore genomic reads
-
-The files you got is a compressed textfile, if you try `head <file_name>`, you will get just meaningless characters. There are two solutions, either you can uncompress your files by command `gunzip` or preferably you can use command `zcat` to print the file on the standard output. Do not forget that it is still a half GB file each - a lot of letters, you better pipe them somewhere.
-
-1. Format `.fastq` is just formatted plain text formats, so you could use all line tools for parsing text. Check the format with `head`
-
-```bash
-zcat <read_file.fastq.gz> | head
-```
-
-Every read is represented by four lines: header line, sequence line, quality of basecalling (in PHRED score) and comments (usually blank line).
-
-2. How many reads are in the files `R1` and `R2`? Is it a same number?
-
-***
+**BREAK!!!**
 
 \newpage
 
 ## Basic cluster operations
 
-### Modules
+Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end.
 
-1. Programs available on the Vital-it you can loaded using 
+### Moving to scratch
+
+Your home is back-uped and you can not save there more than 2GB. ALl the data for computations should be store on a disc scratch. `/scratch/beegfs/monthly` is a working place, all files and folders older than one month are automatically deleted. From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
+
+1. Make the directory using `mkdir <dir_name>` (make directory) and go there.
 
 ```bash
-module add <field>/<category>/<program>/<version>
+mkdir /scratch/beegfs/monthly/mls_2016/<username>
+cd /scratch/beegfs/monthly/mls_2016/<username>
 ```
 
-2. The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software). Find there a command for program fastqc and execute it.
+2. now move all the files you had saved in our home to your scratch
 
-<sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
+```
+mv ~/UNIX_testfiles .
+```
 
-3. Now, check how your `PATH` has changed. 
-
-Adding module is nothing more than just adding a new path to list of directories searched for binaries.
+Since now, keep "messy files" here. Do not bring dirt home!
 
 ### Running a simple job
 
-1. You will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
+To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
 
 ```bash
 bsub <bsub_parameters> <command> <command_parameters>
 ```
 
-Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end. Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
+Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
 
-`fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
+1. submit a job, that will compute number of sequences in file `AllIllumina-PEadapters.fa` using your own script
 
-```bash
-fastqc -o <fastqc_results> <sequencing_reads>
+```
+bsub 'bash <script.sh> AllIllumina-PEadapters.fa > number_of_adapters'
 ```
 
-2. Create a folder `<fastqc_results>` for an output of `fastqc` and submit a job computing a quality control of read file you have copied.
-3. Check the status of the submitted job
+2. check `bjobs`
+3. check if file `number_of_adapters` was created and if the result corresponds to the number of sequences in the file.
 
-**BREAK**
+### Modules
 
-4. Once it finishes, verify the existence of files. Copy those files to your computer (explained at beginning) and check the html file.
+The second advantage of Vital-it cluster is, that there are installed modules with various programs. A software available on Vital-it you can loaded using 
+
+```bash
+module add <field>/<category>/<program>/<version>
+```
+
+The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software). 
+
+1. Find there a command for program `fastqc` and execute it.
+
+<sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
+
+2. Now, check how your `PATH` has changed. 
+
+Adding module is nothing more than just adding a new path to list of directories searched for binaries.
+
 
 ***
 
-Credits: based on Nadja's material, made by Andrea and Kamil;
+Credits: based on Andrea's and Nadja's materials, made by Kamil;
 Contact: kamiljaron@gmail.com
