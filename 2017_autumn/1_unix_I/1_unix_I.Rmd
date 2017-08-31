@@ -87,13 +87,14 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 
 ### Download, copy, move, rename and remove
 
-1. Download a directory from address `https://github.com/KamilSJaron/Sequence-a-genome/tree/master/2017_autumn/data/UNIX_testfiles`
+1. Create a working directory `/home/<username>/UNIX_testfiles` and enter it.
+2. Download a directory from address `https://raw.githubusercontent.com/KamilSJaron/Sequence-a-genome/master/2017_autumn/data/README.md`
 
 ```bash
-wget https://github.com/KamilSJaron/Sequence-a-genome/tree/master/2017_autumn/data/UNIX_testfiles
+wget https://raw.githubusercontent.com/KamilSJaron/Sequence-a-genome/master/2017_autumn/data/README.md
 ```
 
-2. Copy directory you have downloaded `/home/<username>/UNIX_testfiles` to your working directory using command `cp` (copy)
+3. Copy  to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> # generally
@@ -102,9 +103,9 @@ cp -r /scratch/beegfs/monthly/mls_2016/UNIX_testfiles .
 # directories need to be copied using -r (stands for recursive)
 ```
 
-3. Go inside and check the content (you should know how, if you don't, scroll up).
-4. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cd`, for all inbuilt commands there is a manual page you can check).
-5. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move it back to `UNIX_testfiles`.
+4. Go inside and check the content (you should know how, if you don't, scroll up).
+5. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cd`, for all inbuilt commands there is a manual page you can check).
+6. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move it back to `UNIX_testfiles`.
 
 ```bash
 cd ./nonemptydir

@@ -1,8 +1,8 @@
-\documentclass[xcolor=dvipsnames]{beamer} 
+\documentclass[xcolor=dvipsnames]{beamer}
 \mode<presentation>
 {
 \setbeamercolor{structure}{fg=Red!75!black}
-\usetheme{Madrid} 
+\usetheme{Madrid}
 \setbeamercovered{transparent}
 }
 
@@ -38,6 +38,234 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster computing\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/Vital-IT-cluster}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster organisation\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/cluster_computers}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Queuing system\\
+		\vspace{1cm}
+
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\huge
+\begin{verbatim}
+bsub       # submit a job
+bjobs      # list your jobs
+bkill      # kill a job
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+$bsub -q priority \
+'echo "I <3 SAGE!" > message'
+
+Job <256817> is submitted to queue <priority>.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{UNIX/submit_a_job}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		~\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/cluster_bsub}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+$bsub -q priority \
+'echo "I <3 SAGE!" > message'
+
+Job <256817> is submitted to queue <priority>.
+
+$bkill 256817
+
+
+bkill <job_id>     # generally
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster storage\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{/ngs/SAGE/cluster_storage.pdf}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+/home/<username>                  # 2 GB quota
+                                  # backuped
+
+/scratch/beegfs/<...>/<username>  # 5 TB quota
+                                  # cleaning
+                monthly           # monthly
+                weekly            # weekly
+                daily             # daily
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+# scripts, logs, small tables
+# do NOT bring garbage home!
+/home/<username>
+
+# your data
+/scratch/beegfs/monthly/mls_2016/<username>
+
+# meeting point
+/scratch/beegfs/monthly/mls_2016/SAGE/...
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster queuing for real\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{/UNIX/cluster_really_bsub.pdf}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Module system\\
+		\vspace{1cm}
+		\Large
+		\url{http://www.vital-it.ch/services/software}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Module system\\
+		\vspace{1cm}
+\large
+\begin{verbatim}
+# /software/<category>/<package>/<version>
+
+module add <category>/<package>/<version>
+
+# to check loaded modules
+
+module list
+\end{verbatim}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+
+$module add UHTS/Quality_control/fastqc/0.11.2
+
+# to check loaded modules
+$module list
+Currently Loaded Modulefiles:
+  1) Development/java_jre/latest
+  2) UHTS/Quality_control/fastqc/0.11.2
+
+$fastqc -version
+FastQC v0.11.2
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		bash sees the binary!\\
+		\vspace{1cm}
+		\Large
+		How comes?
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+$type fastqc
+fastqc is hashed
+(/software/UHTS/Quality_control/fastqc/0.11.2/bin/fastqc)
+
+$echo $PATH
+/software/UHTS/Quality_control/fastqc/0.11.2/bin:/software\
+/Development/java_jdk/1.8.0_102/jre/bin:/mnt/common/lsf/9.\
+1/linux2.6-glibc2.3-x86_64/etc:/mnt/common/lsf/9.1/linux2.\
+6-glibc2.3-x86_64/bin:/software/bin:/usr/local/bin:/bin:/u\
+sr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/kjaron/bin
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+# remove all modules
+$module purge
+
+$module list
+No Modulefiles Currently Loaded.
+
+$echo $PATH
+/mnt/common/lsf/9.1/linux2.6-glibc2.3-x86_64/etc:/mnt/comm\
+on/lsf/9.1/linux2.6-glibc2.3-x86_64/bin:/software/bin:/usr\
+/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/\
+home/kjaron/bin
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Your turn
+	\end{center}
+\begin{verbatim}
+bsub <parameters> '<command>'
+bjobs
+bkill <jid>
+
+vit_soft -s <keyword>
+vit_soft -p <package_name>
+module add <path>/<package_name>
+module purge
+\end{verbatim}
+\end{frame}
+
 \begin{frame}[fragile]
 \LARGE
 \begin{verbatim}
@@ -63,6 +291,3 @@ bsub -n 2 -J "QC" \
 \end{frame}
 
 \end{document}
-
-
-
