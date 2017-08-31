@@ -1,0 +1,251 @@
+---
+output: pdf_document
+---
+#Unix cluster computing
+
+Last time we got familiar with basic concept of UNIX shell bash. Now we would like to learn how to compute on cluster and how to behave there. Here are more materials about the cluster we will use [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
+
+### OS X, Linux users
+
+**connection**
+
+Open terminal and connect to Vital-it using `ssh` (secure shell)
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+**file transfer**
+
+To copy file **to** cluster you have to be in the terminal of your computer using `scp` (secure copy)
+
+```bash
+scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename> 
+```
+
+to copy file **from** the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
+
+```bash
+scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
+```
+
+### Windows users
+
+**connection**
+
+1. Install [WinSCP](http://winscp.net/eng/download.php) and [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+2. First start WinSCP by:
+    -	hostname: prd.vital-it.ch
+    -	username: 
+    -	password:
+3. Then start your Putty entering hostname prd.vital-it.ch
+
+**file transfer**
+
+Transfer the file to your computer by drag and drop from the server side. Every time in the exercise you see `scp` command, it is only for Mac/Linux users, you use WinSCP. In the WinSCP navigate your paths and check your folders. 
+
+***
+
+\newpage
+
+## Scripts
+
+One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before.
+
+## Variables
+
+`bash` also allows to use variables, similarly to `R` or `python`. You can define them by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
+
+0. connect to Vital-it
+1. define variable `VAR` as `1`
+
+since terminal is primarily trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
+
+2. print your variable on terminal
+
+```bash
+echo $VAR
+```
+
+there are several pre-defined variables in the terminal defining a behaviour of the terminal called environmental variables. One of them is especially important. The variable `PATH` lists all locations of programs (binaries) that bash will search every time you type a command. You can check it using `echo` (do not forget `$` symbol)
+
+3. look at locations of binaries
+
+***
+
+We will text bit more commands and concepts on files located at `/scratch/beegfs/monthly/mls_2016/UNIX_testfiles/`, be sure that you have a copy at your working directory.
+
+## Edit a file
+
+Editing files using command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small script and minor edits is more then useful to keep at least basic knowledge of these tools. Here I describe work with more widespread editor `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
+
+1. Open file `browsing.txt` in `vi`
+2. Press `a` or `i` to enter the editing mode. 
+3. Correct one of the typos in text (for instance, second line: `enther` -> `enter`). 
+4. Press `<Esc>` to escape the writing mode. 
+5. Press `:` to enter to command mode
+6. Write `wq` and hit `<Enter>` to save changes (write) and exit back to terminal (quit). 
+7. Verify, that you managed edit the file.
+
+<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
+
+***
+
+## Write a script
+
+All bash scripts should start by line that specify a language used for interpretation. It is not essential if interpreter is specified during execution (see bellow).
+
+```bash
+#!/bin/bash
+```
+
+the script is then executed as follows
+
+```
+bash ./<script.sh>
+```
+
+Lets create a script that will compute number of sequences in file `AllIllumina-PEadapters.fa`,
+
+1. Open an empty file in `vi`
+
+```sh
+vi <script.sh>
+```
+
+2. Copy there a first line (do not forget to enter insert mode first by pressing `a` or `i`)
+3. Add there a new line computing a number lines of file `AllIllumina-PEadapters.fa`, save file and quit `vi`
+4. Execute script in folder where is `AllIllumina-PEadapters.fa`
+
+```sh
+bash <script.sh>
+```
+
+However, maybe the script will be more useful if it will be generally computing number of reads in any `.fasta` file. For this we can use a predefined variable `1`, which carry a value of the first argument when the script is called.
+
+5. open the same script in `vi`
+
+```bash
+vi <script.sh>
+```
+
+6. replace in the script the name of the fasta file with adapters by `$1` (`$` is there because values of variables are called through operator `$`)
+7. save, quit and execute script on the fasta file with adapters
+
+```bash
+bash <script.sh> AllIllumina-PEadapters.fa
+```
+
+<sub>
+Special variables in `bash` scripts are 
+`$1 $2 $3 ...`: first, second, third ... argument;
+`$0`: name of the script;
+`$*`: all arguments
+</sub>
+
+***
+
+## Pimp my bash
+
+Your terminal is now white and when you type `ls` it is hard to get oriented. One wonderful feature how to make life in terminal easier is to colour it! You can do so by setting an environmental variable `PS1`.
+
+1. Change colour of your terminal
+
+```bash
+export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '
+```
+
+<sub> You can write the command on one line only. The last symbol in line `\` means, that command continues on the next line, however the second `\` (first character of the second line) is needed for the expression to work properly. Environmental variable `PS1` defines how every new line will look like. For instance, if you specify `PS1=''`, prompt will disappear completely.
+<sub\>
+
+Great, terminal is colourful now, however, if you exit and start a new terminal session, it will be white again (this behaviour helps you not to mess with your own terminal). The way, how to make changes in terminal permanent is to edit a bash script `~/.bashrc`, which is executed every time you open new terminal window.
+
+2. Add the line in the end of your `~/.bashrc` file
+
+```bash
+echo "export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '" >> ~/.bashrc
+```
+
+<sub>
+Note, how do we add the line to the end of the `.bashrc`. Quotes `""` serve to tell bash, that he should not take the text inside as a command, but treat it as a plain text, echo just tells bash to print what is quotes and finally using `>>` operator we redirected the output stream to file `~/.bashrc`. `echo` automatically adds a newline character in the end of every message its printing. The very same effect could be achieved, if you open the document in a text editor (line `vi`) and copy-paste the line.
+<sub\>
+
+You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use. 
+
+1. Create an alias by adding following line `alias ll='ls -lah'` to the end of `~/.bashrc`.
+
+You can use from now on a command `ll` instead of `ls -lah` (list all, long format, in human readable units).
+
+***
+
+**BREAK!!!**
+
+\newpage
+
+## Basic cluster operations
+
+Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end.
+
+### Moving to scratch
+
+Your home is back-uped and you can not save there more than 2GB. ALl the data for computations should be store on a disc scratch. `/scratch/beegfs/monthly` is a working place, all files and folders older than one month are automatically deleted. From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
+
+1. Make the directory using `mkdir <dir_name>` (make directory) and go there.
+
+```bash
+mkdir /scratch/beegfs/monthly/mls_2016/<username>
+cd /scratch/beegfs/monthly/mls_2016/<username>
+```
+
+2. now move all the files you had saved in our home to your scratch
+
+```
+mv ~/UNIX_testfiles .
+```
+
+Since now, keep "messy files" here. Do not bring dirt home!
+
+### Running a simple job
+
+To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
+
+```bash
+bsub <bsub_parameters> <command> <command_parameters>
+```
+
+Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
+
+1. submit a job, that will compute number of sequences in file `AllIllumina-PEadapters.fa` using your own script
+
+```
+bsub 'bash <script.sh> AllIllumina-PEadapters.fa > number_of_adapters'
+```
+
+2. check `bjobs`
+3. check if file `number_of_adapters` was created and if the result corresponds to the number of sequences in the file.
+
+### Modules
+
+The second advantage of Vital-it cluster is, that there are installed modules with various programs. A software available on Vital-it you can loaded using 
+
+```bash
+module add <field>/<category>/<program>/<version>
+```
+
+The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software). 
+
+1. Find there a command for program `fastqc` and execute it.
+
+<sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
+
+2. Now, check how your `PATH` has changed. 
+
+Adding module is nothing more than just adding a new path to list of directories searched for binaries.
+
+
+***
+
+Credits: based on Andrea's and Nadja's materials, made by Kamil;
+Contact: kamiljaron@gmail.com

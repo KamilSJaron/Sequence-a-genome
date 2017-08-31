@@ -1,0 +1,68 @@
+\documentclass[xcolor=dvipsnames]{beamer} 
+\mode<presentation>
+{
+\setbeamercolor{structure}{fg=Red!75!black}
+\usetheme{Madrid} 
+\setbeamercovered{transparent}
+}
+
+\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{array}
+\urlstyle{sf}
+
+%%%%%% SET TO CORRECT PATHS
+\graphicspath{{/Volumes/dump/pictures/pool/}}
+
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\title[ ]{Quality control \& trimming}
+\author{Kamil S Jaron}
+\date{23.9.~2016}
+
+\usenavigationsymbolstemplate{}
+\defbeamertemplate*{footline}{mytheme}{}
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+bsub -n 2 -J "QC" \
+'fastqc -t 2 -o out/ \
+<sample>_R1.fastq.gz \
+<sample>_R2.fastq.gz'
+# -q ... queue
+# -n ... number of cores
+# -J ... job name
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+Good practise, keep log!
+\LARGE
+\begin{verbatim}
+bsub -n 2 -J "QC" \
+'fastqc -t 2 -o out/ \
+<sample>_R1.fastq.gz \
+<sample>_R2.fastq.gz &> qc.log'
+\end{verbatim}
+\end{frame}
+
+\end{document}
+
+
+
