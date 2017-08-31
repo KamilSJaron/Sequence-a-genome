@@ -89,11 +89,11 @@ cp /scratch/beegfs/monthly/mls_2016/adapeters/TruSeq3-PE.fa .
 3. Submit a trimming job (this will take some minutes)
 
 ```bash
-ISOLATE=<name_of_the_isolate>
-bsub -n 8 -M 4194304 -J <job_name> 'trimmomatic PE -threads 8 \
+bsub -n 8 -M 4194304 -J <job_name> 'ISOLATE=F5_263
+trimmomatic PE -threads 8 \
 <input_readsR1.fastq.gz> <input_readsR2.fastq.gz> \
-$ISOLATE''_R1t.fq.gz $ISOLATE''_R1np.fq.gz \
-$ISOLATE''_R2t.fq.gz $ISOLATE''_R2np.fq.gz \
+<isolate>_R1t.fq.gz <isolate>_R1np.fq.gz \
+<isolate>''_R2t.fq.gz <isolate>''_R2np.fq.gz \
 ILLUMINACLIP:TruSeq3-PE.fa:3:25:6 LEADING:9 TRAILING:9 SLIDINGWINDOW:4:15 MINLEN:60 \
 &> trimming_$ISOLATE.log'
 ```
