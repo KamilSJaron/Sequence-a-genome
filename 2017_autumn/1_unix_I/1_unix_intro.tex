@@ -61,6 +61,8 @@
 % 	\end{center}
 % \end{frame}
 
+\section{why unix}
+
 \begin{frame}
 	\Huge
 	\begin{center}
@@ -163,6 +165,7 @@
 
 \end{frame}
 
+\section{navigation}
 
 \begin{frame}
 	\Huge
@@ -198,12 +201,21 @@
 \end{frame}
 
 \begin{frame}[fragile]
+Syntax used in slides
 \begin{verbatim}
 # comments
+
+command
+
+$command
+output1
+
+command <argument>
 \end{verbatim}
 \end{frame}
 
 \begin{frame}[fragile]
+Pay attention where you are!
 \begin{verbatim}
 # relative paths
 .     # this directory
@@ -218,21 +230,22 @@
 \end{frame}
 
 \begin{frame}[fragile]
+Where is my home?
 \begin{verbatim}
-# relative paths
-.     # this directory
-..    # parent directory
-~     # my home directory
+# ~
+# /home/<USER>
+# /home/kamil
 
-# absolute path
-/     # root directory
-
-
+kamil@frt:~$ pwd
+/home/kamil
 \end{verbatim}
+
 \end{frame}
+
 
 \begin{frame}[fragile]
 	\begin{verbatim}
+		# mind the space between cmd and arg
 		command <arguments>
 	\end{verbatim}
 	Navigation commands:
@@ -240,8 +253,6 @@
 		pwd        # print working directory
 		ls <where>        # list segments
 		cd <to>           # change directory
-		cp <what> <where> # copy
-		mv <what> <where> # move
 	\end{verbatim}
 \end{frame}
 
@@ -253,6 +264,34 @@
 \end{frame}
 
 \begin{frame}[fragile]
+Quiz!
+\begin{verbatim}
+kamil@frt:~$ ls
+kamil@frt:~$ ls .
+kamil@frt:~$ ls ../kamil
+kamil@frt:~$ ls ~
+kamil@frt:~$ ls /home/kamil
+\end{verbatim}
+Which of the commands will list files in my home?
+\end{frame}
+
+\section{explorer}
+
+\begin{frame}[fragile]
+\begin{verbatim}
+	# more operations in explorer
+	mkdir       # make directory
+	rm          # remove file
+
+	cp <what> <where> # copy
+	mv <what> <where> # move
+
+	man <command> # manual
+	wget <url>    # get from web
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
 	\begin{verbatim}
 		command -<parameters> <arguments>
 	\end{verbatim}
@@ -260,9 +299,8 @@
 	\begin{verbatim}
 		ls -lah  #list long, all, human readable
 		ls -la ..  #list in parent directory
-		cp -r <what_dir> <were> # recursive
-		rm -rf <what dir>       # -||- , force
-		# careful with this one...
+		cp -r <what> <were> # recursive
+		rm -rf <what>       # -||- , force
 
 		man <command>
 	\end{verbatim}
@@ -329,41 +367,25 @@
 \begin{frame}[fragile]
 	\frametitle{Special bash symbols}
 	\large
-	\begin{tabular}{L{0.5\textwidth} L{0.5\textwidth}}
+	\begin{tabular}{L{0.45\textwidth} L{0.5\textwidth}}
 	Comments & \verb!#! \\
-	Navigation symbols & \verb!., .., ~, /!
+	Navigation symbols & \verb!. .. ~ /! \\
 	Separator of arguments & \verb!<space>! \\
-	Command separator & \verb!;!
-
-	Assigment opetation & \verb!=, $! \\
-	Expansion characters & \verb!*, ?, [], {}! \\
-	Subroutines & \verb!$(), ``! \\
-
-	Literal strings & \verb!'', ""! \\
-	Escape character & \verb!\!
+	& \\
+	Expansion characters & \verb!* ? [] {}! \\
+	Assign variable & \verb!=! \\
+	Call variable & \verb!$! \\
+	& \\
+	Command substitution & \verb!$(<cmd>) `<cmd>`! \\
+	Redirection & \verb!> | < &! \\
+	& \\
+	Command separator & \verb!; <newline>! \\
+	Literal strings & \verb!'' ""! \\
+	Escape character & \verb!\! \\
 	\end{tabular}
 \end{frame}
 
-\begin{frame}[fragile]
-	\Large
-	Special characters \verb!*, ?, []!, escape character \verb!\!
-	\begin{verbatim}
-		$cd /
-		$echo b
-		b
-
-		$echo b*
-		bin boot
-
-		$echo b\*
-		b*
-
-		$echo B*
-		B*
-
-	\end{verbatim}
-\end{frame}
-
+\section{text operations}
 
 \begin{frame}
 	\Huge
@@ -545,6 +567,83 @@
 		tr    # transform
 		grep  # print lines with pattern
 	\end{verbatim}
+\end{frame}
+
+\section{recap}
+
+\begin{frame}[fragile]
+	$\sum$ relative and absolute path
+	\Large
+	\begin{verbatim}
+		# relative
+		./my_dir/project1/data
+		~/photos
+		../others/
+		# absolute
+		/dev/null
+		/home/kamil
+	\end{verbatim}
+	Every command is executed somewhere!
+\end{frame}
+
+\begin{frame}[fragile]
+	$\sum$ efficient control
+	\Large
+	\begin{verbatim}
+		# Manual
+		man <command>
+
+		# Auto Completion by <tab>
+		cd /<tab><tab>   # lists all in root
+		cd ~/<tab><tab>  # lists all in home
+
+		# Command history
+		<arrow_up>       # last excuted command
+		<Ctrl+R>         # full-text search
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	$\sum$ navigation
+	\Large
+	\begin{verbatim}
+		pwd                # print workding dir
+		ls                 # list segments
+		cd                 # change directory
+		mkdir              # make directory
+		rm                 # remove file
+		cp <what> <where>  # copy
+		mv <what> <where>  # move
+
+		man <command>      # manual
+		wget <url>         # get from web
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	$\sum$ text operations
+	\Large
+	\begin{verbatim}
+		ls | wc            # piping
+		ls > my_segments   # redirection
+		pwd >> my_segments # append
+
+		echo          # print text
+		head / tail   # start/end of file
+		cat           # print file(s)
+		less          # text-file browser
+
+		wc     # word count
+		tr     # transform
+		grep   # print lines with pattern
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		See you tomorrow!
+	\end{center}
 \end{frame}
 
 \end{document}
