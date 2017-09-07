@@ -4,7 +4,7 @@ output: pdf_document
 
 #Unix introduction
 
-Unix is an essential tool for work with big amounts of data, this tutorial is trying to show the practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX you can find all over the internet, for instance [edu.isb-sib.ch/course/view.php?name=UNIX_I](edu.isb-sib.ch/course/view.php?name=UNIX_I).
+Unix is an essential tool for work with big amounts of data, this tutorial is trying to show the practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX and `bash` in particular you can find all over the internet, one I like is [Advanced Bash-Scripting Guide](http://tldp.org/LDP/abs/html/index.html).
 
 ## Syntax of this exercise
 
@@ -25,9 +25,7 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 * Bash commands are (usually) meaningful acronyms, the explanation is written after every first occurrence in brackets.
 * Detail explanations will be written in blocks as follows
 
-<sub>These explanatory blocks should help you to get oriented in documents of Sequence a genome class and to give you an idea how to read it. So, every time you feel confused, read this blocks and if it does not help, ask one of the assistants.</sub>
-
-***
+<sub>These explanatory blocks should help to understand. So, every time you feel confused, read this blocks. If it is not going to help, let me know.</sub>
 
 ## Getting started
 
@@ -35,9 +33,15 @@ Unix is a type of operating system, to communicate with the operating system we 
 Just like natural languages, computer languages have their own syntax and vocabulary.
 The goal of this class is to provide you a good staring point to this important skill for modern science.
 
+The very first step is to open a terminal.
+
+***
+
+\newpage
+
 ## Open terminal and get to cluster
 
-Note that if you use Linux, Mac OS X or Windows 10 you have `bash` on your computer as well. However, the whole semester we will use the computational cluster for the most of tasks done within this class, therefore getting familiar with cluster is crucial skill too.
+Note that if you use Linux, Mac OS X or Windows 10 you have `bash` on your computer as well. However, the whole semester we will use the computational cluster for the most of tasks done within this class, therefore getting familiar with the computation cluster (Vital-it) is important too.
 
 ### Windows users
 
@@ -50,11 +54,18 @@ Note that if you use Linux, Mac OS X or Windows 10 you have `bash` on your compu
 
 ### Linux / OS X users
 
-Open terminal and connect to Vital-it using `ssh` (secure shell)
+Open a terminal. Pressing `ctrl + alt + t` should do the job on common Linux systems.
+On Max OS X you can press `cmd + space` to start a spotlight search,
+then type `terminal`.
+This should find the terminal app therefore you can just hit `enter` to launch it.
+
+Now, connect to Vital-it using `ssh` (secure shell).
 
 ```bash
 ssh <username>@prd.vital-it.ch
 ```
+
+You will be asked to type a password.
 
 ***
 
@@ -62,7 +73,11 @@ ssh <username>@prd.vital-it.ch
 
 ## Bash as explorer
 
-Now you should see a command line in front of you.
+You should see a command line in front of you.
+Now you should to understand how to use `bash` to manipulate files just like in an explorer or finder.
+It is good to mention that there is no trash in `bash`, if you rewrite or remove any file, it's practically lost.
+You do not have to be scared to explore on Vital-it,
+it is not a problem to restore your cluster account to the default setting anytime.
 
 ### Browsing directories
 
@@ -87,25 +102,22 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 
 ### Download, copy, move, rename and remove
 
-1. Create a working directory `/home/<username>/UNIX_testfiles` and enter it.
-2. Download a directory from address `https://raw.githubusercontent.com/KamilSJaron/Sequence-a-genome/master/2017_autumn/data/README.md`
-
-```bash
-wget https://raw.githubusercontent.com/KamilSJaron/Sequence-a-genome/master/2017_autumn/data/README.md
-```
-
-3. Copy  to your working directory using command `cp` (copy)
+1. Copy directory `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles` to your working directory using command cp (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> # generally
-# if you do not provide a new name, you must add space dot (“ .”) at the end, and the old name will be kept
-cp -r /scratch/beegfs/monthly/mls_2016/UNIX_testfiles .
-# directories need to be copied using -r (stands for recursive)
+cp -r /scratch/beegfs/monthly/mls_2017/UNIX_testfiles .
 ```
 
-4. Go inside and check the content (you should know how, if you don't, scroll up).
-5. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cd`, for all inbuilt commands there is a manual page you can check).
-6. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move it back to `UNIX_testfiles`.
+<sub> If you want to copy to retain the original name, you can specify just the path.
+If you want to copy a file (or directory) to the working directory you are in,
+you can just write only `.`.
+You should be also aware of why you had to specify `-r` to copy a directory </sub>
+
+3. Copy the file to your working directory using command `cp` (copy)
+4. Go inside and check content of the directory (you should know how, if you don't, scroll up).
+5. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cp`, for all inbuilt commands there is a manual page you can check).
+6. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move the renamed file to `UNIX_testfiles`.
 
 ```bash
 cd ./nonemptydir
@@ -124,10 +136,10 @@ mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>
 
 , the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
 
-7. Remove the copied file.
+7. Remove the copied and renamed file.
 
 ```bash
-rm <your_new_name>
+rm <your_new_name>.txt
 ```
 
 8. Try to remove directory `nonemptydir`. Could you figure out why `rm <dir>` and `rmdir <dir>` is not working?
@@ -144,7 +156,7 @@ rm <your_new_name>
 
 ## More than explrorer
 
-There are two types of commands you can use in `bash`. Inbuilt and default commands (usually with `man` page). And programs you have installed. "installed" on Linux means usually that you have copied a binary file to location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command `echo $PATH`. First of all, we will get familiar with inbuilt commands of bash, that have a great use in all data oriented science.
+There are two types of commands you can use in `bash`. Inbuilt and default commands (usually with `man` page). And programs you have installed. "installed" on Linux means usually that a binary file is copied to location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command `echo $PATH`. However, before going to explore it, we will get familiar with standard commands of bash.
 
 ### Commands text processing
 
@@ -175,7 +187,7 @@ One of the most powerful and simple tools for reading text files in terminal is 
 
 The output of commands is usually printed to terminal (list of files in case of `ls`, content of file in case of `cat`, etc.). Using symbol `|` you can redirect ("pipe") the standard output as an input to another command. We can use a few commands to find out how many Illumina adapters are in the file `AllIllumina-PEadapters.fa`. File `AllIllumina-PEadapters.fa` is a fasta file, so every sequence is represented by header line starting by symbol ">" and the sequence itself.
 
-1. How many adapters are saved in the file `AllIllumina-PEadapters.fa`?
+1. How many adapters are saved in the file `AllIllumina-PEadapters.fa`? [22]
 
 ```bash
 grep ">" AllIllumina-PEadapters.fa | wc -l
@@ -185,7 +197,12 @@ To redirect an output to a file rather than to other command, you can use the sy
 
 Using the same tools we answer various questions. Another example of usage to compute a number of nucleotides in simple fasta.
 
-2. How many nucleotides are in file `sample.fasta`? Hint: check `-v` argument of grep.
+2. How many nucleotides are in file `sample.fasta`? [66058] Hint: check `-v` argument of grep.
+
+<sub>
+If you ended up on number 66719 you have counted a newline characters as nucleotides. You can either count them by `wc -l` or you can use a trick described at task 4.
+</sub>
+
 3. The very same problem you can also solve using command `tail` which can also print all but a given number of skipped lines from the beginning `tail -n +<number_of_the_first_line_to_be_printed> <file>`. Following command prints number of characters.
 
 ```bash
@@ -213,8 +230,13 @@ grep ">" AllIllumina-PEadapters.fa > adapter_headers.txt
 wc -l adapter_headers.txt
 ```
 
-2. Compute total number length of low-complexity sequences (lower-case) in nucleotides in `sample.fasta`.
-3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all your files, verify the success using `ls -l`.
+2. Compute total number length of low-complexity sequences (lower-case letters, i.e. non-capital letters) in nucleotides in `sample.fasta` [33576 I think].
+
+```{bash echo=FALSE, eval=FALSE}
+grep -v ">" sample.fasta | sed 's/[A-Z]//g' | tr -d '\n' | wc -c
+```
+
+3. Command `touch` will modify a time of last modification of a file. Find a way, how to touch all your files, verify the success using `ls -l`. Hint : Use google to find an answer and manual to understand it.
 
 ```{bash echo=FALSE, eval=FALSE}
 find . -exec touch {} \;
