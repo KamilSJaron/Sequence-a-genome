@@ -230,7 +230,7 @@ grep ">" AllIllumina-PEadapters.fa > adapter_headers.txt
 wc -l adapter_headers.txt
 ```
 
-2. Compute total number length of low-complexity sequences (lower-case letters, i.e. non-capital letters) in nucleotides in `sample.fasta` [33576 I think].
+2. Compute total length of low-complexity nucleotides (lower-case letters, i.e. non-capital letters) in `sample.fasta` [33576 I think].
 
 ```{bash echo=FALSE, eval=FALSE}
 grep -v ">" sample.fasta | sed 's/[A-Z]//g' | tr -d '\n' | wc -c
@@ -242,7 +242,7 @@ grep -v ">" sample.fasta | sed 's/[A-Z]//g' | tr -d '\n' | wc -c
 find . -exec touch {} \;
 ```
 
-<sub>There are loads of different solutions. <sub\>
+<sub>There are loads of different solutions. One of them can be found in [the source code for this document online](https://github.com/KamilSJaron/Sequence-a-genome/blob/master/2017_autumn/1_unix_I/1_unix_I.Rmd) <sub\>
 
 ***
 
