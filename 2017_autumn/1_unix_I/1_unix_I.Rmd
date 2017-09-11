@@ -52,6 +52,12 @@ Note that if you use Linux, Mac OS X or Windows 10 you have `bash` on your compu
     -	password:
 3. Then start your Putty entering hostname prd.vital-it.ch
 
+<sub>
+The programs mentioned above will allow you to log to cluster.
+If you would like to have standard unix tools on your computer,
+you can allow the beta version of Linux subsystem on Windows 10 (see [this tutorial](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/)) or you can install [cygwin](http://www.cygwin.com/), a collection of unix tools adopted for windows.
+</sub>
+
 ### Linux / OS X users
 
 Open a terminal. Pressing `ctrl + alt + t` should do the job on common Linux systems.
