@@ -2,6 +2,53 @@
 output: pdf_document
 ---
 
+Last time we got familiar with basic concept of UNIX shell bash. Now we would like to learn how to compute on cluster and how to behave there. Here are more materials about the cluster we will use [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
+
+# Connection to server
+
+### OS X, Linux users
+
+**connection**
+
+Open terminal and connect to Vital-it using `ssh` (secure shell)
+
+```bash
+ssh <username>@prd.vital-it.ch
+```
+
+**file transfer**
+
+To copy file **to** cluster you have to be in the terminal of your computer using `scp` (secure copy)
+
+```bash
+scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename>
+```
+
+to copy file **from** the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
+
+```bash
+scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
+```
+
+### Windows users
+
+**connection**
+
+1. Install [WinSCP](http://winscp.net/eng/download.php) and [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
+2. First start WinSCP by:
+    -	hostname: prd.vital-it.ch
+    -	username:
+    -	password:
+3. Then start your Putty entering hostname prd.vital-it.ch
+
+**file transfer**
+
+Transfer the file to your computer by drag and drop from the server side. Every time in the exercise you see `scp` command, it is only for Mac/Linux users, you use WinSCP. In the WinSCP navigate your paths and check your folders.
+
+***
+
+\newpage
+
 # Quality control
 
 ## Prepare a workspace
@@ -11,13 +58,13 @@ Keep in mind that you can save a lot of energy and mistakes by using `<tab>` for
 1. go to your scratch directory.
 2. Copy your data (`/scratch/beegfs/monthly/mls_2016/data/F5_<strain>*`) to your working dir (to scratch).
 
-Can you figure out why do you have two files? What could possibly R1 and R2 mean??
+<!-- Can you figure out why do you have two files? What could possibly R1 and R2 mean?? -->
 
 ***
 
 ## Explore genomic reads
 
-The files you got is a compressed textfile, if you try `head <file_name>`, you will get just meaningless characters. There are two solutions, either you can uncompress your files by command `gunzip` or preferably you can use command `zcat` to print the file on the standard output. Do not forget that it is still a half GB file each - a lot of letters, you better pipe them somewhere.
+The files you got is a compressed text files, if you try `head <file_name>`, you will get just meaningless characters. There are two solutions, either you can uncompress your files by command `gunzip` or preferably you can use command `zcat` to print the file on the standard output. Do not forget that it is still a half GB file each - a lot of letters, you better pipe them somewhere.
 
 1. Format `.fastq` is just formatted plain text formats, so you could use all line tools for parsing text. Check the format with `head`
 
@@ -33,7 +80,7 @@ Every read is represented by four lines: header line, sequence line, quality of 
 
 ## Submit a quality control job
 
-Reads from the sequencing center are just roughly parsed, it is on users to make sure, that reads are without any problem. There are pretty efficient tools checking various aspects of read quality, one of them is `fastqc`, which is already installed on Vital-it. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`. 
+Reads from the sequencing center are just roughly parsed, it is on users to make sure, that reads are without any problem. There are pretty efficient tools checking various aspects of read quality, one of them is `fastqc`, which is already installed on Vital-it. `fastqc` computes a quality control and outputs it to existing output folder defined by parameter `-o`.
 
 ```bash
 fastqc -o <fastqc_results> <sequencing_reads>
@@ -42,10 +89,16 @@ fastqc -o <fastqc_results> <sequencing_reads>
 1. Activate Vital-IT module `UHTS/Quality_control/fastqc/0.11.2` using command `module add`
 2. Create a folder `<fastqc_results>` for an output of `fastqc` and submit a job computing a quality control of read files of yours
 3. Check the status of the submitted job
-4. Once it finishes, verify the existence of files. Copy those files to your computer (explained at beginning) and check the html file.
+
+BREAK!!!
+
+***
+
+\newpage
 
 ## Read a quality control output
 
+0. Copy the quality reports from fastqc to your computer using `scp` or `WinSCP` and open the `.html` file on your computer.
 1. How many reads you have?
 2. What is the length of reads?
 3. Is average quality per base the same along the length of read?
@@ -65,7 +118,7 @@ zcat <reads1.fastq.gz> | head -n 100000 | grep <overrepresented kmer> | head -n 
 Command `less` allow you a fulltext search as well. Press `/` and copy-paste there the sequence `<overrepresented kmer>`, hit `Enter`. Now all `<overrepresented kmer>` sequences will be highlighted. Can you find a pattern? Do we know whole seqeuence of adapter or is it actually longer?
 
 <sub>
-We will actually cut all possible adapters without specifying which one is in our sequence. Therefore we wont use the output of our little adapter investigaton. 
+We will actually cut all possible adapters without specifying which one is in our sequence. Therefore we wont use the output of our little adapter investigaton.
 <sub\>
 
 ***
@@ -106,7 +159,7 @@ Those adapters are comming from situations when a DNA fragment is really small, 
 
 ## Quality control - again
 
-Right now you have to verify, that trimmer have sucessfully trimmed your reads. 
+Right now you have to verify, that trimmer have sucessfully trimmed your reads.
 
 1. activate again module for `fastqc`
 2. submit a job computing a quality control of trimmed reads
