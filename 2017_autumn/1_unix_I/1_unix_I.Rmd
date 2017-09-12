@@ -23,6 +23,7 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 ```
 
 * Bash commands are (usually) meaningful acronyms, the explanation is written after every first occurrence in brackets.
+* Some quantitative tasks have correct answers in brackets. Example: How many lines are in the file `file.txt`? [42]
 * Detail explanations will be written in blocks as follows
 
 <sub>These explanatory blocks should help to understand. So, every time you feel confused, read this blocks. If it is not going to help, let me know.</sub>
@@ -41,7 +42,7 @@ The very first step is to open a terminal.
 
 ## Open terminal and get to cluster
 
-Note that if you use Linux, Mac OS X or Windows 10 you have `bash` on your computer as well. However, the whole semester we will use the computational cluster for the most of tasks done within this class, therefore getting familiar with the computation cluster (Vital-it) is important too.
+How to get to cluster will be dependent on what operating system you use.
 
 ### Windows users
 
@@ -106,7 +107,7 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 
 <sub>The command `cd` (change directory) and correct handling of paths is essential for everything done in Unix terminal. The path can be defined relatively to your current directory (ex: `cd ./SAGE` or `cd ..`) or absolutely, i.e. starting from the root directory of the computer (ex: `cd /home/kjaron`). Meanings of symbols are as follows: `.` is a current directory, `..` is a parent directory, `/` is a root directory, `~` is your home directory. Note that symbol `~` carry different path for every user: `/home/<username>` and symbols `.` and `..` carry different path in every single directory, hence a path specified using one of these two symbols is called relative path. </sub>
 
-### Download, copy, move, rename and remove
+### Copy, move, rename and remove
 
 1. Copy directory `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles` to your working directory using command cp (copy)
 
@@ -226,6 +227,24 @@ tail -n +2 sample.fasta | tr -d '\n' | wc -c
 <sub>
 There are many ways how to read or edit plain text files using command line tools. Next to the presented commands, there are several scripting languages specialized for text processing like `awk` or `sed` or `grep`. In bioinformatics is also common to use `biopython` or `BioPerl` to work with fasta and fastq files.
 </sub>
+
+The programs have two "channels" to produce messages for user : standard output stream (stdout) and standard error stream (stderr). Usually stdout prints results (Example: list of files is result of command `ls`) and stderr usually prints errors (Example: file or directory does not exist in `ls <path>`).
+Pipes are redirecting the standard output stream,
+the standard error stream is still printed to terminal.
+
+5. Try to type a command that produce both errors and output and redirect output to another program. For instance `ls non_existing_file sample.fasta | wc -w` should do the job. Could you say what is the error message produced by `ls` and the output produced by `wc -w`?
+
+<sub>
+The file `non_existing_file` does not exist, therefore the error message on error stream.
+However `sample.fasta` does, therefore `ls` will list the name of the file to output stream (and thus `wc -w` reports one word).
+</sub>
+
+To redirect an output stream to a file instead of anther program you can use `<command> > <file>`.
+If `<file>` exists, it's going to be replaced (yes, it's dangerous!).
+You can as well to append the output stream to the end of an existing file by `<command> >> <file>`.
+To redirect error stream use `2>` and to redirect both output and error stream use `&>`.
+
+6. Try to use the command from the previous task to produce some message on both streams and explore how `>`, `>>`, `&>` work. Clean the files you create afterwards.
 
 ## Challenges
 
