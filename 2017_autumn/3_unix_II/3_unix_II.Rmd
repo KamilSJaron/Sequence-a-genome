@@ -1,52 +1,9 @@
 ---
 output: pdf_document
 ---
-#Unix cluster computing
+#Unix
 
-Last time we got familiar with basic concept of UNIX shell bash. Now we would like to learn how to compute on cluster and how to behave there. Here are more materials about the cluster we will use [Vital-it](http://edu.isb-sib.ch/course/view.php?id=72).
-
-### OS X, Linux users
-
-**connection**
-
-Open terminal and connect to Vital-it using `ssh` (secure shell)
-
-```bash
-ssh <username>@prd.vital-it.ch
-```
-
-**file transfer**
-
-To copy file **to** cluster you have to be in the terminal of your computer using `scp` (secure copy)
-
-```bash
-scp <path>/<filename> <username>@prd.vital-it.ch:/<path>/<filename> 
-```
-
-to copy file **from** the cluster to your computer, you still have to be in the terminal of your computer, but the order of locations in the command will be just reverse
-
-```bash
-scp <username>@prd.vital-it.ch:/<path>/<filename> <path>/<filename>
-```
-
-### Windows users
-
-**connection**
-
-1. Install [WinSCP](http://winscp.net/eng/download.php) and [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html)
-2. First start WinSCP by:
-    -	hostname: prd.vital-it.ch
-    -	username: 
-    -	password:
-3. Then start your Putty entering hostname prd.vital-it.ch
-
-**file transfer**
-
-Transfer the file to your computer by drag and drop from the server side. Every time in the exercise you see `scp` command, it is only for Mac/Linux users, you use WinSCP. In the WinSCP navigate your paths and check your folders. 
-
-***
-
-\newpage
+Last time we got familiar with basic concept of UNIX shell bash and we already learned how to use UNIX for genomics (QC and Trimming). Now we would like to understand bit better how this system works to avoid frustrations in future.
 
 ## Scripts
 
@@ -80,11 +37,11 @@ We will text bit more commands and concepts on files located at `/scratch/beegfs
 Editing files using command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small script and minor edits is more then useful to keep at least basic knowledge of these tools. Here I describe work with more widespread editor `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
 
 1. Open file `browsing.txt` in `vi`
-2. Press `a` or `i` to enter the editing mode. 
-3. Correct one of the typos in text (for instance, second line: `enther` -> `enter`). 
-4. Press `<Esc>` to escape the writing mode. 
+2. Press `a` or `i` to enter the editing mode.
+3. Correct one of the typos in text (for instance, second line: `enther` -> `enter`).
+4. Press `<Esc>` to escape the writing mode.
 5. Press `:` to enter to command mode
-6. Write `wq` and hit `<Enter>` to save changes (write) and exit back to terminal (quit). 
+6. Write `wq` and hit `<Enter>` to save changes (write) and exit back to terminal (quit).
 7. Verify, that you managed edit the file.
 
 <sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
@@ -137,7 +94,7 @@ bash <script.sh> AllIllumina-PEadapters.fa
 ```
 
 <sub>
-Special variables in `bash` scripts are 
+Special variables in `bash` scripts are
 `$1 $2 $3 ...`: first, second, third ... argument;
 `$0`: name of the script;
 `$*`: all arguments
@@ -172,7 +129,7 @@ echo "export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[0
 Note, how do we add the line to the end of the `.bashrc`. Quotes `""` serve to tell bash, that he should not take the text inside as a command, but treat it as a plain text, echo just tells bash to print what is quotes and finally using `>>` operator we redirected the output stream to file `~/.bashrc`. `echo` automatically adds a newline character in the end of every message its printing. The very same effect could be achieved, if you open the document in a text editor (line `vi`) and copy-paste the line.
 <sub\>
 
-You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use. 
+You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use.
 
 1. Create an alias by adding following line `alias ll='ls -lah'` to the end of `~/.bashrc`.
 
@@ -209,13 +166,13 @@ Since now, keep "messy files" here. Do not bring dirt home!
 
 ### Running a simple job
 
-To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax 
+To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax
 
 ```bash
 bsub <bsub_parameters> <command> <command_parameters>
 ```
 
-Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`. 
+Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`.
 
 1. submit a job, that will compute number of sequences in file `AllIllumina-PEadapters.fa` using your own script
 
@@ -228,19 +185,19 @@ bsub 'bash <script.sh> AllIllumina-PEadapters.fa > number_of_adapters'
 
 ### Modules
 
-The second advantage of Vital-it cluster is, that there are installed modules with various programs. A software available on Vital-it you can loaded using 
+The second advantage of Vital-it cluster is, that there are installed modules with various programs. A software available on Vital-it you can loaded using
 
 ```bash
 module add <field>/<category>/<program>/<version>
 ```
 
-The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software). 
+The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software).
 
 1. Find there a command for program `fastqc` and execute it.
 
 <sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
 
-2. Now, check how your `PATH` has changed. 
+2. Now, check how your `PATH` has changed.
 
 Adding module is nothing more than just adding a new path to list of directories searched for binaries.
 

@@ -26,8 +26,8 @@
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 
 \title[ ]{Introduction to UNIX, vol II}
-\author{Kamil S Jaron, Marc Robinson-Rechavi}
-\date{23.9.~2016}
+\author{Kamil S. Jaron}
+\date{23.9.~2017}
 
 \usenavigationsymbolstemplate{}
 \defbeamertemplate*{footline}{mytheme}{}
@@ -38,21 +38,67 @@
 	\titlepage
 \end{frame}
 
-\begin{frame}[fragile]
-	\begin{center}
-		\huge
-		Stuff I forgot yesterday...
-	\end{center}
-\LARGE
-\begin{verbatim}
-command< ><parameters><\n>
-# so no spaces in file names
+\begin{frame}
+	UNDERSTANDING
+\end{frame}
 
-command <parameter> <file>
-# is same as...
-command <parameter> \
-<file>
-# \ is "continue"
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+
+$module add UHTS/Quality_control/fastqc/0.11.2
+
+# to check loaded modules
+$module list
+Currently Loaded Modulefiles:
+  1) Development/java_jre/latest
+  2) UHTS/Quality_control/fastqc/0.11.2
+
+$fastqc -version
+FastQC v0.11.2
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		bash sees the binary!\\
+		\vspace{1cm}
+		\Large
+		How comes?
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+$type fastqc
+fastqc is hashed
+(/software/UHTS/Quality_control/fastqc/0.11.2/bin/fastqc)
+
+$echo $PATH
+/software/UHTS/Quality_control/fastqc/0.11.2/bin:/software\
+/Development/java_jdk/1.8.0_102/jre/bin:/mnt/common/lsf/9.\
+1/linux2.6-glibc2.3-x86_64/etc:/mnt/common/lsf/9.1/linux2.\
+6-glibc2.3-x86_64/bin:/software/bin:/usr/local/bin:/bin:/u\
+sr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/kjaron/bin
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+# remove all modules
+$module purge
+
+$module list
+No Modulefiles Currently Loaded.
+
+$echo $PATH
+/mnt/common/lsf/9.1/linux2.6-glibc2.3-x86_64/etc:/mnt/comm\
+on/lsf/9.1/linux2.6-glibc2.3-x86_64/bin:/software/bin:/usr\
+/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/\
+home/kjaron/bin
 \end{verbatim}
 \end{frame}
 
@@ -287,7 +333,7 @@ a, i         # insert mode
 \begin{frame}
 	\begin{center}
 		\Huge
-		I got a first step and a master project!\\
+		Hey, would you like to do a first step or a master project with me?!\\
 	\end{center}
 \end{frame}
 
