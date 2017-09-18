@@ -202,7 +202,86 @@ The list of programs and commands for loading them can be found on [Vital-it web
 Adding module is nothing more than just adding a new path to list of directories searched for binaries.
 
 
+### Genome assembly
+
+#### Before assembly submission: Check your trimming results and input files
+
+At this point, you should have:
+
+1. Checked the quality of the raw data from the sequencing platform
+2. Trimmed the data for low-quality reads and adapters
+3. Checked the quality of the trimmed data (to confirm that the trimming has worked as expected)
+
+Trimmomatic will generate 4 output-files. Two of these correspond to reads where both
+members of the same pair survived the trimming, these are the ones we will use as input for
+the assembly. Find these two files, and check them. The first read in file1 should have almost
+the same name as the first read in file2, since they are part of the same read-pair. Use "less"
+to take a look.
+
+```bash
+less SL0366_R1.fastq.gz
+```
+
+Moreover, the files should contain the same number of reads. With a few simple UNIX
+commands, this can easily be checked, fx. like this:
+
+```bash
+less SL0366_R1.fastq.gz | grep -c '@TWEETY'
+```
+
+Do you understand the line? This line gives a different result:
+
+```bash
+less ESL0366_R1.fastq.gz | grep -c '@'
+```
+
+Why?
+
+#### Submitting the assembly
+
+As usual, start by "adding the module" on Vital-it (i.e. load the program that you wish to use,
+in this case "Spades"):
+
+```bash
+module add UHTS/Assembler/SPAdes/3.10.1
+```
+
+Check that the program is loaded:
+
+```
+spades.py
+```
+
+You should see some text in the terminal, explaining basic usage and available options. The
+basic usage is very simple, it goes like this (but dont type it just yet):
+
+```bash
+spades.py -1 file1.fastq -2 file2.fastq --careful -o /my/output/directory
+```
+
+This is going to take some computing resources (memory and "threads"), so you need to
+submit it as a job (using "bsub"). Moreover, you need to ask for an appropriate amount of
+resources from Vital-it, which can in itself be a challenge. If you ask for too much, your job
+will be in a queue for a very long time, if you ask for too little, your job may crash or take a
+very long time to run! To help you out, we have tested a few options in advance, the line here
+below should do the trick. Replace the file-names and the path to the output directory.
+Remember, you need to be working on scratch, not your home-directory.
+
+```bash
+bsub -J spades_1 -M 6000000 -R "rusage[mem=6000] span[ptile=4]" 'spades.py -1 file1.fastq
+-2 file2.fastq --careful -o /path/to/scratch/dir -m 4'
+```
+
+Check that the job is running:
+
+```
+bjobs
+```
+
+If it finishes in a couple of seconds/minutes, you likely made a mistake, it should take hours.
+Ask for help in that case.
+
 ***
 
-Credits: based on Andrea's and Nadja's materials, made by Kamil;
+Credits: based on Andrea's and Nadja's materials, made by Kamil and Kirsten;
 Contact: kamiljaron@gmail.com
