@@ -148,7 +148,7 @@
 	\frametitle{How to open terminal}
 
 	\begin{center}
-		MyUnil $\rightarrow$ Sequence a Genome I $\rightarrow$ 1\_unix\_local.pdf
+		MyUnil $\rightarrow$ Sequence a Genome I $\rightarrow$ 1\_unix\_basics.pdf
 	\end{center}
 
 	\small
@@ -287,7 +287,6 @@ Which of the commands will list files in my home?
 	mv <what> <where> # move
 
 	man <command> # manual
-	wget <url>    # get from web
 \end{verbatim}
 \end{frame}
 
@@ -323,9 +322,6 @@ Which of the commands will list files in my home?
 \end{frame}
 
 \begin{frame}[fragile]
-	\begin{center}
-		MyUnil $\rightarrow$ Sequence a Genome I $\rightarrow$ 1\_unix\_local.pdf
-	\end{center}
 	\Large
 	\begin{verbatim}
 		# Manual
@@ -346,6 +342,25 @@ Which of the commands will list files in my home?
 	\begin{center}
 		demonstration
 	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		MyUnil $\rightarrow$ Sequence a Genome I $\rightarrow$ 1\_unix\_basics.pdf
+	\end{center}
+	\Large
+	\begin{verbatim}
+		# Manual
+		man <command>
+
+		# Auto Completion by <tab>
+		cd /<tab><tab>   # lists all in root
+		cd ~/<tab><tab>  # lists all in home
+
+		# Command history
+		<arrow_up>       # last excuted command
+		<Ctrl+R>         # full-text search
+	\end{verbatim}
 \end{frame}
 
 \begin{frame}
@@ -371,6 +386,7 @@ Which of the commands will list files in my home?
 	Comments & \verb!#! \\
 	Navigation symbols & \verb!. .. ~ /! \\
 	Separator of arguments & \verb!<space>! \\
+	Command separator & \verb!<newline> ;! \\
 	& \\
 	Expansion characters & \verb!* ? [] {}! \\
 	Assign variable & \verb!=! \\
@@ -379,7 +395,6 @@ Which of the commands will list files in my home?
 	Command substitution & \verb!$(<cmd>) `<cmd>`! \\
 	Redirection & \verb!> | < &! \\
 	& \\
-	Command separator & \verb!; <newline>! \\
 	Literal strings & \verb!'' ""! \\
 	Escape character & \verb!\! \\
 	\end{tabular}
@@ -470,6 +485,13 @@ Which of the commands will list files in my home?
 
 
 		grep ">" seq.fasta | wc -l
+
+
+
+				>seq1
+				CGATCGTCGTAGCTACGAT
+				>seq2
+				ACCGATCAAACCGTCGTAA
 	\end{verbatim}
 \end{frame}
 
@@ -482,6 +504,7 @@ Which of the commands will list files in my home?
 
 		grep -v ">" seq.fasta | \
 		  tr -d '\n' | wc -c
+
 
 
 		>seq1
@@ -498,8 +521,8 @@ Which of the commands will list files in my home?
 	\begin{verbatim}
 
 
-		grep -v ">" seq.fasta | \
-		  tr -d "\n" | wc -c
+		grep -v ">" seq.fasta
+
 
 
 		CGATCGTCGTAGCTACGAT
@@ -515,7 +538,7 @@ Which of the commands will list files in my home?
 
 
 		grep -v ">" seq.fasta | \
-		  tr -d "\n" | wc -c
+		  tr -d "\n"
 
 
 		CGATCGTCGTAGCTACGATACCGATCAAACCGTCGTAA
@@ -616,7 +639,6 @@ Which of the commands will list files in my home?
 		mv <what> <where>  # move
 
 		man <command>      # manual
-		wget <url>         # get from web
 	\end{verbatim}
 \end{frame}
 

@@ -4,7 +4,7 @@ output: pdf_document
 
 #Unix introduction
 
-Unix is an essential tool for work with big amounts of data, this tutorial is trying to show the practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX and `bash` in particular you can find all over the internet, one I like is [Advanced Bash-Scripting Guide](http://tldp.org/LDP/abs/html/index.html).
+Unix is an essential toolbox for work with big amounts of data, this tutorial is showing the practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX and `bash` in particular you can find all over the internet, I will just mention two : [software carpentry UNIX tutorial](http://swcarpentry.github.io/shell-novice/) for very basics and [Advanced Bash-Scripting Guide](http://tldp.org/LDP/abs/html/index.html) as a complete reference to bash scripting.
 
 ## Syntax of this exercise
 
@@ -32,7 +32,7 @@ ssh kjaron@prd.vital-it.ch #this is example, how it can be used
 
 Unix is a type of operating system, to communicate with the operating system we will use a command line language called `bash`.
 Just like natural languages, computer languages have their own syntax and vocabulary.
-The goal of this class is to provide you a good staring point to this important skill for modern science.
+This class is technically just an introduction to a new language.
 
 The very first step is to open a terminal.
 
@@ -109,7 +109,7 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 
 ### Copy, move, rename and remove
 
-1. Copy directory `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles` to your working directory using command cp (copy)
+1. Copy directory `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> # generally
@@ -123,7 +123,7 @@ You should be also aware of why you had to specify `-r` to copy a directory </su
 
 3. Copy the file to your working directory using command `cp` (copy)
 4. Go inside and check content of the directory (you should know how, if you don't, scroll up).
-5. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cp`, for all inbuilt commands there is a manual page you can check).
+5. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cp`, for almost all commands there is a manual page you can check).
 6. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move the renamed file to `UNIX_testfiles`.
 
 ```bash
@@ -151,7 +151,7 @@ rm <your_new_name>.txt
 
 8. Try to remove directory `nonemptydir`. Could you figure out why `rm <dir>` and `rmdir <dir>` is not working?
 
-<sub> Command `rm` is to remove files, `rmdir` to remove empty directories. If you want to remove a directory with files inside, you have to specify it `rm -r <dir_to_delete>`. However, be careful, there is nothing like "Trash" in the bash, i.e. what is deleted is permanently lost! </sub>
+<sub> Command `rm` is to remove files, `rmdir` to remove empty directories. If you want to remove a directory with files inside, you have to specify parameter `-r` (recursive) : `rm -r <dir_to_delete>`. However, be careful, there is nothing like "Trash" in the bash, i.e. what is deleted is permanently lost! </sub>
 
 9. Try command `man <command>` (manual) to show manual page of some commands. What does the `-a` mean in the `ls` command? Could you use this parameter to find out why `rmdir` is not working on `nonemptydir`, even through `ls` is not showing any files inside?
 
