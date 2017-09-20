@@ -286,8 +286,7 @@ module purge
 \end{frame}
 
 \begin{frame}
-	PLACEHOLDER \\
-	QC picture - kmers
+	\includegraphics[width=0.9\textwidth]{ngs/QC_kmers}
 \end{frame}
 
 \begin{frame}
@@ -332,11 +331,22 @@ module purge
 	\end{center}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 	\begin{center}
-		PLACEHOLDER \\
-		Triming slide \\
+		\Huge
+		Your turn
 	\end{center}
+\large
+\begin{verbatim}
+bsub -n 8 -M 4194304 -J <job_name> '
+trimmomatic PE -threads 8 \
+<sample>_R1.fastq.gz <sample>_R2.fastq.gz \
+<sample>_R1t.fq.gz <sample>_R1np.fq.gz \
+<sample>_R2t.fq.gz <sample>_R2np.fq.gz \
+ILLUMINACLIP:TruSeq3-PE.fa:3:25:6 LEADING:9 TRAILING:9 \
+SLIDINGWINDOW:4:15 MINLEN:60 \
+&> trimming_<sample>.log'
+\end{verbatim}
 \end{frame}
 
 \end{document}

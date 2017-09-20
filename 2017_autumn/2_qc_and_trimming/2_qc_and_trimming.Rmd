@@ -55,16 +55,22 @@ Transfer the file to your computer by drag and drop from the server side. Every 
 
 Keep in mind that you can save a lot of energy and mistakes by using `<tab>` for auto completion of all existing paths you type and by using your command history (up and down arrows and `Ctrl+r`)
 
-1. go to your scratch directory.
-2. Copy your reads (`/scratch/beegfs/monthly/mls_2017/data/raw_reads/<sample>_R[12].fastq.gz`) to your scratch.
+1. create your scratch directory (`/scratch/beegfs/monthly/mls_2017/<username>`) and go there (`cd <path>`)
 
-The list of samples and corresponding group numbers (if your group is not listed, feel free to take any one you like) :
+The list of samples and corresponding group numbers (if your group is not listed :
 
 ```{R, echo = F}
-samples <- c('ESL0366','ESL0367','ESL0368','ESL0378','ESL0379','ESL0380','ESL0382','ESL0385','ESL0387','ESL0390','ESL0392')
-data.frame(sample = samples, group = 1:11)
+samples <- c('ESL0284','ESL0366','ESL0367','ESL0368','ESL0378','ESL0379','ESL0380','ESL0382','ESL0385','ESL0387','ESL0390','ESL0392')
+data.frame(sample = samples, group = c(paste(1:5, ' + ', 12:17), as.character(6:11)))
 ```
 <!-- Can you figure out why do you have two files? What could possibly R1 and R2 mean?? -->
+Each group should have two files, R1 and R2.
+
+2. Copy your reads (`/scratch/beegfs/monthly/mls_2017/data/raw_reads/<sample>_R*`) to your scratch.
+
+<sub>
+The symbol `*` means "all files". `<sample>_R*` means all the files starting by `<sample>_R*`.
+</sub>
 
 ***
 
@@ -137,7 +143,7 @@ cp /scratch/beegfs/monthly/mls_2017/adapeters/TruSeq3-PE.fa .
 3. Submit a trimming job (this will take some minutes)
 
 ```bash
-bsub -n 8 -M 4194304 -J <job_name> 'SAMPLE=<sample>;
+bsub -n 8 -M 4194304 -J <job_name> '
 trimmomatic PE -threads 8 \
 <sample>_R1.fastq.gz <sample>_R2.fastq.gz \
 <sample>_R1t.fq.gz <sample>_R1np.fq.gz \
@@ -152,7 +158,9 @@ Those adapters are coming from situations when a DNA fragment is really small, t
 
 ***
 
-## Quality control - again
+## Quality control of trimmed reads
+
+Trimmomatic produces 4 files, (`<sample>_R1t.fq.gz`, `<sample>_R1np.fq.gz`, `<sample>_R2t.fq.gz`, `<sample>_R2np.fq.gz`), these four files are corresponding to trimmed R1 reads, R1 orphan (a read pairs, where `R2` read was filtered out), trimmed R2 reads, and R2 orphans. Use `zcat` and `wc -l` to find out how many reads are in these four files (`R1t` and `R2t` should have exactly same).
 
 Right now you have to verify, that trimmer have successfully trimmed your reads.
 
