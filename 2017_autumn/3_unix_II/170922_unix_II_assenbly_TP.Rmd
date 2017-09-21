@@ -184,83 +184,81 @@ Vital-it is a computing cluster - hundreds of computers connected in a huge grid
 
 ### Writing a script for cluster
 
-TODO : TURN THIS INTO BSUB SCRIPT
-
-To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax
+To write a script for cluster you just write a script and instead of command you execute the script. However, another advantage of doing so is, that you can specify parameters for cluster scheduler inside of the script. Once such script is done, you just redirect it to `bsub` using symbol `<`.
 
 ```bash
-bsub <bsub_parameters> <command> <command_parameters>
+bsub < <script.sh>
 ```
 
-Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`.
+The `bsub` scans that file for lines starting with string `#BSUB` and the rest of the line is interpreted as parameter for scheduler. Here is a small example of script with four parameters for scheduler - interpreting language for script (`-L`), job name (`-J`), queue (`-q`), and output file (`-o`) :
+
+```
+#!/bin/bash
+#BSUB -L /bin/bash
+#BSUB -J who_am_I
+#BSUB -q priority
+#BSUB -o my_name
+
+echo $USER
+```
+
+The command above is the same as `bsub -L /bin/bash -J who_am_I -q priority -o my_name 'echo $USER'`.
 
 1. submit a job, that will compute number of sequences in file `AllIllumina-PEadapters.fa` using your own script
 
 ```
-bsub 'bash <script.sh> AllIllumina-PEadapters.fa > number_of_adapters'
+bsub < <script>
 ```
-
-2. check `bjobs`
-3. check if file `number_of_adapters` was created and if the result corresponds to the number of sequences in the file.
-
-### Modules
-
-The second advantage of Vital-it cluster is, that there are installed modules with various programs. A software available on Vital-it you can loaded using
-
-```bash
-module add <field>/<category>/<program>/<version>
-```
-
-The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software).
-
-1. Find there a command for program `fastqc` and execute it.
-
-<sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
-
-2. Now, check how your `PATH` has changed.
-
-Adding module is nothing more than just adding a new path to list of directories searched for binaries.
-
 
 ### Genome assembly
+
+By now your trimming should be successfully done. Trimmed reads are ready for genome assembly, a procedure where a genomic sequence is estimated from millions of small reads produced during whole genome sequencing.
 
 #### Before assembly submission: Check your trimming results and input files
 
 At this point, you should have:
 
-1. Checked the quality of the raw data from the sequencing platform
-2. Trimmed the data for low-quality reads and adapters
-3. Checked the quality of the trimmed data (to confirm that the trimming has worked as expected)
+- Checked the quality of the raw data from the sequencing platform
+- Trimmed the data for low-quality reads and adapters
+- Checked the quality of the trimmed data (to confirm that the trimming has worked as expected)
 
 Trimmomatic will generate 4 output-files. Two of these correspond to reads where both
 members of the same pair survived the trimming, these are the ones we will use as input for
-the assembly. Find these two files, and check them. The first read in file1 should have almost
-the same name as the first read in file2, since they are part of the same read-pair. Use "less"
-to take a look.
+the assembly. Find these two files, and check them. The first read in file R1 should have almost
+the same name as the first read in file R2, since they are part of the same read-pair.
+
+1. Use `less` or `head` to take a look if the names of first read are matching
 
 ```bash
-less SL0366_R1.fastq.gz
+head -r <sample>_R1t.fq.gz <sample>_R2t.fq.gz
 ```
 
 Moreover, the files should contain the same number of reads. With a few simple UNIX
 commands, this can easily be checked, fx. like this:
 
 ```bash
-less ESL0366_R1.fastq.gz | grep -c '@TWEETY'
+zcat ESL0366_R1.fastq.gz | grep -c '@TWEETY'
 ```
 
-Do you understand the line? This line gives a different result:
+<sub>
+`grep` is very frequently used for counting number of lines carrying a pattern. Instead of piping `grep` output to `wc`, you can calculate the number of lines directly by `grep` by specifying parameter `-c`.
+</sub>
+
+Do you understand the previous command? Why following command gives a different result?
 
 ```bash
-less ESL0366_R1.fastq.gz | grep -c '@'
+zcat ESL0366_R1.fastq.gz | grep -c '@'
 ```
 
-Why?
+<sub>
+PHRED scores - a quality of sequenced nucleotides are using a arbitrary sequence of unicode characters starting by `!`. One of this symbol is unfortunately `@`, therefore grep will find also lines where one of sequenced bases have quality `@`. By writing `@T`
+</sub>
 
 #### Submitting the assembly
 
-As usual, start by "adding the module" on Vital-it (i.e. load the program that you wish to use,
-in this case "Spades"):
+You have two options now, either you can create a script and submit your assembly using the script, or you can submit the assembly just like you have submitted your qc and trimming jobs.
+
+Either the way, you should start by "adding the module" on Vital-it (i.e. load the program that you wish to use, in this case "Spades") and checking how this assembler (spades) works:
 
 ```bash
 module add UHTS/Assembler/SPAdes/3.10.1
@@ -287,10 +285,44 @@ very long time to run! To help you out, we have tested a few options in advance,
 below should do the trick. Replace the file-names and the path to the output directory.
 Remember, you need to be working on scratch, not your home-directory.
 
+### script way
+
+1. create a script out of this template by replacing everything in `<starin>` by a meaningful name.
+
 ```bash
-bsub -J spades_1 -M 6000000 -R "rusage[mem=6000] span[ptile=4]" 'spades.py -1 file1.fastq
--2 file2.fastq --careful -o </path/to/scratch/dir> -m 4'
+#!/bin/bash
+#BSUB -L /bin/bash
+#BSUB -J <strain>_spades
+#BSUB -q normal
+#BSUB -o <strain>_spades.log
+#BSUB -e <strain>_spades.err
+#BSUB -n 4
+#BSUB -M 6000000
+#BSUB -R "rusage[mem=6000] span[ptile=4]"
+
+module add UHTS/Assembler/SPAdes/3.10.1
+
+spades.py -1 <strain>_R1t.fastq.gz \
+          -2 <strain>_R2t.fastq.gz \
+          --careful -o </output/directory>
 ```
+
+2. submit a job by
+
+```
+bsub < <script.sh>
+```
+
+### command line way
+
+```bash
+bsub -J <job_name> -M 6000000 -R "rusage[mem=6000] span[ptile=4]" 'spades.py -1 <file1.fastq>
+-2 <file2.fastq> --careful -o </path/to/scratch/dir> -m 4'
+```
+
+If you have decided to write this oneliner, do not forget to write the command somewhere in a text file, including the module you have used. Otherwise your result will not be reproductible.
+
+### In any case...
 
 Check that the job is running:
 

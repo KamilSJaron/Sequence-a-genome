@@ -107,7 +107,7 @@ bsub '<command_to_calculate_num_of_reads_in_R1> > number_of_reads_in_R1'
 ```
 
 2. check `bjobs`.
-3. check if file `number_of_adapters` was created and if the result in the same number as the .
+3. check if file `number_of_reads_in_R1` was created and if the result in the same number as the .
 
 ***
 

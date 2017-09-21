@@ -39,6 +39,20 @@
 	\titlepage
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Suffixes do not matter for bash}
+\large
+\begin{verbatim}
+file.fa
+file.fasta
+file.fas
+
+file.log
+file.txt
+file.totally_does_not_matter
+\end{verbatim}
+\end{frame}
+
 \section{wild character}
 
 \begin{frame}
@@ -269,6 +283,14 @@ home/kjaron/bin
 	\end{center}
 \end{frame}
 
+\begin{frame}[fragile]
+	\frametitle{permissions}
+	\large
+	\begin{verbatim}
+		chmod 755 script.sh
+	\end{verbatim}
+\end{frame}
+
 \begin{frame}
 	\begin{center}
 		\Large
@@ -476,20 +498,29 @@ nano <file>         # alternative
 
 \begin{frame}[fragile]
 	\begin{verbatim}
-	#!/bin/bash
-	#BSUB
-	#BSUB
-	#BSUB
-	#BSUB
+		#!/bin/bash
+		#BSUB -L /bin/bash
+		#BSUB -J <strain>_spades
+		#BSUB -q normal
+		#BSUB -o <strain>_spades.log
+		#BSUB -e <strain>_spades.err
+		#BSUB -n 4
+		#BSUB -M 6000000
+		#BSUB -R "rusage[mem=6000] span[ptile=4]"
 
-	module add ...
-	spades ...
+		module add UHTS/Assembler/SPAdes/3.10.1
+
+		spades.py -1 <strain>_R1t.fastq \
+				  -2 <strain>_R2t.fastq \
+				  --careful -o </output/directory>
 	\end{verbatim}
 \end{frame}
 
 \begin{frame}[fragile]
+	\huge
+	Mind the \verb!<! symbol!
 	\begin{verbatim}
-	bsub < assembly_<strain>.sh
+	bsub < assembly_script.sh
 	\end{verbatim}
 \end{frame}
 
@@ -498,17 +529,26 @@ nano <file>         # alternative
 		\Large
 		MyUnil $\rightarrow$ 170922\_unix\_II\_assembly\_TP.pdf
 	\end{center}
-\Large
+\large
 \begin{verbatim}
 	#!/bin/bash
-	#BSUB
-	#BSUB
-	#BSUB
-	#BSUB
+	#BSUB -L /bin/bash
+	#BSUB -J <strain>_spades
+	#BSUB -q normal
+	#BSUB -o <strain>_spades.log
+	#BSUB -e <strain>_spades.err
+	#BSUB -n 4
+	#BSUB -M 6000000
+	#BSUB -R "rusage[mem=6000] span[ptile=4]"
 
-	module add ...
-	spades ...
+	module add UHTS/Assembler/SPAdes/3.10.1
+
+	spades.py -1 <strain>_R1t.fastq \
+	          -2 <strain>_R2t.fastq \
+	          --careful -o </output/directory>
 \end{verbatim}
+
+Submit script by \verb!bsub < <script>.sh!
 \end{frame}
 
 
