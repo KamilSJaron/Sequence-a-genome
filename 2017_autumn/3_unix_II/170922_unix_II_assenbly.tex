@@ -1,0 +1,651 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+{
+\setbeamercolor{structure}{fg=Red!75!black}
+\usetheme{Madrid}
+\setbeamercovered{transparent}
+}
+
+\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{fancyvrb}
+\usepackage{url}
+\usepackage{array}
+\urlstyle{sf}
+
+%%%%%% SET TO CORRECT PATHS
+\graphicspath{{/Volumes/dump/pictures/pool/}}
+
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\title[ ]{Understanding UNIX}
+\author{Kamil S. Jaron}
+\date{22.9.~2017}
+
+\usenavigationsymbolstemplate{}
+\defbeamertemplate*{footline}{mytheme}{}
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\section{wild character}
+
+\begin{frame}
+	\begin{center}
+		\huge
+		Wild character\footnote{If we will do everything on time, I can show you more!} \\
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{wild character}
+\large
+\begin{verbatim}
+*    # everything
+
+$ ls
+file1  file3.fasta   file50.fasta
+file2  file45.fasta  file51.fasta.gz
+
+$echo *
+file1 file2 file3.fasta file45.fasta
+file50.fasta file51.fasta.gz
+
+$echo *.fasta
+file3.fasta file45.fasta file50.fasta
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{wild character}
+\large
+\begin{verbatim}
+*    # everything
+     # property of bash
+
+$ls
+file1 file2
+
+# we write
+$<program> *
+
+# <program> get :
+$<program> file1 file2
+
+# <program> doesn't read the star
+# bash substutute * with a string
+\end{verbatim}
+\end{frame}
+
+\section{variables}
+
+\begin{frame}
+	\begin{center}
+		\huge
+		What is else bash and what is UNIX?\\
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+type <command>    # shows type of a program
+
+$type pwd
+pwd is a shell builtin
+
+$type cp
+cp is /bin/cp
+
+$type vi
+vi is /usr/bin/vi
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\LARGE
+	Commands are :
+	\begin{itemize}
+		\item shell (bash) builtin \\ \large or
+		\LARGE
+		\item programs on locations bash knows about
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		What locations bash knows about?? \\
+	\end{center}
+	~\\
+	\LARGE
+	Environmental variable \verb!PATH!
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Wait a minute... Variable?
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Variables
+	\end{center}
+\huge
+\begin{verbatim}
+$VAR=5
+
+$echo VAR
+VAR
+
+$echo $VAR
+5
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\huge
+		Environmental variables \\
+	\end{center}
+
+\Large
+\begin{Verbatim}
+env          # prints env variables
+
+$VAR=5
+$env | grep "VAR"
+
+# export variable to enviroment
+export VAR
+$env | grep "VAR"
+VAR=5
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\huge
+		Environmental variables \\
+	\end{center}
+
+\Large
+\begin{Verbatim}
+env          # prints env variables
+
+$echo $USER  # user name
+kjaron
+
+$echo $PS1   # terminal prompt
+\u@\h:\w$
+
+$echo $PATH  # paths to programs
+/usr/local/bin:/usr/bin:/bin:
+/usr/local/sbin:/usr/sbin:/sbin
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{How vital-it modules work then?}
+\large
+\begin{verbatim}
+
+$module add UHTS/Quality_control/fastqc/0.11.2
+
+# to check loaded modules
+$module list
+Currently Loaded Modulefiles:
+  1) Development/java_jre/latest
+  2) UHTS/Quality_control/fastqc/0.11.2
+
+$fastqc -version
+FastQC v0.11.2
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		bash sees fastqc!\\
+		\vspace{1cm}
+		\Large
+		How comes?
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{Verbatim}[commandchars=\+\{\}]
+$type fastqc
+fastqc is hashed
+(/software/UHTS/Quality_control/fastqc/0.11.2/bin/fastqc)
+
+$echo $PATH
++textbf{/software/UHTS/Quality_control/fastqc/0.11.2/bin}:/software\
+/Development/java_jdk/1.8.0_102/jre/bin:/mnt/common/lsf/9.\
+1/linux2.6-glibc2.3-x86_64/etc:/mnt/common/lsf/9.1/linux2.\
+6-glibc2.3-x86_64/bin:/software/bin:/usr/local/bin:/bin:/u\
+sr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/kjaron/bin
+\end{Verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+# remove all modules
+$module purge
+
+$module list
+No Modulefiles Currently Loaded.
+
+$echo $PATH
+/mnt/common/lsf/9.1/linux2.6-glibc2.3-x86_64/etc:/mnt/comm\
+on/lsf/9.1/linux2.6-glibc2.3-x86_64/bin:/software/bin:/usr\
+/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/\
+home/kjaron/bin
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\huge
+		UNIX organisation : \verb!man hier! \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/filesystem}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Large
+		MyUnil $\rightarrow$ 170922\_unix\_II\_assembly\_TP.pdf
+	\end{center}
+\end{frame}
+
+\section{scripting}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Scripts \\
+		\Large
+		automatisation of your actions
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{hash bang}
+\LARGE
+\begin{verbatim}
+	#!/bin/bash
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$cat who_am_I.sh
+	#!/bin/bash
+
+	echo $USER
+
+
+
+	$bash who_am_I.sh
+	kjaron
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$cat echo.sh
+	#!/bin/bash
+
+	echo $1
+
+
+
+	$bash echo.sh first second
+	first
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$cat parameter_overview.sh
+	#!/bin/bash
+
+	echo $#
+	echo $1
+	echo $2
+	echo $*
+	echo $0
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$bash parameter_overview.sh \
+	> one 2 three 4
+	#!/bin/bash
+
+	4
+	one
+	2
+	one 2 three 4
+	parameter_overview.sh
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$bash parameter_overview.sh \
+	\ one 2 three 4
+
+	$#     3
+	$1     one
+	$2     2
+	$*     one 2 three 4
+	$0     parameter_overview.sh
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Command-line texteditors
+	\end{center}
+	\Large
+\begin{verbatim}
+vi <new_name>       # create
+vi <existing_file>  # edit
+
+# vi is everywhere
+# hopefully vim as well
+
+nano <file>         # alternative
+
+# common
+# simpler to handle
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!nano count_reads.sh! \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/nano}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!vi count_reads.sh! \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_1}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!a! or \verb!i! enter insert mode \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_2}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!<esc>! escape insert mode\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_3}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!:wq! command write quit\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_4}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Why is that monster popular?\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vimcheat}
+	\end{center}
+	\hfill and memes...
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/vim_tweet}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		MyUnil $\rightarrow$ 170922\_unix\_II\_assembly\_TP.pdf
+	\end{center}
+	\Large
+	\begin{verbatim}
+		vi <file>    # open file
+		a, i         # insert mode
+		<esc>        # command mode
+		:            # command
+		:w           # write
+		:wq          # write \& quit
+		:q           # quit io saving
+	\end{verbatim}
+\end{frame}
+
+\section{genome assembly}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/ngs/assembly/OLC_genome_assembly}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{verbatim}
+	#!/bin/bash
+	#BSUB
+	#BSUB
+	#BSUB
+	#BSUB
+
+	module add ...
+	spades ...
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{verbatim}
+	bsub < assembly_<strain>.sh
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		MyUnil $\rightarrow$ 170922\_unix\_II\_assembly\_TP.pdf
+	\end{center}
+\Large
+\begin{verbatim}
+	#!/bin/bash
+	#BSUB
+	#BSUB
+	#BSUB
+	#BSUB
+
+	module add ...
+	spades ...
+\end{verbatim}
+\end{frame}
+
+
+\section{recap}
+
+\begin{frame}[fragile]
+	\Huge
+	$\sum$ cluster
+	\Large
+	\begin{verbatim}
+		/scratch/...   # storage for big data
+		               # cleaned periodically
+		/home/...      # small stuff, back-uped
+
+		bsub           # submit a job
+		bjobs          # list jobs
+		bkill          # terminate a job
+		module add ... # add program
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\Huge
+	$\sum$ Genomics!!! \\
+	~ \\
+	\Large
+	\begin{itemize}
+		\item Quality control (check your reads)
+		\item Trimming (remove adapeters and low quality reads)
+		\item Assembly (make a genome out of reads)
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+	\Huge
+	$\sum$ advanced UNIX
+	\Large
+	\begin{verbatim}
+		* [] {}     # bracket exapansion
+		            # wild characters
+
+		VAR=5       # variables
+		echo $VAR   # calling vars
+		export VAR  # environmental vars
+
+		vi my_cool_script.sh  # scripting
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		Would you like to do a \textbf{first-step} or \textbf{master project} in our lab?!\\
+	\end{center}
+	~\\
+	We offer :
+		\begin{itemize}
+			\item real bioinformatic project (annotation of transposons)
+			\item enthusiasm and time
+			\item interesting evolutionary questions (Why do we have sex?)
+		\end{itemize}
+	~\\
+	Interested? Speak to me... now or \verb!kamil.jaron@unil.ch!
+	~\\
+	Otherwise, farewell!
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Command Substitution}
+	\begin{verbatim}
+		$()
+
+		my_dir=$(pwd)
+		number_of_nt=$(grep -v ">" seq.fasta | \
+		               tr -d '\n' | wc -c)
+		number_of_fasta_file=$(ls *.fasta | wc -l)
+
+		my_dir=`pwd`   # almost same thing
+		               # slightly different behaviour of \
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{for loops}
+	\begin{verbatim}
+		for file in *.fasta
+		do
+		    echo $file
+		done
+
+
+		for file in $(find . -name "*.fasta"); do
+		    echo $file
+		done
+
+		mkdir qc
+		for f in $(find . -name "*.fq.gz"); do
+		    bsub -q priority \
+		    "fastqc $f -o qc &> $(basename $f .fq.gz).log"
+		done
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{wild character}
+	\large
+	\begin{verbatim}
+		?    # any one character
+
+		$ ls
+		file1  file3.fasta   file50.fasta
+		file2  file45.fasta  file51.fasta.gz
+
+		$echo file?
+		file1 file2
+
+		$echo file?.fasta
+		file3.fasta
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{wild character}
+	\large
+	\begin{verbatim}
+		[]     # any of listed
+
+		$ ls
+		file1  file3.fasta   file50.fasta
+		file2  file45.fasta  file51.fasta.gz
+
+		$echo file[356]*.fasta
+		file3.fasta file50.fasta
+
+		$echo file[356].fasta
+		file3.fasta
+	\end{verbatim}
+\end{frame}
+
+\end{document}

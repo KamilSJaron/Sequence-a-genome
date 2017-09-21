@@ -1,13 +1,43 @@
 ---
 output: pdf_document
 ---
-#Unix
+# deeper understanding of Unix
 
-Last time we got familiar with basic concept of UNIX shell bash and we already learned how to use UNIX for genomics (QC and Trimming). Now we would like to understand bit better how this system works to avoid frustrations in future.
+We already know enough basics of unix to perform basic genomic analysis using command line.
+Now, we would like to go a step further and learn bit more about automation and how to make our life with terminal easier.
 
-## Scripts
+## Wild character
 
-One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before.
+A wild character, aseterix (little star, `*`), is a symbol interpreted by bash as "all possible content".
+You can combine it with strings to show only subset of files containing the string (example `*.fasta` means, all files with suffix `.fasta`, `reads_*` means all files starting with `reads_`.). This is a plain text substitution that happens before execution of command.
+
+1. To play around create a directory, enter it and create two empty files `file1` and `empty_file2` (command touch creates an empty file)
+
+```bash
+mkdir testdir
+cd testdir
+touch file1 empty_file2
+```
+
+2. Try to see how the star expand using command for printing it's arguments `echo`
+
+```
+echo *
+```
+
+From `bash` perspective this command is an equivalent to `echo empty_file2 file1`. It first replace `*` by all the content of directory and then executes the command.
+
+3. create one more file called `echo` (just like the command). Now, try following commands :
+
+```
+echo *
+echo e*
+echo *file*
+```
+
+Do you understand this behaviour? If no, ask an assistant.
+
+4. (optional) The ultimate understanding of `*`. The substitution happens before execution of the command. Could you guess what happens if you type just `*`? Bash will first do a fullstring substitution, it replaces `*` by string `echo empty_file2 file1`, then it tries to interpret the string, he identifies the first word as a valid command, therefore it has no problem to execute it. Try now to remove file `echo`. Type again `*`. If you understand why it screams, you understand `*`.
 
 ## Variables
 
@@ -30,7 +60,13 @@ there are several pre-defined variables in the terminal defining a behaviour of 
 
 ***
 
-We will text bit more commands and concepts on files located at `/scratch/beegfs/monthly/mls_2016/UNIX_testfiles/`, be sure that you have a copy at your working directory.
+Break!!!
+
+\newpage
+
+## Scripts
+
+One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before. However, before you write a script on cluster you need to learn how use a terminal editor, either `nano` or `vim`.
 
 ## Edit a file
 
@@ -50,7 +86,8 @@ Editing files using command line can be done using editors like `nano <textfile>
 
 ## Write a script
 
-All bash scripts should start by line that specify a language used for interpretation. It is not essential if interpreter is specified during execution (see bellow).
+Note : We will test bit more commands and concepts on files located at `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles/`, be sure that you have a copy in your working directory.
+All bash scripts should start by line that specify a language used for interpretation (so-called hash-bang). It is not essential if interpreter is specified during execution (see bellow).
 
 ```bash
 #!/bin/bash
@@ -129,9 +166,9 @@ echo "export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[0
 Note, how do we add the line to the end of the `.bashrc`. Quotes `""` serve to tell bash, that he should not take the text inside as a command, but treat it as a plain text, echo just tells bash to print what is quotes and finally using `>>` operator we redirected the output stream to file `~/.bashrc`. `echo` automatically adds a newline character in the end of every message its printing. The very same effect could be achieved, if you open the document in a text editor (line `vi`) and copy-paste the line.
 <sub\>
 
-You can easily check how `~/.bashrc` works by adding there a line `echo I love sequence a genome class`. Every time, you will log to Vital-it you will see this important message. The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use.
+The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use.
 
-1. Create an alias by adding following line `alias ll='ls -lah'` to the end of `~/.bashrc`.
+1. Create an alias by adding following line `alias ll='ls -lah'` to the end of `~/.bashrc`. To apply changes, type `source ~/.bashrc`.
 
 You can use from now on a command `ll` instead of `ls -lah` (list all, long format, in human readable units).
 
@@ -145,26 +182,9 @@ You can use from now on a command `ll` instead of `ls -lah` (list all, long form
 
 Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end.
 
-### Moving to scratch
+### Writing a script for cluster
 
-Your home is back-uped and you can not save there more than 2GB. ALl the data for computations should be store on a disc scratch. `/scratch/beegfs/monthly` is a working place, all files and folders older than one month are automatically deleted. From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
-
-1. Make the directory using `mkdir <dir_name>` (make directory) and go there.
-
-```bash
-mkdir /scratch/beegfs/monthly/mls_2016/<username>
-cd /scratch/beegfs/monthly/mls_2016/<username>
-```
-
-2. now move all the files you had saved in our home to your scratch
-
-```
-mv ~/UNIX_testfiles .
-```
-
-Since now, keep "messy files" here. Do not bring dirt home!
-
-### Running a simple job
+TODO : TURN THIS INTO BSUB SCRIPT
 
 To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax
 
@@ -226,7 +246,7 @@ Moreover, the files should contain the same number of reads. With a few simple U
 commands, this can easily be checked, fx. like this:
 
 ```bash
-less SL0366_R1.fastq.gz | grep -c '@TWEETY'
+less ESL0366_R1.fastq.gz | grep -c '@TWEETY'
 ```
 
 Do you understand the line? This line gives a different result:
@@ -256,7 +276,7 @@ You should see some text in the terminal, explaining basic usage and available o
 basic usage is very simple, it goes like this (but dont type it just yet):
 
 ```bash
-spades.py -1 file1.fastq -2 file2.fastq --careful -o /my/output/directory
+spades.py -1 <strain>_R1t.fastq -2 <strain>_R2t.fastq --careful -o </my/output/directory>
 ```
 
 This is going to take some computing resources (memory and "threads"), so you need to
@@ -269,7 +289,7 @@ Remember, you need to be working on scratch, not your home-directory.
 
 ```bash
 bsub -J spades_1 -M 6000000 -R "rusage[mem=6000] span[ptile=4]" 'spades.py -1 file1.fastq
--2 file2.fastq --careful -o /path/to/scratch/dir -m 4'
+-2 file2.fastq --careful -o </path/to/scratch/dir> -m 4'
 ```
 
 Check that the job is running:

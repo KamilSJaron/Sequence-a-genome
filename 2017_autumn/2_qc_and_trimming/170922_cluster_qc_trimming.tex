@@ -27,7 +27,7 @@
 
 \title[ ]{Quality control \& trimming}
 \author{Kamil S Jaron}
-\date{23.9.~2016}
+\date{22.9.~2016}
 
 \usenavigationsymbolstemplate{}
 \defbeamertemplate*{footline}{mytheme}{}
@@ -219,7 +219,7 @@ Samples :
 \begin{verbatim}
 /scratch/beegfs/monthly/mls_2017/data/raw_reads/
 
-<sample>_R1.fastq.gz         <sample>_R2.fastq.gz
+<sample>_R1.fastq.gz        <sample>_R2.fastq.gz
 
 ESL0366
 ESL0367
@@ -261,9 +261,10 @@ bsub -n 2 -J "QC" \
 
 \begin{frame}[fragile]
 	\begin{center}
-		\Huge
-		Your turn
+		\Large
+		MyUnil $\rightarrow$ 170922\_cluster\_qc\_trimming\_TP.pdf
 	\end{center}
+\huge
 \begin{verbatim}
 bsub <parameters> '<command>'
 bjobs
@@ -333,10 +334,10 @@ module purge
 
 \begin{frame}[fragile]
 	\begin{center}
-		\Huge
-		Your turn
+		\Large
+		MyUnil $\rightarrow$ 170922\_cluster\_qc\_trimming\_TP.pdf
 	\end{center}
-\large
+\footnotesize
 \begin{verbatim}
 bsub -n 8 -M 4194304 -J <job_name> '
 trimmomatic PE -threads 8 \
