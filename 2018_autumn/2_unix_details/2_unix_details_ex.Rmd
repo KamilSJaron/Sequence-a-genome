@@ -1,0 +1,177 @@
+---
+output: pdf_document
+---
+# deeper understanding of Unix
+
+We already know enough basics of unix to perform basic genomic analysis using command line.
+Now, we would like to go a step further and learn bit more about automation and how to make our life with terminal easier.
+
+## Wild character
+
+A wild character, aseterix (little star, `*`), is a symbol interpreted by bash as "all possible content".
+You can combine it with strings to show only subset of files containing the string (example `*.fasta` means, all files with suffix `.fasta`, `reads_*` means all files starting with `reads_`.). This is a plain text substitution that happens before execution of command.
+
+1. To play around create a directory, enter it and create two empty files `file1` and `empty_file2` (command touch creates an empty file)
+
+```bash
+mkdir testdir
+cd testdir
+touch file1 empty_file2
+```
+
+2. Try to see how the star expand using command for printing it's arguments `echo`
+
+```
+echo *
+```
+
+From `bash` perspective this command is an equivalent to `echo empty_file2 file1`. It first replace `*` by all the content of directory and then executes the command.
+
+3. create one more file called `echo` (just like the command). Now, try following commands :
+
+```
+echo *
+echo e*
+echo *file*
+```
+
+Do you understand this behaviour? If no, ask an assistant.
+
+4. (optional) The ultimate understanding of `*`. The substitution happens before execution of the command. Could you guess what happens if you type just `*`? Bash will first do a fullstring substitution, it replaces `*` by string `echo empty_file2 file1`, then it tries to interpret the string, he identifies the first word as a valid command, therefore it has no problem to execute it. Try now to remove file `echo`. Type again `*`. If you understand why it screams, you understand `*`.
+
+## Variables
+
+`bash` also allows to use variables, similarly to `R` or `python`. You can define them by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
+
+0. connect to Vital-it
+1. define variable `VAR` as `1`
+
+since terminal is primarily trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
+
+2. print your variable on terminal
+
+```bash
+echo $VAR
+```
+
+there are several pre-defined variables in the terminal defining a behaviour of the terminal called environmental variables. One of them is especially important. The variable `PATH` lists all locations of programs (binaries) that bash will search every time you type a command. You can check it using `echo` (do not forget `$` symbol)
+
+3. look at locations of binaries
+
+***
+
+Break!!!
+
+\newpage
+
+## Scripts
+
+One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before. However, before you write a script on cluster you need to learn how use a terminal editor, either `nano` or `vim`.
+
+## Edit a file
+
+Editing files using command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small script and minor edits is more then useful to keep at least basic knowledge of these tools. Here I describe work with more widespread editor `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
+
+1. Open file `browsing.txt` in `vi`
+2. Press `a` or `i` to enter the editing mode.
+3. Correct one of the typos in text (for instance, second line: `enther` -> `enter`).
+4. Press `<Esc>` to escape the writing mode.
+5. Press `:` to enter to command mode
+6. Write `wq` and hit `<Enter>` to save changes (write) and exit back to terminal (quit).
+7. Verify, that you managed edit the file.
+
+<sub> The whole point of two modes (command and editing mode) of `vi` is that command mode allows you to access advanced functions like find and replace, jump to particular line or deleting several lines, which makes `vi` very powerful editor, even it has no graphical user interface. `vi` is common part of Unix terminal and therefore you should be able to at least make minor edits and save changes, if there is no any other text editor installed, `vi` will be. If you want to quit `vi` without saving, you have to write exclamation mark `:q!`. The `:q` can quit `vi` only if the opened file remain unchanged. It is also worth to note, that command `vi` is usually linked to program `vim`, what is more user friendly generation of the editor (you do not want to know how "friendly" was the original `vi`).</sub>
+
+***
+
+## Write a script
+
+Note : We will test bit more commands and concepts on files located at `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles/`, be sure that you have a copy in your working directory.
+All bash scripts should start by line that specify a language used for interpretation (so-called hash-bang). It is not essential if interpreter is specified during execution (see bellow).
+
+```bash
+#!/bin/bash
+```
+
+the script is then executed as follows
+
+```
+bash ./<script.sh>
+```
+
+Lets create a script that will compute number of sequences in file `AllIllumina-PEadapters.fa`,
+
+1. Open an empty file in `vi`
+
+```sh
+vi <script.sh>
+```
+
+2. Copy there a first line (do not forget to enter insert mode first by pressing `a` or `i`)
+3. Add there a new line computing a number lines of file `AllIllumina-PEadapters.fa`, save file and quit `vi`
+4. Execute script in folder where is `AllIllumina-PEadapters.fa`
+
+```sh
+bash <script.sh>
+```
+
+However, maybe the script will be more useful if it will be generally computing number of reads in any `.fasta` file. For this we can use a predefined variable `1`, which carry a value of the first argument when the script is called.
+
+5. open the same script in `vi`
+
+```bash
+vi <script.sh>
+```
+
+6. replace in the script the name of the fasta file with adapters by `$1` (`$` is there because values of variables are called through operator `$`)
+7. save, quit and execute script on the fasta file with adapters
+
+```bash
+bash <script.sh> AllIllumina-PEadapters.fa
+```
+
+<sub>
+Special variables in `bash` scripts are
+`$1 $2 $3 ...`: first, second, third ... argument;
+`$0`: name of the script;
+`$*`: all arguments
+</sub>
+
+***
+
+## Pimp my bash
+
+Your terminal is now white and when you type `ls` it is hard to get oriented. One wonderful feature how to make life in terminal easier is to colour it! You can do so by setting an environmental variable `PS1`.
+
+1. Change colour of your terminal
+
+```bash
+export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '
+```
+
+<sub> You can write the command on one line only. The last symbol in line `\` means, that command continues on the next line, however the second `\` (first character of the second line) is needed for the expression to work properly. Environmental variable `PS1` defines how every new line will look like. For instance, if you specify `PS1=''`, prompt will disappear completely.
+<sub\>
+
+Great, terminal is colourful now, however, if you exit and start a new terminal session, it will be white again (this behaviour helps you not to mess with your own terminal). The way, how to make changes in terminal permanent is to edit a bash script `~/.bashrc`, which is executed every time you open new terminal window.
+
+2. Add the line in the end of your `~/.bashrc` file
+
+```bash
+echo "export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\
+\[\033[01;34m\]\w\[\033[00m\]\$ '" >> ~/.bashrc
+```
+
+<sub>
+Note, how do we add the line to the end of the `.bashrc`. Quotes `""` serve to tell bash, that he should not take the text inside as a command, but treat it as a plain text, echo just tells bash to print what is quotes and finally using `>>` operator we redirected the output stream to file `~/.bashrc`. `echo` automatically adds a newline character in the end of every message its printing. The very same effect could be achieved, if you open the document in a text editor (line `vi`) and copy-paste the line.
+<sub\>
+
+The dot at the begging of the file name means, that it is hidden file, therefore if you go to your home `cd ~` and list your files there `ls` you wont see it. You have to use `ls -a` option, which stands for all. In file starting by `.` is usually stored a local user setting of some program, meta files or history (like `.R` settings of R, `.bash_history` bash history, `.ssh` setting of SSH, etc.). In fact, we would like to know about hidden files almost all the time, but specifying an argument `-a` of `ls` every single time is just... annoying. The way out is a creation of aliases (shortcuts) to commands you frequently use.
+
+1. Create an alias by adding following line `alias ll='ls -lah'` to the end of `~/.bashrc`. To apply changes, type `source ~/.bashrc`.
+
+You can use from now on a command `ll` instead of `ls -lah` (list all, long format, in human readable units).
+
+***
+
+Any questions? Contact: kamiljaron@gmail.com
