@@ -4,7 +4,7 @@ output: pdf_document
 
 #Unix introduction
 
-Unix is an essential toolbox for work with big amounts of data, this tutorial is showing the practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX and `bash` in particular you can find all over the internet, I will just mention two : [software carpentry UNIX tutorial](http://swcarpentry.github.io/shell-novice/) for very basics and [Advanced Bash-Scripting Guide](http://tldp.org/LDP/abs/html/index.html) as a complete reference to bash scripting.
+Unix is a Swiss knife for work with big amounts of data, this tutorial shows a practical usage of the UNIX command line `bash` with emphasis on explanation of mechanisms and logic behind. More materials about UNIX and `bash` in particular you can find all over the internet, I will just mention two : [software carpentry UNIX tutorial](http://swcarpentry.github.io/shell-novice/) for very basics and [Advanced Bash-Scripting Guide](http://tldp.org/LDP/abs/html/index.html) as a complete reference to bash scripting.
 
 ## Syntax of this exercise
 
@@ -18,15 +18,15 @@ ls -h / # list files and directories in -human readable format located at root d
 * Anything in `< >` you have to replace by meaningful paths, file names or parameters.
 
 ```bash
-ssh <username>@prd.vital-it.ch #this will be written in this document
-ssh kjaron@prd.vital-it.ch #this is example, how it can be used
+ssh <username>@prd.vital-it.ch # this will be written in this document
+ssh kjaron@prd.vital-it.ch # this is example, how it can be used
 ```
 
 * Bash commands are (usually) meaningful acronyms, the explanation is written after every first occurrence in brackets.
 * Some quantitative tasks have correct answers in brackets. Example: How many lines are in the file `file.txt`? [42]
 * Detail explanations will be written in blocks as follows
 
-<sub>These explanatory blocks should help to understand. So, every time you feel confused, read this blocks. If it is not going to help, let us know.</sub>
+<sub>These explanatory blocks should help to understand. So, every time you feel confused, read this blocks. If it is not going to help, ask.</sub>
 
 ## Getting started
 
@@ -61,12 +61,12 @@ you can allow the beta version of Linux subsystem on Windows 10 (see [this tutor
 
 ### Linux / OS X users
 
-Open a terminal. Pressing `ctrl + alt + t` should do the job on common Linux systems.
-On Max OS X you can press `cmd + space` to start a spotlight search,
-then type `terminal`.
-This should find the terminal app therefore you can just hit `enter` to launch it.
+Open a terminal.
 
-Now, connect to Vital-it using `ssh` (secure shell).
+ - common Linux systems: Press `ctrl + alt + t`
+ - Mac OS X: press `cmd + space` to start a spotlight search, then type `terminal`. This should find the terminal app therefore you can just hit `enter` to launch it.
+
+If you managed to open a terminal window, connect to Vital-it using `ssh` (secure shell).
 
 ```bash
 ssh <username>@prd.vital-it.ch
@@ -81,8 +81,7 @@ You will be asked to type a password.
 ## Bash as explorer
 
 You should see a command line in front of you.
-Now you should to understand how to use `bash` to manipulate files just like in an explorer or finder.
-It is good to mention that there is no trash in `bash`, if you rewrite or remove any file, it's practically lost.
+Now you should to understand how to use `bash` to manipulate files just like in a file browser.
 You do not have to be scared to explore on Vital-it,
 it is not a problem to restore your cluster account to the default setting anytime.
 
@@ -101,7 +100,7 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 </sub>
 
 3. Use `pwd` (print working directory) to check your location.
-4. Correct the command `cd Sage` to actually enter the directory `SAGE`.
+4. Correct the command to enter the directory `SAGE`.
 5. Use `pwd` to check your location.
 6. Go to parent directory `cd ..` (change directory) and verify the success using `pwd` command again. Generally, `cd` changes a working directory to the provided path `cd <path>`.
 
@@ -116,15 +115,14 @@ cp -<parameters> <path/file> <path/new_file_name> # generally
 cp -r /scratch/beegfs/monthly/mls_2017/UNIX_testfiles .
 ```
 
-<sub> If you want to copy to retain the original name, you can specify just the path.
+<sub> If you want to copy and retain the original name, you can specify just a path.
 If you want to copy a file (or directory) to the working directory you are in,
 you can just write only `.`.
-You should be also aware of why you had to specify `-r` to copy a directory </sub>
+Do you know why you have to to specify `-r` to copy a directory? You can take a look in manual (`man cp`). </sub>
 
-3. Copy the file to your working directory using command `cp` (copy)
-4. Go inside and check content of the directory (you should know how, if you don't, scroll up).
-5. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check manual page (`man cp`, for almost all commands there is a manual page you can check).
-6. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move the renamed file to `UNIX_testfiles`.
+2. Go inside and check content of the directory (you should know how, if you don't, scroll up).
+3. Copy file `browsing.txt` in the directory `nonemptydir`. Do you need the parameter `-r`? If you are not sure, check again the manual page.
+4. Go to `nonemptydir`, rename `browsing.txt` to `<your_new_name>.txt` and move the renamed file to `UNIX_testfiles`.
 
 ```bash
 cd ./nonemptydir
@@ -133,7 +131,7 @@ mv <your_new_name>.txt ..
 cd ..
 ```
 
-6. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `nonemptydir`?
+5. What is the difference between second and the third line? Can you figure out how to do the same without changing the directory to `nonemptydir`?
 
 <sub>Command `mv` (move) moves file to the given path and renames it to the given name. So, if the `<path_to_input>` is the same as `<path_to_output>` in the command
 
@@ -143,17 +141,17 @@ mv <path_to_input>/<file_name> <path_to_output>/<new_file_name>
 
 , the file will be only renamed. If the path is different, but `<new_file_name>` is not provided, the file will be just moved (not renamed).</sub>
 
-7. Remove the copied and renamed file.
+6. Remove the copied and renamed file.
 
 ```bash
 rm <your_new_name>.txt
 ```
 
-8. Try to remove directory `nonemptydir`. Could you figure out why `rm <dir>` and `rmdir <dir>` is not working?
+7. Try to remove directory `nonemptydir`. Could you figure out why `rm <dir>` or `rmdir <dir>` is not working?
 
 <sub> Command `rm` is to remove files, `rmdir` to remove empty directories. If you want to remove a directory with files inside, you have to specify parameter `-r` (recursive) : `rm -r <dir_to_delete>`. However, be careful, there is nothing like "Trash" in the bash, i.e. what is deleted is permanently lost! </sub>
 
-9. Try command `man <command>` (manual) to show manual page of some commands. What does the `-a` mean in the `ls` command? Could you use this parameter to find out why `rmdir` is not working on `nonemptydir`, even through `ls` is not showing any files inside?
+8. Try command `man <command>` (manual) to show manual page of some commands. What does the `-a` mean in the `ls` command? Could you use this parameter to find out why `rmdir` is not working on `nonemptydir`, even through `ls` is not showing any files inside?
 
 ***
 
@@ -163,16 +161,16 @@ rm <your_new_name>.txt
 
 ## More than explrorer
 
-There are two types of commands you can use in `bash`. Inbuilt and default commands (usually with `man` page). And programs you have installed. "installed" on Linux means usually that a binary file is copied to location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command `echo $PATH`. However, before going to explore it, we will get familiar with standard commands of bash.
+`bash` can be used also for reading text files and manipulating them. The `bash` tools are very optimized, therefore they work on huge files which will come handy once your file will be a genome.
 
 ### Commands text processing
 
-There are many many ways how to show a plain text file in the terminal, so if you find another solutions than we provide, do not wonder. Some of commands for text processing:
+There are many many ways how to loot at a plain text file in the terminal, so if you find another solutions than we provide, do not wonder. Some of commands for text processing:
 
 - Commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and print the beginning (first n lines), the end of input files (last n lines), respectively.
-- Command `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is very good tool.
-- Command `wc -lwc <text_file>` (word count) is counting number of newline characters, words and characters in the input file. You can specify output by parameters .
-- Command `tr -d '<string_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given string (Note: a character is also a string).
+- Command `less <text_file>` will allow to browse text file (of any size). You can use scroll or use arrows to browse the file. If you press `q`, you will escape back to the terminal. If you want to explore, `less` is a very good tool.
+- Command `wc -lwc <text_file>` (word count) is counting number of line (`l`; in fact it's newline characters), words (`w`) and characters (`c`) in an input file. You can specify what to computed by parameters.
+- Command `tr -d '<character_to_be_removed>' <text_file>` (translate characters) can delete all occurrences of a given character.
 
 1. Use commands `head -n <num_of_lines> <text_file>`, `tail -n <num_of_lines> <text_file>` and `cat <text_file>` (catenate) to see the beginning, the end or whole file `browsing.txt`, respectively. How many lines are in the file?
 2. Use `less <text_file>` to check `AllIllumina-PEadapters.fa`. You can use scroll or arrows to move in the file. If you press `q`, you will escape back to terminal. You can also use `head` and `tail` commands to see the beginning and the end of the file.
@@ -288,4 +286,4 @@ cp /<path>/LS[1234]* . # copiing all files staring by LS1 LS2 LS3 or LS4 from gi
 
 ***
 
-Any questions? Contact: kamiljaron@gmail.com
+Ask me a question! Contact: kamiljaron@gmail.com
