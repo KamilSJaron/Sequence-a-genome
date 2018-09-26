@@ -1,17 +1,28 @@
 ---
 output: pdf_document
 ---
-# deeper understanding of Unix
 
-We already know enough basics of unix to perform basic genomic analysis using command line.
-Now, we would like to go a step further and learn bit more about automation and how to make our life with terminal easier.
+# Deeper understanding of Unix
+
+We already know basics of unix. You know how to write commands that perform basic operations on files. We have also learned that some of the symbols are special and mean something (like `|`, `>`, etc.). Now we would like to explore more of these characters.
+
+`bash` is actually preprocessing your input commands. If you use some of the special symbols, `bash` will replace them according their meaning. Since these replacement operation might be bit confusing at the beginning we will need to just print the command without actually executing it. This is performed using a command `echo`. If you write something like the line bellow
+
+```{bash}
+echo this_does_not_expand *.Rmd $HOME
+```
+
+`bash` have performed all possible expansions on the `what ever I want *.Rmd $HOME` and then `echo` printed it. To understand what actually have just happened just continue in the practicals.
 
 ## Wild character
 
-A wild character, aseterix (little star, `*`), is a symbol interpreted by bash as "all possible content".
-You can combine it with strings to show only subset of files containing the string (example `*.fasta` means, all files with suffix `.fasta`, `reads_*` means all files starting with `reads_`.). This is a plain text substitution that happens before execution of command.
+A wild character, aseterix (little star, `*`), is a symbol interpreted by `bash` as "all possible content".
+You can combine it with strings to show only subset of files containing the string (example `*.fasta` means, all files with suffix `.fasta`, `reads_*` means all files starting with `reads_`.). This is a substitution that happens before execution of command.
 
-1. To play around create a directory, enter it and create two empty files `file1` and `empty_file2` (command touch creates an empty file)
+0. connect to Vital-it
+1. create a directory `testdir`, go inside and create two empty files `file1` and `empty_file2` using command `touch`
+
+<sub> Command `touch` creates an empty file. </sub>
 
 ```bash
 mkdir testdir
@@ -21,7 +32,7 @@ touch file1 empty_file2
 
 2. Try to see how the star expand using command for printing it's arguments `echo`
 
-```
+```bash
 echo *
 ```
 
@@ -29,7 +40,7 @@ From `bash` perspective this command is an equivalent to `echo empty_file2 file1
 
 3. create one more file called `echo` (just like the command). Now, try following commands :
 
-```
+```bash
 echo *
 echo e*
 echo *file*
@@ -43,7 +54,6 @@ Do you understand this behaviour? If no, ask an assistant.
 
 `bash` also allows to use variables, similarly to `R` or `python`. You can define them by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
 
-0. connect to Vital-it
 1. define variable `VAR` as `1`
 
 since terminal is primarily trying to execute commands, variables has to be called using a special symbol `$`. A `bash` command that simply prints its arguments is called `echo` (similar to `print` or `message` in `R`).
@@ -58,19 +68,19 @@ there are several pre-defined variables in the terminal defining a behaviour of 
 
 3. look at locations of binaries
 
+The majority of commands you use in `bash` are just programs at path known to `bash`. To install a program on Linux means usually that a program is copied to a location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command.
+
 ***
-
-Break!!!
-
-\newpage
 
 ## Scripts
 
-One of the advantages of the command line over programs based on mouse and clicking is, that is very easy to store, what exactly you have done in a simple text file. This file can be than executed again to achieve exactly same computation, what guarantees reproducibility. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before. However, before you write a script on cluster you need to learn how use a terminal editor, either `nano` or `vim`.
+A major advantage of the command line is that it's very easy to store. You can store the commands you have executed in a text file. This file can be than executed again to achieve exactly same computation. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before. However, before you write a script on cluster you need to learn how use a terminal editor, either `nano` or `vim`.
 
 ## Edit a file
 
 Editing files using command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small script and minor edits is more then useful to keep at least basic knowledge of these tools. Here I describe work with more widespread editor `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
+
+<sub> Note : We will play bit more with files located at `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles/`, be sure that you have a copy in your working directory.</sub>
 
 1. Open file `browsing.txt` in `vi`
 2. Press `a` or `i` to enter the editing mode.
@@ -86,7 +96,6 @@ Editing files using command line can be done using editors like `nano <textfile>
 
 ## Write a script
 
-Note : We will test bit more commands and concepts on files located at `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles/`, be sure that you have a copy in your working directory.
 All bash scripts should start by line that specify a language used for interpretation (so-called hash-bang). It is not essential if interpreter is specified during execution (see bellow).
 
 ```bash
@@ -172,6 +181,73 @@ The dot at the begging of the file name means, that it is hidden file, therefore
 
 You can use from now on a command `ll` instead of `ls -lah` (list all, long format, in human readable units).
 
+
 ***
 
-Any questions? Contact: kamiljaron@gmail.com
+**BREAK!!!**
+
+***
+
+## Basic cluster operations
+
+Vital-it is a computing cluster - hundreds of computers connected in a huge grid. The computer you are logging to, when you want to submit a job (prd.vital-it.ch) is one computer (server) and it serves exclusively for distribution of computational tasks across the computing grid. This computer is called front-end.
+
+### Moving to scratch
+
+Your home is back-uped and you can not save there more than 2GB. ALl the data for computations should be store on a disc scratch. `/scratch/beegfs/monthly` is a working place, all files and folders older than one month are automatically deleted. From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
+
+1. Make the directory using `mkdir <dir_name>` (make directory) and go there.
+
+```bash
+mkdir /scratch/beegfs/monthly/mls_2016/<username>
+cd /scratch/beegfs/monthly/mls_2016/<username>
+```
+
+2. now move all the files you had saved in our home to your scratch
+
+```
+mv ~/UNIX_testfiles .
+```
+
+Since now, keep "messy files" here. Do not bring dirt home!
+
+### Running a simple job
+
+To compute on cluster you will need two main commands: `bsub` to submit a job and `bjobs` to obtain job status. Submission of a job have the following syntax
+
+```bash
+bsub <bsub_parameters> <command> <command_parameters>
+```
+
+Every time, you run a `bsub` on the front-end, it will put your job in the queue and assign you a computer once, there will be one free for you, given specifications you have provided in `<bsub_parameters>`.
+
+1. submit a job, that will compute number of sequences in file `AllIllumina-PEadapters.fa` using your own script
+
+```
+bsub 'bash <script.sh> AllIllumina-PEadapters.fa > number_of_adapters'
+```
+
+2. check `bjobs`
+3. check if file `number_of_adapters` was created and if the result corresponds to the number of sequences in the file.
+
+### Modules
+
+The second advantage of Vital-it cluster is, that there are installed modules with various programs. A software available on Vital-it you can loaded using
+
+```bash
+module add <field>/<category>/<program>/<version>
+```
+
+The list of programs and commands for loading them can be found on [Vital-it webpage](http://www.vital-it.ch/services/software).
+
+1. Find there a command for program `fastqc` and execute it.
+
+<sub>Vital-it trick: An alternative option for webpage interface is a command `vit_soft`, `vit_soft -s <name>` will return a list of packages containing the <name> you specified. To get a command for loading package you have to choose a package from the list and execute `vit_soft -p <package_name>`<sub\>
+
+2. Now, check how your `PATH` has changed.
+
+Adding module is nothing more than just adding a new path to list of directories searched for binaries.
+
+***
+
+What are your questions? Contact: kamiljaron@gmail.com
