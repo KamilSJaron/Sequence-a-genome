@@ -4,15 +4,15 @@ output: pdf_document
 
 # Deeper understanding of Unix
 
-We already know basics of unix. You know how to write commands that perform basic operations on files. We have also learned that some of the symbols are special and mean something (like `|`, `>`, etc.). Now we would like to explore more of these characters.
+We already know basics. You know how to manipulate files. We have also learned that some of the symbols are special and mean something (like `|`, `>`, etc.). Now we would like to explore more of these characters.
 
-`bash` is actually preprocessing your input commands. If you use some of the special symbols, `bash` will replace them according their meaning. Since these replacement operation might be bit confusing at the beginning we will need to just print the command without actually executing it. This is performed using a command `echo`. If you write something like the line bellow
+`bash` is actually preprocessing your input commands. If you use some of the special symbols, `bash` will replace them according their meaning. Since these replacement operation might be bit confusing at the beginning we will need to just print the command without actually executing it. This is performed using a command `echo`. Look the at command bellow
 
 ```{bash}
-echo this_does_not_expand *.Rmd $HOME
+echo this_does_not_expand *.Rmd $USER
 ```
 
-`bash` have performed all possible expansions on the `what ever I want *.Rmd $HOME` and then `echo` printed it. To understand what actually have just happened just continue in the practicals.
+`bash` have performed all possible expansions on the `what ever I want *.Rmd $HOME` and then `echo` printed it. To understand what actually have just happened continue in the practicals.
 
 ## Wild character
 
@@ -70,6 +70,8 @@ there are several pre-defined variables in the terminal defining a behaviour of 
 
 The majority of commands you use in `bash` are just programs at path known to `bash`. To install a program on Linux means usually that a program is copied to a location where `bash` searches for commands. The locations of commands (programs) can be shown by typing command.
 
+<sub> Many things in the terminal are defined using environmental variables - variables defining environment. This is neat for people who would like to change behaviour or change appearance. To check all the environmental variables you can use command `env`. </sub>
+
 ***
 
 ## Scripts
@@ -80,7 +82,7 @@ A major advantage of the command line is that it's very easy to store. You can s
 
 Editing files using command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small script and minor edits is more then useful to keep at least basic knowledge of these tools. Here I describe work with more widespread editor `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
 
-<sub> Note : We will play bit more with files located at `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles/`, be sure that you have a copy in your working directory.</sub>
+<sub> Note : We will play bit more with files located at `/scratch/beegfs/monthly/mls_2018/UNIX_testfiles/`, be sure that you have a copy in your working directory.</sub>
 
 1. Open file `browsing.txt` in `vi`
 2. Press `a` or `i` to enter the editing mode.
@@ -194,13 +196,13 @@ Vital-it is a computing cluster - hundreds of computers connected in a huge grid
 
 ### Moving to scratch
 
-Your home is back-uped and you can not save there more than 2GB. ALl the data for computations should be store on a disc scratch. `/scratch/beegfs/monthly` is a working place, all files and folders older than one month are automatically deleted. From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2015/<username>`.
+Your home is back-uped and you can not save there more than 2GB. ALl the data for computations should be store on a disc scratch. `/scratch/beegfs/monthly` is a working place, all files and folders older than one month are automatically deleted. From now on, keep all your big files here (or at your computer). The quota for disc `beegfs` is 5TB per user. The quota for `home` is 2GB. Therefore, all jobs run from working directories located at `/scratch/beegfs/monthly/mls_2017/<username>`.
 
 1. Make the directory using `mkdir <dir_name>` (make directory) and go there.
 
 ```bash
-mkdir /scratch/beegfs/monthly/mls_2016/<username>
-cd /scratch/beegfs/monthly/mls_2016/<username>
+mkdir /scratch/beegfs/monthly/mls_2017/<username>
+cd /scratch/beegfs/monthly/mls_2017/<username>
 ```
 
 2. now move all the files you had saved in our home to your scratch
