@@ -1,0 +1,527 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+{
+\setbeamercolor{structure}{fg=Red!75!black}
+\usetheme{Madrid}
+\setbeamercovered{transparent}
+}
+
+\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{array}
+\urlstyle{sf}
+
+%%%%%% SET TO CORRECT PATHS
+\graphicspath{{/Volumes/dump/pictures/pool/}}
+
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\title[ ]{Introduction to UNIX, vol II}
+\author{Kamil S. Jaron}
+\date{2.10.~2018}
+
+\usenavigationsymbolstemplate{}
+\defbeamertemplate*{footline}{mytheme}{}
+
+\begin{document}
+
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Variables
+	\end{center}
+\huge
+\begin{verbatim}
+$VAR=5
+
+$echo VAR
+VAR
+
+$echo $VAR
+5
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Environmental variables
+	\end{center}
+\Large
+\begin{verbatim}
+$echo $USER
+kjaron
+
+# terminal prompt
+$echo $PS1
+\u@\h:\w$
+
+# locations of binaries
+$echo $PATH
+/usr/local/sbin:/usr/local/bin:
+/usr/sbin:/usr/bin:/sbin:/bin
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		UNIX organisation \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/filesystem}
+	\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\begin{center}
+	\Huge
+	Showtime!
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Scripts \\
+		\Large
+		automatisation of your actions
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$cat who_am_I.sh
+	#!/bin/bash
+
+	echo $USER
+
+
+
+	$bash who_am_I.sh
+	kjaron
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$cat echo.sh
+	#!/bin/bash
+
+	echo $1
+
+
+
+	$bash echo.sh first second
+	first
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$cat parameter_overview.sh
+	#!/bin/bash
+
+	echo $#
+	echo $1
+	echo $2
+	echo $*
+	echo $0
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$bash parameter_overview.sh \
+	> one 2 three 4
+	#!/bin/bash
+
+	4
+	one
+	2
+	one 2 three 4
+	parameter_overview.sh
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\LARGE
+\begin{verbatim}
+	$bash parameter_overview.sh \
+	\ one 2 three 4
+
+	$#     3
+	$1     one
+	$2     2
+	$*     one 2 three 4
+	$0     parameter_overview.sh
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Command-line texteditors
+	\end{center}
+	\Large
+\begin{verbatim}
+vi <new_name>       # create
+vi <exitsing_file>  # edit
+
+# vi is everywhere
+# hopefully vim as well
+
+nano <file>         # alternative
+
+# common
+# simpler to handle
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!nano count_reads.sh! \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/nano}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!vi count_reads.sh! \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_1}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!a! or \verb!i! enter insert mode \\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_2}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!<esc>! escape insert mode\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_3}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Large
+		\verb!:wq! command write quit\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vim_4}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Why is that monster popular?\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/vimcheat}
+	\end{center}
+	\hfill and memes...
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/vim_tweet}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{center}
+	\Huge
+	Your turn
+\end{center}
+\Large
+\begin{verbatim}
+vi <file>    # open file
+a, i         # insert mode
+<esc>        # command mode
+:            # command
+:w           # write
+:wq          # write \& quit
+:q           # quit io saving
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster computing\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/Vital-IT-cluster}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster organisation\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/cluster_computers}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Queuing system\\
+		\vspace{1cm}
+
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\huge
+\begin{verbatim}
+bsub       # submit a job
+bjobs      # list your jobs
+bkill      # kill a job
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+$bsub -q priority \
+'echo "I <3 SAGE!" > message'
+
+Job <256817> is submitted to queue <priority>.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{UNIX/submit_a_job}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		~\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{UNIX/cluster_bsub}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+$bsub -q priority \
+'echo "I <3 SAGE!" > message'
+
+Job <256817> is submitted to queue <priority>.
+
+$bkill 256817
+
+
+bkill <job_id>     # generally
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster storage\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{/ngs/SAGE/cluster_storage.pdf}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+/home/<username>                  # 2 GB quota
+                                  # backuped
+
+/scratch/beegfs/<...>/<username>  # 5 TB quota
+                                  # cleaning
+                monthly           # monthly
+                weekly            # weekly
+                daily             # daily
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+# scripts, logs, small tables
+# do NOT bring garbage home!
+/home/<username>
+
+# your data
+/scratch/beegfs/monthly/mls_2016/<username>
+
+# meeting point
+/scratch/beegfs/monthly/mls_2016/SAGE/...
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster queuing for real\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{/UNIX/cluster_really_bsub.pdf}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Module system\\
+		\vspace{1cm}
+		\Large
+		\url{http://www.vital-it.ch/services/software}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Module system\\
+		\vspace{1cm}
+\large
+\begin{verbatim}
+# /software/<category>/<package>/<version>
+
+module add <category>/<package>/<version>
+
+# to check loaded modules
+
+module list
+\end{verbatim}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\large
+\begin{verbatim}
+
+$module add UHTS/Quality_control/fastqc/0.11.2
+
+# to check loaded modules
+$module list
+Currently Loaded Modulefiles:
+  1) Development/java_jre/latest
+  2) UHTS/Quality_control/fastqc/0.11.2
+
+$fastqc -version
+FastQC v0.11.2
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		bash sees the binary!\\
+		\vspace{1cm}
+		\Large
+		How comes?
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+$type fastqc
+fastqc is hashed
+(/software/UHTS/Quality_control/fastqc/0.11.2/bin/fastqc)
+
+$echo $PATH
+/software/UHTS/Quality_control/fastqc/0.11.2/bin:/software\
+/Development/java_jdk/1.8.0_102/jre/bin:/mnt/common/lsf/9.\
+1/linux2.6-glibc2.3-x86_64/etc:/mnt/common/lsf/9.1/linux2.\
+6-glibc2.3-x86_64/bin:/software/bin:/usr/local/bin:/bin:/u\
+sr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/kjaron/bin
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\footnotesize
+\begin{verbatim}
+# remove all modules
+$module purge
+
+$module list
+No Modulefiles Currently Loaded.
+
+$echo $PATH
+/mnt/common/lsf/9.1/linux2.6-glibc2.3-x86_64/etc:/mnt/comm\
+on/lsf/9.1/linux2.6-glibc2.3-x86_64/bin:/software/bin:/usr\
+/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/\
+home/kjaron/bin
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+		\Huge
+		Your turn
+	\end{center}
+\begin{verbatim}
+bsub <parameters> '<command>'
+bjobs
+bkill <jid>
+
+vit_soft -s <keyword>
+vit_soft -p <package_name>
+module add <path>/<package_name>
+module purge
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+	\Huge
+	*
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+	\Huge
+	everything
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\begin{center}
+	\Huge
+	Showtime!
+	\end{center}
+\end{frame}
+
+\end{document}
+

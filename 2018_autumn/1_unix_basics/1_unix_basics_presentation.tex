@@ -1,0 +1,491 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+{
+\setbeamercolor{structure}{fg=Red!75!black}
+\usetheme{Madrid}
+\setbeamercovered{transparent}
+}
+
+\usepackage{ucs}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{palatino}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{array}
+\urlstyle{sf}
+
+%
+% THIS SOURCE FILE IS PUBLIC DOMAIN
+% made by Kamil S Jaron with help of internet
+% contact: kamiljaron at gmail
+%
+
+%%%%%% SET TO CORRECT PATHS
+\graphicspath{{/Volumes/dump/pictures/pool/}}
+
+\newcommand{\btVFill}{\vskip0pt plus 1filll}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\title[ ]{Introduction to UNIX}
+\author{Kamil S Jaron}
+\date{21.9.~2017}
+
+\usenavigationsymbolstemplate{}
+\defbeamertemplate*{footline}{mytheme}{}
+
+\begin{document}
+
+\Large
+\begin{frame}
+	\titlepage
+\end{frame}
+
+% \begin{frame}
+% 	\huge
+% 	\begin{center}
+% 		\begin{tabular}{c | c | c}
+% 		 & today & tomorrow \\
+% 		 \hline
+% 		AM & navigation & variables \\
+% 		 & text processing & scripts \\
+% 		 & pipes & cluster \\
+% 		 \hline
+% 		 PM &  & QC \\
+% 		 & & trimming \\
+% 		\end{tabular}
+% 	\end{center}
+% \end{frame}
+
+\section{why unix}
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		Why UNIX?
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Sequence a baceterial genome}
+	\Huge
+	$\approx$ 1GB of letters / genome \\
+	~\\
+	Each is a book of \\ \hfill $\approx$ 370,000 pages
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+	\huge
+	How to open such file?? \\
+	\vspace{1cm}
+
+	\Large
+	\begin{tabular}{C{0.4\textwidth}C{0.4\textwidth}}
+	Notepad? & Office? \\
+	\includegraphics[scale=0.3]{UNIX/notepad-icon} & \includegraphics[scale=0.2]{UNIX/office_logo} \\
+	\end{tabular} \\
+	\small not well suited for big files
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/gene_name_errors_excel}
+	\end{center}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/GUI_pipeline}
+	\end{center}
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\Huge
+		Cluster computing\\
+		\vspace{1cm}
+		\includegraphics[width=0.9\textwidth]{/UNIX/Vital-IT-cluster}
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		bash
+	\end{center}
+	\large
+	a command line \textbf{language} for communication with a computer
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=1\textwidth]{/UNIX/commnad_line}
+	\end{center}
+\end{frame}
+
+
+\begin{frame}
+	~~~bash \hfill explorer~~~
+	\begin{center}
+	\begin{tabular}{L{0.5\textwidth}L{0.5\textwidth}}
+		\includegraphics[width=0.5\textwidth]{/UNIX/commnad_line} &
+		\includegraphics[width=0.47\textwidth]{UNIX/Windows-7-Explorer-Tweaked-Folder} \\
+	\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+Pay attention where you are!
+\begin{verbatim}
+# relative paths
+.     # this directory
+..    # parent directory
+~     # my home directory
+
+# absolute path
+/     # root directory
+      # filename path separator
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+Quiz!
+\begin{verbatim}
+kamil@frt:~$ ls
+kamil@frt:~$ ls .
+kamil@frt:~$ ls ../kamil
+kamil@frt:~$ ls ~
+kamil@frt:~$ ls /home/kamil
+\end{verbatim}
+Which of the commands will list files in my home?
+\end{frame}
+
+\begin{frame}[fragile]
+	\Large
+	\begin{verbatim}
+		# Manual
+		man <command>
+
+		# Auto Completion by <tab>
+		cd /<tab><tab>   # lists all in root
+		cd ~/<tab><tab>  # lists all in home
+
+		# Command history
+		<arrow_up>       # last excuted command
+		<Ctrl+R>         # full-text search
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		bash
+	\end{center}
+	\large
+	a command line \huge \textbf{language} \large for communication with a computer
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Special symbols in a written language}
+	\large
+	\begin{tabular}{L{0.45\textwidth} L{0.5\textwidth}}
+	Separation of words & \verb!<space>! \\
+	End of a sentence & \verb!.! \\
+	Start of names or a sentence & \verb!A-Z! \\
+	Smile & \verb!:-)! \\
+	\end{tabular}
+\end{frame}
+
+\begin{frame}[fragile]
+	\frametitle{Special symbols in bash}
+	\large
+	\begin{tabular}{L{0.45\textwidth} L{0.5\textwidth}}
+	Comments & \verb!#! \\
+	Navigation symbols & \verb!. .. ~ /! \\
+	Separator of arguments & \verb!<space>! \\
+	Command separator & \verb!<newline> ;! \\
+	& \\
+	Expansion characters & \verb!* ? [] {}! \\
+	Assign variable & \verb!=! \\
+	Call variable & \verb!$! \\
+	& \\
+	Command substitution & \verb!$(<cmd>) `<cmd>`! \\
+	Redirection & \verb!> | < &! \\
+	& \\
+	Literal strings & \verb!'' ""! \\
+	Escape character & \verb!\! \\
+	\end{tabular}
+\end{frame}
+
+\section{text operations}
+
+\begin{frame}
+	\Huge
+	\begin{center}
+		What about that toolbox?
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+	\huge
+	How to check a file?? \\
+	\vspace{1cm}
+
+	\Large
+	\begin{tabular}{C{0.4\textwidth}C{0.4\textwidth}}
+	Notepad? & Office? \\
+	\includegraphics[scale=0.3]{UNIX/notepad-icon} & \includegraphics[scale=0.2]{UNIX/office_logo} \\
+	\small not well suited for big files & \small Use at least read-only mode\\
+	\end{tabular}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Look at a plain-text file
+	\Large
+	\begin{verbatim}
+		command <text_file>
+
+		echo
+		head / tail
+		cat   # catenate
+		less  # > more; text reader
+
+		wc    # word count
+		tr    # translate
+		grep  # global regular expression print
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	IO streams - a way how to build pipes!
+	\Large
+	\begin{verbatim}
+		command <text_file>
+	           == cat <text_file> | command
+		echo
+		tail / head
+		cat   # catenate
+		less  # > more
+
+		wc    # word count
+		tr    # translate
+		grep  # global regular expression print
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[width=0.9\textwidth]{/UNIX/GUI_pipeline}
+	\end{center}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	IO streams!
+	\Large
+	\begin{verbatim}
+
+
+		ls | wc -w
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Streams in the service of genomics!
+	\Large
+	\begin{verbatim}
+
+
+		grep ">" seq.fasta | wc -l
+
+
+
+				>seq1
+				CGATCGTCGTAGCTACGAT
+				>seq2
+				ACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	input stream (file)
+	\Large
+	\begin{verbatim}
+
+
+		grep -v ">" seq.fasta | \
+		  tr -d '\n' | wc -c
+
+
+
+		>seq1
+		CGATCGTCGTAGCTACGAT
+		>seq2
+		ACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	\verb!grep -v ">"!
+	\Large
+	\begin{verbatim}
+
+
+		grep -v ">" seq.fasta
+
+
+
+		CGATCGTCGTAGCTACGAT
+		ACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	\verb!tr -d "\n"!
+	\Large
+	\begin{verbatim}
+
+
+		grep -v ">" seq.fasta | \
+		  tr -d "\n"
+
+
+		CGATCGTCGTAGCTACGATACCGATCAAACCGTCGTAA
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	\verb!wc -c!
+	\Large
+	\begin{verbatim}
+
+
+		grep -v ">" seq.fasta | \
+		  tr -d "\n" | wc -c
+
+
+		38
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Stream redirection overview
+	\Large
+	\begin{verbatim}
+
+
+		grep ">" seq.fasta         # print
+		grep ">" seq.fasta | wc    # pipe
+		grep ">" seq.fasta > file  # write
+		grep ">" seq.fasta >> file # append
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	\huge
+	Your turn
+	\Large
+	\begin{verbatim}
+		command <parameters> <text_file>
+
+		echo  # print text
+		head / tail # start/end of file
+		cat   # print file(s)
+		less  # text-file browser
+
+		wc    # word count
+		tr    # translate
+		grep  # print lines with pattern
+	\end{verbatim}
+\end{frame}
+
+\section{recap}
+
+\begin{frame}[fragile]
+	$\sum$ relative and absolute path
+	\Large
+	\begin{verbatim}
+		# relative
+		./my_dir/project1/data
+		~/photos
+		../others/
+		# absolute
+		/dev/null
+		/home/kamil
+	\end{verbatim}
+	Every command is executed somewhere!
+\end{frame}
+
+\begin{frame}[fragile]
+	$\sum$ efficient control
+	\Large
+	\begin{verbatim}
+		# Manual
+		man <command>
+
+		# Auto Completion by <tab>
+		cd /<tab><tab>   # lists all in root
+		cd ~/<tab><tab>  # lists all in home
+
+		# Command history
+		<arrow_up>       # last excuted command
+		<Ctrl+R>         # full-text search
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	$\sum$ navigation
+	\Large
+	\begin{verbatim}
+		pwd                # print workding dir
+		ls                 # list segments
+		cd                 # change directory
+		mkdir              # make directory
+		rm                 # remove file
+		cp <what> <where>  # copy
+		mv <what> <where>  # move
+
+		man <command>      # manual
+	\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+	$\sum$ text operations
+	\Large
+	\begin{verbatim}
+		ls | wc            # piping
+		ls > my_segments   # redirection
+		pwd >> my_segments # append
+
+		echo          # print text
+		head / tail   # start/end of file
+		cat           # print file(s)
+		less          # text-file browser
+
+		wc     # word count
+		tr     # translate
+		grep   # print lines with pattern
+	\end{verbatim}
+\end{frame}
+
+
+\end{document}
