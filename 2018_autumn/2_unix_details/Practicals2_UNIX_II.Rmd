@@ -4,55 +4,11 @@ output: pdf_document
 
 # Deeper understanding of Unix
 
-We already know the basics of unix. You know how to write commands that perform basic operations on files. We have also learned that there are some special symbols that mean something (like `|`, `>`, etc.). Now we would like to explore more of these characters.
-
-`bash` is actually preprocessing your input commands. If you use some of the special symbols, `bash` will replace them according their meaning. Since these replacement operations might be bit confusing at the beginning we will need to just print the command without actually executing it. This is performed using a command `echo`. Look the at command bellow
-
-```{bash}
-echo this_does_not_expand *.Rmd $USER
-```
-
-`bash` has performed all possible expansions on the `this_does_not_expand *.Rmd $USER` and then `echo` printed it. To understand what actually happened just continue in the practical.
-
-## Wild characters
-
-A wild character, asterisk (little star, `*`), is a symbol interpreted by `bash` as "all possible content".
-You can combine it with strings to show only subset of files containing the string (example `*.fasta` means, all files with suffix `.fasta`, `reads_*` means all files starting with `reads_`.). This is a substitution that happens before the execution of a command.
-
-0. connect to Vital-it
-1. create a directory `testdir`, go inside and create two empty files `file1` and `empty_file2` using command `touch`
-
-<sub> Command `touch` creates an empty file. </sub>
-
-```bash
-mkdir testdir
-cd testdir
-touch file1 empty_file2
-```
-
-2. Try to see how the star expands using the command for printing it's arguments (`echo`)
-
-```bash
-echo *
-```
-
-From the `bash` perspective, this command is equivalent to `echo empty_file2 file1`. It first replaces `*` by all the content of directory and then executes the command.
-
-3. create one more file called `echo` (just like the command). Now, try the following commands:
-
-```bash
-echo *
-echo e*
-echo *file*
-```
-
-Do you understand this behaviour? If no, ask an assistant.
-
-4. (optional) The ultimate understanding of `*`. The substitution happens before execution of the command. Could you guess what happens if you type just `*`? Bash will first do a fullstring substitution, it replaces `*` by the string `echo empty_file2 file1`, then it tries to interpret the string, he identifies the first word as a valid command, therefore it has no problem to execute it. Now remove the file `echo`. Type again `*`. If you understand why it screams, you understand `*`.
+We already know the basics of unix. You know how to write commands that perform basic operations on files. This already great, but `bash` can do more. `bash` allows for the use of variables, similar to `R` or `python`.
 
 ## Variables
 
-`bash` also allows for the use of variables, similar to `R` or `python`. You can define them by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
+You can define a variable by `<varible_name>=<value>`, where `<varible_name>` is usually by convention upper-case and `<value>` can be either a number or a string (text).
 
 1. define variable `VAR` as `1`
 
@@ -80,13 +36,13 @@ which <command>
 
 ## Scripts
 
-A major advantage of the command line is that it's very easy to store. You can store the commands you have executed in a text file. This file can be than executed again to achieve exactly same computation. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before. However, before you write a script on the cluster you need to learn how use a terminal editor, either `nano` or `vim`.
+A major advantage of the command line is that you can store the commands you have executed in a text file. This file can be than executed again to achieve exactly same computation. Those files are called scripts they usually have extension `.sh`. Writing commands into scripts also helps you to reuse programs you have already used before. However, before you write a script on the cluster you need to learn how use a terminal editor, either `nano` or `vim`.
 
 ## Edit a file
 
 Editing files using the command line can be done using editors like `nano <textfile>` or `vi <textfile>`. If we write complicated scripts, we usually work in some advanced environment, but for small scripts and minor edits is more than useful to have at least basic knowledge of these tools. Here I describe work with the more widespread editor, `vi` (`vim` respectively). You can use simper and more user friendly `nano` instead, however it is not installed on every cluster.
 
-<sub> Note : We will play bit more with files located at `/scratch/beegfs/monthly/mls_2018/UNIX_testfiles/`, be sure that you have a copy in your working directory.</sub>
+<sub> Note: We will play bit more with files located at `/scratch/beegfs/monthly/mls_2018/UNIX_testfiles/`, be sure that you have a copy in your working directory.</sub>
 
 1. Open file `browsing.txt` in `vi`
 2. Press `a` or `i` to enter the editing mode.
@@ -110,7 +66,7 @@ All bash scripts should start by a line that specifies a language used for inter
 
 the script is then executed as follows
 
-```
+```bash
 bash ./<script.sh>
 ```
 
@@ -118,7 +74,7 @@ Lets create a script that will compute number of sequences in file `AllIllumina-
 
 1. Open an empty file in `vi`
 
-```sh
+```bash
 vi <script.sh>
 ```
 
@@ -126,7 +82,7 @@ vi <script.sh>
 3. Add there a new line computing a number lines of file `AllIllumina-PEadapters.fa`, save file and quit `vi`
 4. Execute script in folder where is `AllIllumina-PEadapters.fa`
 
-```sh
+```bash
 bash <script.sh>
 ```
 
@@ -211,7 +167,7 @@ cd /scratch/beegfs/monthly/mls_2018/<username>
 
 2. now move all the files you had saved in our home to your scratch
 
-```
+```bash
 mv ~/UNIX_testfiles .
 ```
 
@@ -253,6 +209,54 @@ The list of programs and commands for loading them can be found on [Vital-it web
 2. Now, check how your `PATH` has changed.
 
 Adding module is nothing more than just adding a new path to list of directories searched for binaries.
+
+***
+
+\newpage
+
+## BONUS: Wild characters
+
+We have learned already that there are some special symbols that mean something (like `|`, `>`, etc.). Now we would like to explore more of these characters. `bash` is actually preprocessing your input commands. If you use some of the special symbols, `bash` will replace them according their meaning. Since these replacement operations might be bit confusing we recommend to use a command `echo` to explore the behaviour. Look the at command bellow
+
+```{bash}
+echo this_does_not_expand *.Rmd $USER
+```
+
+`bash` has performed all possible expansions on the `this_does_not_expand *.Rmd $USER` and then `echo` printed it. To understand what actually happened just continue in the practical.
+
+A wild character, asterisk (little star, `*`), is a symbol interpreted by `bash` as "all possible content".
+You can combine it with sequences of characters (strings) to show only subset of files containing the string (example `*.fasta` means, all files with suffix `.fasta`, `reads_*` means all files starting with `reads_`.). This is a substitution that happens before the execution of a command.
+
+0. connect to Vital-it
+1. create a directory `testdir`, go inside and create two empty files `file1` and `empty_file2` using command `touch`
+
+<sub> Command `touch` creates an empty file. </sub>
+
+```bash
+mkdir testdir
+cd testdir
+touch file1 empty_file2
+```
+
+2. Try to see how the star expands using the command for printing it's arguments (`echo`)
+
+```bash
+echo *
+```
+
+From the `bash` perspective, this command is equivalent to `echo empty_file2 file1`. It first replaces `*` by all the content of directory and then executes the command.
+
+3. create one more file called `echo` (just like the command). Now, try the following commands:
+
+```bash
+echo *
+echo e*
+echo *file*
+```
+
+Do you understand this behaviour? If no, ask an assistant.
+
+4. (optional) The ultimate understanding of `*`. The substitution happens before execution of the command. Could you guess what happens if you type just `*`? Bash will first do a fullstring substitution, it replaces `*` by the string `echo empty_file2 file1`, then it tries to interpret the string, he identifies the first word as a valid command, therefore it has no problem to execute it. Now remove the file `echo`. Type again `*`. If you understand why it screams, you understand `*`.
 
 ***
 

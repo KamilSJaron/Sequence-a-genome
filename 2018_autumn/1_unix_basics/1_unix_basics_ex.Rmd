@@ -108,11 +108,11 @@ Everything in UNIX is case sensitive, i.e. the name Sage is not the same as SAGE
 
 ### Copy, move, rename and remove
 
-1. Copy the directory `/scratch/beegfs/monthly/mls_2017/UNIX_testfiles` to your working directory using command `cp` (copy)
+1. Copy the directory `/scratch/beegfs/monthly/mls_2018/UNIX_testfiles` to your working directory using command `cp` (copy)
 
 ```bash
 cp -<parameters> <path/file> <path/new_file_name> # generally
-cp -r /scratch/beegfs/monthly/mls_2017/UNIX_testfiles .
+cp -r /scratch/beegfs/monthly/mls_2018/UNIX_testfiles .
 ```
 
 <sub> If you want to copy and retain the original name, you can specify just a path.
